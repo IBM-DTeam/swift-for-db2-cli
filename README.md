@@ -1,6 +1,6 @@
-# swift-ibm-db-cli
+# swift-for-db2-cli
 
-This is the source repository for the ODBC CLI & Swift DB2 Driver installation package for the dependencies of [swift-ibm-db](https://github.com/IBM-DTeam/swift-ibm-db).
+This is the source repository for the ODBC CLI & Swift DB2 Driver installation package for the dependencies of [swift-for-db2](https://github.com/IBM-DTeam/swift-for-db2).
 
 Package Info
 ---
@@ -17,14 +17,14 @@ Ubuntu 14.04 and 15.10
 ```
 sudo apt-get update
 sudo apt-get install -y clang unixodbc-dev unzip wget tar
-wget https://github.com/IBM-DTeam/swift-ibm-db-cli/archive/master.zip && unzip master.zip && cd swift-ibm-db-cli-master && sudo ./cli.sh && . env.sh && cd .. && rm -f master.zip && rm -rf swift-ibm-db-cli-master
+wget https://github.com/IBM-DTeam/swift-for-db2-cli/archive/master.zip && unzip master.zip && cd swift-for-db2-cli-master && sudo ./cli.sh && . env.sh && cd .. && rm -f master.zip && rm -rf swift-for-db2-cli-master
 ```
 
 Mac OS X
 ```
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew install wget unixodbc
-wget https://github.com/IBM-DTeam/swift-ibm-db-cli/archive/master.zip && unzip master.zip && cd swift-ibm-db-cli-master && sudo ./cli.sh && . env.sh && cd .. && rm -f master.zip && rm -rf swift-ibm-db-cli-master
+wget https://github.com/IBM-DTeam/swift-for-db2-cli/archive/master.zip && unzip master.zip && cd swift-for-db2-cli-master && sudo ./cli.sh && . env.sh && cd .. && rm -f master.zip && rm -rf swift-for-db2-cli-master
 ```
 
 Contributors
