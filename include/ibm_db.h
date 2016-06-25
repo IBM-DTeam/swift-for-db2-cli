@@ -1,8 +1,3 @@
-//
-//  Swift DB2 Driver Wrapper Function
-//  Created by Gregory Wlodarek, Angad Singh, Nick Dujay, Tuo Zhang on 2016-02-01.
-//
-
 #ifndef odbc_connect_h
 #define odbc_connect_h
 

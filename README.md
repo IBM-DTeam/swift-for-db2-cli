@@ -1,6 +1,6 @@
 # swift-for-db2-cli
 
-This is the source repository for the ODBC CLI & Swift DB2 Driver installation package for the dependencies of [swift-for-db2](https://github.com/IBM-DTeam/swift-for-db2).
+This is the source repository for the ODBC CLI for the package [swift-for-db2](https://github.com/IBM-DTeam/swift-for-db2).
 
 Package Info
 ---

@@ -1,8 +1,3 @@
-//
-//  Swift DB2 Driver Wrapper Function
-//  Created by Gregory Wlodarek, Angad Singh, Nick Dujay, Tuo Zhang on 2016-02-01.
-//
-
 #include "../include/ibm_db.h"
 
 /*Initialize ODBC Handler*/
