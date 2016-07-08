@@ -92,8 +92,8 @@ if [ $UNAME = "Darwin" ]; then
   if ! grep -Fxq "if [ -d /etc/profile.d ]; then" /etc/profile ; then
     sudo echo "if [ -d /etc/profile.d ]; then" >> /etc/profile
     sudo echo "  for i in /etc/profile.d/*.sh; do" >> /etc/profile
-    sudo echo "    if [ -r $i ]; then" >> /etc/profile
-    sudo echo "      . $i" >> /etc/profile
+    sudo echo "    if [ -r \$i ]; then" >> /etc/profile
+    sudo echo "      . \$i" >> /etc/profile
     sudo echo "    fi" >> /etc/profile
     sudo echo "  done" >> /etc/profile
     sudo echo "  unset i" >> /etc/profile
