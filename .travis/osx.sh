@@ -25,10 +25,13 @@ set -e
 # Install dependencies
 brew install wget cppunit
 
+# Install ODBC CLI
+sudo ./setup/install.sh
+
 # Build the project and test it
 cd ${TRAVIS_BUILD_DIR}
 make
-sudo make install 
+sudo make install
 make clean
 make test
 ./test
