@@ -44,32 +44,13 @@ else
   exit 1
 fi
 
-rm -rf ibm_db.o
-clang -c src/*.c -O3 -I/usr/local/include -I/usr/include
-ar -rcs libibmdb.a *.o
-
-sudo mkdir -p /usr/local/include
-sudo mkdir -p /usr/local/lib
-
-sudo cp -rfp include/*.h /usr/local/include/
-sudo cp -rfp libibmdb.a /usr/local/lib/
-rm libibmdb.a
-
 rm -rf $DIST
 wget $URL$DIST
 tar -xvzf $DIST
 sudo mkdir -p /usr/local/ibmdb
 
-if [ $UNAME = "Linux" ]; then
-  sudo cp -rfp clidriver/lib/* /usr/lib/
-elif [ $UNAME = "Darwin" ]; then
-  sudo cp -rfp clidriver/lib/* /usr/local/lib
-fi
-
 sudo cp -rfp clidriver/* /usr/local/ibmdb/
 rm -rf clidriver
-
-rm -rf ibm_db.o
 rm -rf $DIST
 
 ######################### ENVIRONMENT VARIABLES ##############################

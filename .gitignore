@@ -1,0 +1,8 @@
+todo
+essentials/cmocka-1.0.1/build
+*.o
+*.a
+*.i
+*.s
+.DS_Store
+lib*.so.*

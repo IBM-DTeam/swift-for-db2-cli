@@ -1,4 +1,4 @@
-#Variables for this session
+# Variables for this session
 export PATH=/usr/local/ibmdb/bin:/usr/local/ibmdb/adm:/usr/local/ibmdb/lib:$PATH
 export LD_LIBRARY_PATH=/usr/local/ibmdb/lib:$LD_LIBRARY_PATH
 export DYLD_LIBRARY_PATH=/usr/local/ibmdb/lib:/usr/local/ibmdb/lib/icc:$DYLD_LIBRARY_PATH
