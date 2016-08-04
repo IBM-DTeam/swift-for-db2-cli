@@ -27,9 +27,10 @@ docker pull ubuntu:wily
 
 # Install dependencies
 update="apt-get update"
+upgrade="apt-get upgrade"
 install_dependencies="apt-get install -y wget g++ gcc libcppunit-dev"
 
 # Build the project and test it
 build_and_test="cd /swift-for-db2-cli && make && sudo make install && make clean && make test && ./test"
 
-docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:wily /bin/bash -c "${update} && ${install_dependencies} && ${build_and_test}"
+docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:wily /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${build_and_test}"
