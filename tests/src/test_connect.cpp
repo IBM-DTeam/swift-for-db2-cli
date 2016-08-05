@@ -27,7 +27,7 @@ void TestConnect::testValidConnection(void) {
   handles* connection = connect((char *) VALID_CONN_STR);
 
   // Ensure nothing is NULL where it shouldn't be.
-  CPPUNIT_ASSERT_MESSAGE("Handles struct is NULL", connection == NULL);
+  CPPUNIT_ASSERT_MESSAGE("Handles struct is NULL", connection != NULL);
   CPPUNIT_ASSERT_MESSAGE("Handles struct hEnv was SQL_NULL_HENV", connection->hEnv != SQL_NULL_HENV);
   CPPUNIT_ASSERT_MESSAGE("Handles struct hDbc was SQL_NULL_HDBC", connection->hDbc != SQL_NULL_HDBC);
 
