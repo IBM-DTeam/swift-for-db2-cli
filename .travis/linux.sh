@@ -37,7 +37,7 @@ docker pull ubuntu:yakkety
 # Install dependencies
 update="apt-get -qq update"
 upgrade="apt-get -qq -y upgrade"
-install_dependencies="apt-get install -qq -y wget make g++ gcc libcppunit-dev sudo libxml2"
+install_dependencies="apt-get -qq install -y wget make g++ gcc libcppunit-dev sudo libxml2"
 install_odbc_cli="cd /swift-for-db2-cli && ./setup/install.sh && . ./setup/env.sh"
 
 # Build the project and test it
