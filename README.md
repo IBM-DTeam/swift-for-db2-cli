@@ -33,17 +33,18 @@ The Swift SDK for DB2 CLI allows you to connect to your IBM DB2 database or prod
 
 1. For Linux, you will need to execute the following:
 
-  `sudo apt-get update && sudo apt-get install wget g++ gcc libcppunit-dev`
-  `sudo ./setup/install.sh`
+  - `sudo apt-get update && sudo apt-get install wget g++ gcc libcppunit-dev`
+  - `sudo ./setup/install.sh`
 
 2. For OS X, you will need to execute the following:
-  `brew install wget cppunit`
-  `sudo ./setup/install.sh`
+  
+  - `brew install wget cppunit`
+  - `sudo ./setup/install.sh`
 
 ## Installation
 
-  `make`
-  `sudo make install`
+  - `make`
+  - `sudo make install`
 
 ## Usage Examples
 Visit the [Wiki](https://github.com/IBM-DTeam/swift-for-db2-cli/wiki) for examples on how to use the Swift SDK for DB2 CLI.
