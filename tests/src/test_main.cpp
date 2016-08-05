@@ -30,13 +30,13 @@ int main() {
   CPPUNIT_NS::TestResult testResult;
 
   CPPUNIT_NS::TestResultCollector collectedResults;
-  testResult.addListener (&collectedResults);
+  testResult.addListener(&collectedResults);
 
   CPPUNIT_NS::BriefTestProgressListener progress;
-  testResult.addListener (&progress);
+  testResult.addListener(&progress);
 
   CPPUNIT_NS::TestRunner testrunner;
-  testrunner.addTest (CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest());
+  testrunner.addTest(CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest());
   testrunner.run(testResult);
 
   CPPUNIT_NS::CompilerOutputter compilerOutputter(&collectedResults, std::cerr);
