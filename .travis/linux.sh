@@ -22,16 +22,35 @@
 # If any commands fail, we want the shell script to exit immediately.
 set -e
 
+# Ubuntu 14.04
+docker pull ubuntu:trusty
+
 # Ubuntu 15.10
 docker pull ubuntu:wily
 
+# Ubuntu 16.04
+docker pull ubuntu:xenial
+
+# Ubuntu 16.10
+docker pull ubuntu:yakkety
+
 # Install dependencies
-update="apt-get update"
-upgrade="apt-get upgrade"
-install_dependencies="apt-get install -y wget make g++ gcc libcppunit-dev"
+update="apt-get -q update"
+upgrade="apt-get -q upgrade"
+install_dependencies="apt-get install -q -y wget make g++ gcc libcppunit-dev sudo"
 install_odbc_cli="cd /swift-for-db2-cli && ./setup/install.sh"
 
 # Build the project and test it
-build_and_test="make && make install && make clean && make test && ./test"
+build_and_test="make && make install && make clean && make test && ./test && make clean"
 
+echo "********** TESTING Ubuntu 14.04 - TRUSTY **********"
+docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:trusty /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test}"
+
+echo "********** TESTING Ubuntu 15.10 - WILY **********"
 docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:wily /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test}"
+
+echo "********** TESTING Ubuntu 16.04 - XENIAL **********"
+docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:xenial /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test}"
+
+echo "********** TESTING Ubuntu 16.10 - YAKKETY **********"
+docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:yakkety /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test}"

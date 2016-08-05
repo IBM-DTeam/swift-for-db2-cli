@@ -46,7 +46,7 @@ fi
 
 rm -rf $DIST
 wget $URL$DIST
-tar -xvzf $DIST
+tar -xzf $DIST
 sudo mkdir -p /usr/local/ibmdb
 
 sudo cp -rfp clidriver/* /usr/local/ibmdb/
