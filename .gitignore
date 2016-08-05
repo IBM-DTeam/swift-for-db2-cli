@@ -6,3 +6,4 @@ essentials/cmocka-1.0.1/build
 *.s
 .DS_Store
 lib*.so.*
+test

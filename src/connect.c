@@ -32,9 +32,9 @@ handles* connect(const char* connectionString) {
 
   // Create the handles struct
   handles*      h             = (handles*) malloc(sizeof(handles)); // Handles struct
-  h->hDbc                     = SQL_NULL_HDBC;                      // Environment
-  h->hEnv                     = SQL_NULL_HENV;                      // Connection handle
-  SQLRETURN     retCode       = SQL_SUCCESS;                        // Statement handle
+  h->hDbc                     = SQL_NULL_HDBC;                      // Connection handle
+  h->hEnv                     = SQL_NULL_HENV;                      // Statement handle
+  SQLRETURN     retCode       = SQL_SUCCESS;                        // Return code
   SQLCHAR       outStr[1024];
   SQLSMALLINT   outStrLen;
 

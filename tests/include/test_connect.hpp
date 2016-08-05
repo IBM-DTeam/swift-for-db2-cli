@@ -29,11 +29,17 @@
 class TestConnect : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TestConnect);
   CPPUNIT_TEST(testValidConnection);
+  CPPUNIT_TEST(testValidConnectionMultiple);
   CPPUNIT_TEST(testInvalidConnection);
+  CPPUNIT_TEST(testInvalidConnectionMultiple);
+  CPPUNIT_TEST(testMixedConnections);
   CPPUNIT_TEST_SUITE_END();
 protected:
   void testValidConnection(void);
+  void testValidConnectionMultiple(void);
   void testInvalidConnection(void);
+  void testInvalidConnectionMultiple(void);
+  void testMixedConnections(void);
 };
 
 #endif

@@ -48,6 +48,19 @@ void TestConnect::testValidConnection(void) {
 }
 
 /*
+ * Function:  TestConnect::testValidConnectionMultiple
+ * ------------------
+ * Connects to a database with a valid connection string multiple times.
+ *
+ */
+void TestConnect::testValidConnectionMultiple(void) {
+  int i = 0;
+  for (; i < 10; i++) {
+    testValidConnection();
+  }
+}
+
+/*
  * Function:  TestConnect::testInvalidConnection
  * ------------------
  * Connects to a database with an invalid connection string.
@@ -59,4 +72,34 @@ void TestConnect::testInvalidConnection(void) {
   // TODO: Disconnect the connection if not NULL and free.
   CPPUNIT_ASSERT_MESSAGE("We have a connection on an invalid connection string", connection == NULL);
 
+}
+
+/*
+ * Function:  TestConnect::testInvalidConnectionMultiple
+ * ------------------
+ * Connects to a database with an invalid connection string multiple times.
+ *
+ */
+void TestConnect::testInvalidConnectionMultiple(void) {
+  int i = 0;
+  for (; i < 10; i++) {
+    testInvalidConnection();
+  }
+}
+
+/*
+ * Function:  TestConnect::testMixedConnections
+ * ------------------
+ * Connects to a database with a mix of valid and invalid connection string
+ * multiple times.
+ *
+ */
+void TestConnect::testMixedConnections(void) {
+  int i = 0;
+  for (; i < 10; i++) {
+    if (i % 2 == 0)
+      testValidConnection();
+    else
+      testInvalidConnection();
+  }
 }
