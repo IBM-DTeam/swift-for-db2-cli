@@ -29,9 +29,9 @@ docker pull ubuntu:wily
 update="apt-get update"
 upgrade="apt-get upgrade"
 install_dependencies="apt-get install -y wget make g++ gcc libcppunit-dev"
-install_odbc_cli="./setup/install.sh"
+install_odbc_cli="cd /swift-for-db2-cli && ./setup/install.sh"
 
 # Build the project and test it
-build_and_test="cd /swift-for-db2-cli && make && make install && make clean && make test && ./test"
+build_and_test="make && make install && make clean && make test && ./test"
 
 docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:wily /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test}"

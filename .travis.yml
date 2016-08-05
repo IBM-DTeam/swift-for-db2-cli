@@ -9,6 +9,6 @@ matrix:
 
 script:
   - echo ">> Building and testing Swift SDK for DB2 CLI."
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./travis/linux.sh; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./travis/osx.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./.travis/linux.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./.travis/osx.sh; fi
   - echo ">> Swift SDK for DB2 CLI built and tested. Check above for status."
