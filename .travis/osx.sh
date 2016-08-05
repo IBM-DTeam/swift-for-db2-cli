@@ -25,11 +25,16 @@ set -e
 # Install dependencies
 brew install wget cppunit
 
+# Project location
+cd ${TRAVIS_BUILD_DIR}
+
 # Install ODBC CLI
 sudo ./setup/install.sh
 
+# Environment variables
+. ./setup/env.sh
+
 # Build the project and test it
-cd ${TRAVIS_BUILD_DIR}
 make
 sudo make install
 make clean
