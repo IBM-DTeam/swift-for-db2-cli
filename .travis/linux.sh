@@ -38,7 +38,7 @@ docker pull ubuntu:yakkety
 update="apt-get -q update"
 upgrade="apt-get -q -y upgrade"
 install_dependencies="apt-get install -q -y wget make g++ gcc libcppunit-dev sudo libxml2"
-install_odbc_cli="cd /swift-for-db2-cli && ./setup/install.sh && . ./setup/env.sh && ls /usr/local/ibmdb && ls /usr/local/ibmdb/lib"
+install_odbc_cli="cd /swift-for-db2-cli && ./setup/install.sh && . ./setup/env.sh"
 
 # Build the project and test it
 build_and_test="make && make install && make clean && make test && ./test && make clean"
