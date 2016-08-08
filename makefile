@@ -26,7 +26,7 @@ PRODUCTION_LINKS = -ldb2
 TEST_LINKS = $(PRODUCTION_LINKS) -lcppunit
 
 # Shared Library
-ibmdb2 : connect.o
+ibmdb2 : handles.o connect.o
 	$(CC) $(COMPILE_FLAGS) $(SHARED_LIBRARY) -o lib$@.so.$(SHARED_LIBRARY_VERSION) $? $(PRODUCTION_LIBRARIES) $(PRODUCTION_LINKS)
 
 # Copy Shared Library and Includes
@@ -36,19 +36,25 @@ install : ibmdb2
 	sudo cp -rf include/* /usr/local/include/ibmdb2/
 
 # Compile tests
-test : connect.o test_connect.o test_main.o
+test : handles.o test_handles.o connect.o test_connect.o test_main.o
 	$(CC) $(COMPILE_FLAGS) -o $@ $? $(TEST_LIBRARIES) $(TEST_LINKS)
 
 # Main files
-connect.o : $(INCLUDE)/connect.h $(SRC)/connect.c
+handles.o : $(INCLUDE)/handles.h $(SRC)/handles.c
+	$(CC) $(OBJECT_FLAGS) $(PRODUCTION_SEARCH_PATH) $(SRC)/handles.c
+
+connect.o : $(INCLUDE)/connect.h $(SRC)/connect.c handles.o
 	$(CC) $(OBJECT_FLAGS) $(PRODUCTION_SEARCH_PATH) $(SRC)/connect.c
 
 # Test files
-test_main.o : $(TEST_INCLUDE)/test_main.hpp $(TEST_SRC)/test_main.cpp
+test_main.o : test_handles.o test_connect.o $(TEST_INCLUDE)/test_main.hpp $(TEST_SRC)/test_main.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(TEST_SRC)/test_main.cpp
 
-test_connect.o : connect.o $(TEST_INCLUDE)/test_connect.hpp $(TEST_SRC)/test_connect.cpp
+test_connect.o : test_handles.o connect.o $(TEST_INCLUDE)/test_connect.hpp $(TEST_SRC)/test_connect.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(TEST_SRC)/test_connect.cpp
+
+test_handles.o : handles.o $(TEST_INCLUDE)/test_handles.hpp $(TEST_SRC)/test_handles.cpp
+	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(TEST_SRC)/test_handles.cpp
 
 clean :
 	rm -rf *.o

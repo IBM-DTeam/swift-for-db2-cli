@@ -17,6 +17,7 @@
 #include "test_main.hpp"
 
 // Register the tests to run.
+CPPUNIT_TEST_SUITE_REGISTRATION(TestHandles);
 CPPUNIT_TEST_SUITE_REGISTRATION(TestConnect);
 
 /*

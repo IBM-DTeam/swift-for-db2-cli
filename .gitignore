@@ -7,3 +7,5 @@ essentials/cmocka-1.0.1/build
 .DS_Store
 lib*.so.*
 test
+.idea/
+CMakeLists.txt
