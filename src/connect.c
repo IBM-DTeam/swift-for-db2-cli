@@ -31,18 +31,21 @@
 handles* connect(const char* connectionString) {
 
   // Create the handles struct
-  handles*      h             = (handles*) malloc(sizeof(handles)); // Handles struct
-  h->hDbc                     = SQL_NULL_HDBC;                      // Connection handle
-  h->hEnv                     = SQL_NULL_HENV;                      // Statement handle
-  SQLRETURN     retCode       = SQL_SUCCESS;                        // Return code
-  SQLCHAR       outStr[1024];
-  SQLSMALLINT   outStrLen;
+  handles* h  = createHandles(); // Handles struct
+  if (h == NULL) {
+    // Error
+    return NULL;
+  }
+
+  SQLRETURN retCode = SQL_SUCCESS;
+  SQLCHAR outStr[1024];
+  SQLSMALLINT outStrLen;
 
   // Allocate an environment handle
   retCode = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &(h->hEnv));
   if (retCode != SQL_SUCCESS) {
     // Error
-    free(h);
+    freeHandles(&h);
     return NULL;
   }
 
@@ -50,7 +53,7 @@ handles* connect(const char* connectionString) {
   retCode = SQLSetEnvAttr(h->hEnv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
   if (retCode != SQL_SUCCESS) {
     // Error
-    free(h);
+    freeHandles(&h);
     return NULL;
   }
 
@@ -58,7 +61,7 @@ handles* connect(const char* connectionString) {
   retCode = SQLAllocHandle(SQL_HANDLE_DBC, h->hEnv, &(h->hDbc));
   if (retCode != SQL_SUCCESS) {
     // Error
-    free(h);
+    freeHandles(&h);
     return NULL;
   }
 
@@ -75,7 +78,7 @@ handles* connect(const char* connectionString) {
 
   if (retCode != SQL_SUCCESS) {
     // Error
-    free(h);
+    freeHandles(&h);
     return NULL;
   }
 

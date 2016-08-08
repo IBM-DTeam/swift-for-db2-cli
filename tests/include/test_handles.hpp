@@ -14,18 +14,25 @@
  * limitations under the License.
  **/
 
-#ifndef connect_h
-#define connect_h
+#ifndef test_handles_h
+#define test_handles_h
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sqlcli1.h>
+#include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
+#include <cppunit/extensions/HelperMacros.h>
 
+
+// The functions to test
 #include "handles.h"
 
-// Methods
-handles* connect(const char* connectionString);
+class TestHandles : public CppUnit::TestFixture {
+  CPPUNIT_TEST_SUITE(TestHandles);
+  CPPUNIT_TEST(testCreateHandles);
+  CPPUNIT_TEST(testFreeHandles);
+  CPPUNIT_TEST_SUITE_END();
+protected:
+  void testCreateHandles(void);
+  void testFreeHandles(void);
+};
 
 #endif

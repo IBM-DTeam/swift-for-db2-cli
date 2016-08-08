@@ -14,18 +14,20 @@
  * limitations under the License.
  **/
 
-#ifndef connect_h
-#define connect_h
+#ifndef handles_h
+#define handles_h
 
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sqlcli1.h>
 
-#include "handles.h"
+// Handles struct
+typedef struct handles {
+  SQLHDBC hDbc;
+  SQLHENV hEnv;
+} handles;
 
 // Methods
-handles* connect(const char* connectionString);
+handles* createHandles();
+void freeHandles(handles** h);
 
 #endif
