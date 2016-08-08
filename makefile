@@ -26,7 +26,7 @@ PRODUCTION_LINKS = -ldb2
 TEST_LINKS = $(PRODUCTION_LINKS) -lcppunit
 
 # Shared Library
-ibmdb2 : connect.o
+ibmdb2 : connect.o disconnect.o
 	$(CC) $(COMPILE_FLAGS) $(SHARED_LIBRARY) -o lib$@.so.$(SHARED_LIBRARY_VERSION) $? $(PRODUCTION_LIBRARIES) $(PRODUCTION_LINKS)
 
 # Copy Shared Library and Includes
@@ -42,6 +42,9 @@ test : connect.o test_connect.o test_main.o
 # Main files
 connect.o : $(INCLUDE)/connect.h $(SRC)/connect.c
 	$(CC) $(OBJECT_FLAGS) $(PRODUCTION_SEARCH_PATH) $(SRC)/connect.c
+
+disconnect.o : $(INCLUDE)/disconnect.h $(SRC)/disconnect.c
+	$(CC) $(OBJECT_FLAGS) $(PRODUCTION_SEARCH_PATH) $(SRC)/disconnect.c
 
 # Test files
 test_main.o : $(TEST_INCLUDE)/test_main.hpp $(TEST_SRC)/test_main.cpp
