@@ -34,10 +34,10 @@ bool disconnect(handles* connection) {
   //Disconnect From the database
   retCode = SQLDisconnect( connection->hDbc);
   if(retCode != SQL_SUCCESS){
-    freeHandles(connection);
+    freeHandles(&connection);
   }
 
   //Free allocated memory before returning
-  freeHandles(connection);
+  freeHandles(&connection);
   return true;
 }
