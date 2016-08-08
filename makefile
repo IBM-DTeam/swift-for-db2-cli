@@ -4,7 +4,8 @@ VALID_CONN_STR = -DVALID_CONN_STR='"DRIVER={DB2};DATABASE=BLUDB;UID=dash6435;PWD
 INVALID_CONN_STR = -DINVALID_CONN_STR='"DRIVER={DB2};DATABASE=someDB;UID=someUID;PWD=somePWD;HOSTNAME=someHost;PORT=somePort"'
 
 CC = g++
-OBJECT_FLAGS = -c -Wall -Wextra -fPIC
+OBJECT_FLAGS = -c -Wall -Wextra
+OBJECT_FLAGS_SO = $(OBJECT_FLAGS) -fPIC
 COMPILE_FLAGS = -Wall -Wextra
 SHARED_LIBRARY = -shared
 SHARED_LIBRARY_VERSION = 1
@@ -41,13 +42,13 @@ test : handles.o test_handles.o connect.o test_connect.o test_main.o
 
 # Main files
 handles.o : $(INCLUDE)/handles.h $(SRC)/handles.c
-	$(CC) $(OBJECT_FLAGS) $(PRODUCTION_SEARCH_PATH) $(SRC)/handles.c
+	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/handles.c
 
-connect.o : $(INCLUDE)/connect.h $(SRC)/connect.c handles.o
-	$(CC) $(OBJECT_FLAGS) $(PRODUCTION_SEARCH_PATH) $(SRC)/connect.c
+connect.o : handles.o $(INCLUDE)/connect.h $(SRC)/connect.c
+	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/connect.c
 
-disconnect.o : $(INCLUDE)/disconnect.h $(SRC)/disconnect.c
-	$(CC) $(OBJECT_FLAGS) $(PRODUCTION_SEARCH_PATH) $(SRC)/disconnect.c
+disconnect.o : handles.o $(INCLUDE)/disconnect.h $(SRC)/disconnect.c
+	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/disconnect.c
 
 # Test files
 test_main.o : test_handles.o test_connect.o $(TEST_INCLUDE)/test_main.hpp $(TEST_SRC)/test_main.cpp

@@ -17,17 +17,16 @@
  #include "disconnect.h"
 
 
- /*
-  * Function:  disconnect
-  * ------------------
-  * disconnects from a database.
-  *
-  * connection: The database connection handle.
-  *
-  * returns: True if successfully disconnected else false
-  *
-  */
-
+/*
+ * Function:  disconnect
+ * ------------------
+ * disconnects from a database.
+ *
+ * connection: The database connection handle.
+ *
+ * returns: True if successfully disconnected else false
+ *
+ */
 bool disconnect(handles* connection) {
 
   SQLRETURN retCode = SQL_SUCCESS; // Return code
@@ -35,10 +34,10 @@ bool disconnect(handles* connection) {
   //Disconnect From the database
   retCode = SQLDisconnect( connection->hDbc);
   if(retCode != SQL_SUCCESS){
-    free(connection);
+    freeHandles(connection);
   }
 
   //Free allocated memory before returning
-  free(connection);
+  freeHandles(connection);
   return true;
 }

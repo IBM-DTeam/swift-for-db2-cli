@@ -15,6 +15,7 @@
  **/
 
 #include "handles.h"
+#include <stdio.h>
 
 
 /*
@@ -52,14 +53,15 @@ void freeHandles(handles** h) {
 
   // Only free the database connection handle if it isn't NULL.
   if ((*h)->hDbc != SQL_NULL_HDBC)
-    free(&((*h)->hDbc));
+    SQLFreeHandle(SQL_HANDLE_DBC, (*h)->hDbc);
 
   // Only free the environment handle if it isn't NULL.
   if ((*h)->hEnv != SQL_NULL_HENV)
-    free(&((*h)->hEnv));
+    SQLFreeHandle(SQL_HANDLE_ENV, (*h)->hEnv);
 
   // Free the handles struct.
   free(*h);
-  *h = NULL;
 
+  // Set the pointer to NULL, so users don't try to use it again.
+  *h = NULL;
 }
