@@ -14,22 +14,21 @@
  * limitations under the License.
  **/
 
-#ifndef test_main_h
-#define test_main_h
+#ifndef handle_h
+#define handle_h
 
-#include <cppunit/ui/text/TextTestRunner.h>
-#include <cppunit/extensions/HelperMacros.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/TestResultCollector.h>
-#include <cppunit/TestRunner.h>
-#include <cppunit/BriefTestProgressListener.h>
-#include <cppunit/CompilerOutputter.h>
+#include <sqlcli1.h>
 
-// Test file headers
-#include "test_connect.hpp"
-#include "test_handle.hpp"
+#include "type.h"
 
-int main();
+// handle struct
+typedef struct handle {
+  SQLHDBC hDbc;
+  SQLHENV hEnv;
+} handle;
+
+// Methods
+state createHandle(handle** h);
+void freeHandle(handle** h);
 
 #endif

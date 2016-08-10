@@ -17,15 +17,17 @@
 #ifndef connect_h
 #define connect_h
 
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <sqlcli1.h>
 
-#include "handles.h"
+#include "database.h"
+#include "type.h"
+#include "error.h"
 
 // Methods
-handles* connect(const char* connectionString);
+state connect(database** db, const char* connectionString);
 
 #endif

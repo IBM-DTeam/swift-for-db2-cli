@@ -14,22 +14,23 @@
  * limitations under the License.
  **/
 
-#ifndef test_main_h
-#define test_main_h
+#ifndef database_h
+#define database_h
 
-#include <cppunit/ui/text/TextTestRunner.h>
-#include <cppunit/extensions/HelperMacros.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/TestResultCollector.h>
-#include <cppunit/TestRunner.h>
-#include <cppunit/BriefTestProgressListener.h>
-#include <cppunit/CompilerOutputter.h>
+#include <stdlib.h>
 
-// Test file headers
-#include "test_connect.hpp"
-#include "test_handle.hpp"
+#include "handle.h"
+#include "error.h"
+#include "type.h"
 
-int main();
+// Database struct
+typedef struct database {
+  handle* hnd;
+  error* err;
+} database;
+
+// Methods
+state createDatabase(database** db);
+void freeDatabase(database** db);
 
 #endif

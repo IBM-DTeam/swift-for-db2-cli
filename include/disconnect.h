@@ -17,10 +17,12 @@
 #ifndef disconnect_h
 #define disconnect_h
 
-#include "handles.h"
+#include "database.h"
+#include "type.h"
+#include "error.h"
 
 
 // Methods
-bool disconnect(handles* connection);
+state disconnect(database** db);
 
 #endif

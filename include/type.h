@@ -14,25 +14,19 @@
  * limitations under the License.
  **/
 
-#ifndef test_handles_h
-#define test_handles_h
+#ifndef type_h
+#define type_h
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+#define SUCCESS 1
+#define SUCCESS_WITH_INFO 2
+#define CATASTROPHIC_FAILURE -1
+#define MALLOC_FAILURE -2
+#define SETUP_DATABASE_FAILURE -3
+#define FETCH_DATABASE_ERROR_FAILURE -4
+#define DATABASE_DISCONNECT_FAILURE -5
+#define NO_DATABASE_FOUND -6
+#define DATABASE_EXISTS -7
 
-
-// The functions to test
-#include "handles.h"
-
-class TestHandles : public CppUnit::TestFixture {
-  CPPUNIT_TEST_SUITE(TestHandles);
-  CPPUNIT_TEST(testCreateHandles);
-  CPPUNIT_TEST(testFreeHandles);
-  CPPUNIT_TEST_SUITE_END();
-protected:
-  void testCreateHandles(void);
-  void testFreeHandles(void);
-};
+typedef int state;
 
 #endif

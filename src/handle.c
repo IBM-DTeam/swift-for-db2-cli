@@ -14,38 +14,40 @@
  * limitations under the License.
  **/
 
-#include "handles.h"
+#include "handle.h"
 
 
 /*
- * Function:  createHandles
+ * Function:  createHandle
  * ------------------
- * Malloc's a handles struct
+ * Malloc's a handle struct
  *
- * returns: The malloc'd handles struct if successful, else NULL.
+ * returns:
+ *   SUCCESS: The handle struct was created.
+ *   MALLOC_FAILURE: Cannot create the handle struct due to a failed malloc.
  */
-handles* createHandles() {
+state createHandle(handle** h) {
 
-  //Malloc handles
-  handles* h = (handles*) malloc(sizeof(handles));
-
-  if (h == NULL)
-    return NULL;
+  //Malloc handle
+  *h = (handle*) malloc(sizeof(handle));
+  if (*h == NULL)
+    return MALLOC_FAILURE;
 
   // Initialize the variables to their respective NULLs.
-  h->hDbc = SQL_NULL_HDBC; // Connection handle
-  h->hEnv = SQL_NULL_HENV; // Statement handle
+  (*h)->hDbc = SQL_NULL_HDBC; // Connection handle
+  (*h)->hEnv = SQL_NULL_HENV; // Statement handle
 
-  return h;
+  return SUCCESS;
 
 }
 
 /*
- * Function:  freeHandles
+ * Function:  freeHandle
  * ------------------
- * Frees a handles struct.
+ * Frees a handle struct.
+ *
  */
-void freeHandles(handles** h) {
+void freeHandle(handle** h) {
 
   if (*h == NULL)
     return;
@@ -58,9 +60,10 @@ void freeHandles(handles** h) {
   if ((*h)->hEnv != SQL_NULL_HENV)
     SQLFreeHandle(SQL_HANDLE_ENV, (*h)->hEnv);
 
-  // Free the handles struct.
+  // Free the handle struct.
   free(*h);
 
   // Set the pointer to NULL, so users don't try to use it again.
   *h = NULL;
+  
 }

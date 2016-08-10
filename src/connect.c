@@ -22,51 +22,68 @@
  * ------------------
  * Connects to a database.
  *
+ * db: Where to create the database struct.
  * connectionString: The database connection string.
  *
- * returns: The handles for the database connection which will be used
- *          for operations like querying, disconnecting, etc.
- *          returns null on error.
+ * returns:
+ *   SUCCESS: There is a connection to the database.
+ *   CATASTROPHIC_FAILURE: The database struct cannot be setup (malloc'd).
+ *   SETUP_DATABASE_FAILURE: Cannot setup the bridge to the database, check errors.
+ *   DATABASE_EXISTS: A database already exists at this location.
  */
-handles* connect(const char* connectionString) {
+state connect(database** db, const char* connectionString) {
 
-  // Create the handles struct
-  handles* h  = createHandles(); // Handles struct
-  if (h == NULL) {
-    // Error
-    return NULL;
-  }
+  // The database pointer isn't NULL.
+  if ((*db) != NULL)
+    return DATABASE_EXISTS;
+
+  // Create the database struct
+  state s = SUCCESS;
+  s = createDatabase(db);
+  if (s == MALLOC_FAILURE)
+    return CATASTROPHIC_FAILURE;
+
+  bool haveInfo = false;
 
   SQLRETURN retCode = SQL_SUCCESS;
   SQLCHAR outStr[1024];
   SQLSMALLINT outStrLen;
 
   // Allocate an environment handle
-  retCode = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &(h->hEnv));
+  retCode = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &((*db)->hnd->hEnv));
   if (retCode != SQL_SUCCESS) {
-    // Error
-    freeHandles(&h);
-    return NULL;
+    generateDatabaseError((*db)->err, (*db)->hnd);
+    if (retCode == SQL_SUCCESS_WITH_INFO) {
+      haveInfo = true;
+    } else {
+      return SETUP_DATABASE_FAILURE;
+    }
   }
 
   // ODBC 3 support
-  retCode = SQLSetEnvAttr(h->hEnv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
+  retCode = SQLSetEnvAttr((*db)->hnd->hEnv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
   if (retCode != SQL_SUCCESS) {
-    // Error
-    freeHandles(&h);
-    return NULL;
+    generateDatabaseError((*db)->err, (*db)->hnd);
+    if (retCode == SQL_SUCCESS_WITH_INFO) {
+      haveInfo = true;
+    } else {
+      return SETUP_DATABASE_FAILURE;
+    }
   }
 
   // Allocate a connection handle
-  retCode = SQLAllocHandle(SQL_HANDLE_DBC, h->hEnv, &(h->hDbc));
+  retCode = SQLAllocHandle(SQL_HANDLE_DBC, (*db)->hnd->hEnv, &((*db)->hnd->hDbc));
   if (retCode != SQL_SUCCESS) {
-    // Error
-    freeHandles(&h);
-    return NULL;
+    generateDatabaseError((*db)->err, (*db)->hnd);
+    if (retCode == SQL_SUCCESS_WITH_INFO) {
+      haveInfo = true;
+    } else {
+      return SETUP_DATABASE_FAILURE;
+    }
   }
 
   // Connect to the database
-  retCode = SQLDriverConnect(h->hDbc,
+  retCode = SQLDriverConnect((*db)->hnd->hDbc,
                              NULL,
                              (SQLCHAR*) connectionString,
                              SQL_NTS,
@@ -77,10 +94,14 @@ handles* connect(const char* connectionString) {
                             );
 
   if (retCode != SQL_SUCCESS) {
-    // Error
-    freeHandles(&h);
-    return NULL;
+    generateDatabaseError((*db)->err, (*db)->hnd);
+    if (retCode == SQL_SUCCESS_WITH_INFO) {
+      haveInfo = true;
+    } else {
+      return SETUP_DATABASE_FAILURE;
+    }
   }
 
-  return h;
+  return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
+
 }

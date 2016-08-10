@@ -14,20 +14,25 @@
  * limitations under the License.
  **/
 
-#ifndef handles_h
-#define handles_h
+#ifndef test_handle_h
+#define test_handle_h
 
-#include <stdbool.h>
-#include <sqlcli1.h>
+#include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
+#include <cppunit/extensions/HelperMacros.h>
 
-// Handles struct
-typedef struct handles {
-  SQLHDBC hDbc;
-  SQLHENV hEnv;
-} handles;
 
-// Methods
-handles* createHandles();
-void freeHandles(handles** h);
+// The functions to test
+#include "handle.h"
+
+class Testhandle : public CppUnit::TestFixture {
+  CPPUNIT_TEST_SUITE(Testhandle);
+  CPPUNIT_TEST(testcreateHandle);
+  CPPUNIT_TEST(testfreeHandle);
+  CPPUNIT_TEST_SUITE_END();
+protected:
+  void testcreateHandle(void);
+  void testfreeHandle(void);
+};
 
 #endif

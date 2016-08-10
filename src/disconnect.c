@@ -22,22 +22,30 @@
  * ------------------
  * disconnects from a database.
  *
- * connection: The database connection handle.
+ * db: The database struct to disconnect..
  *
- * returns: True if successfully disconnected else false
+ * returns:
+ *   NO_DATABASE_FOUND: The struct is NULL, can't disconnect it.
+ *   DATABASE_DISCONNECT_FAILURE: Couldn't disconnect the database, check errors
+ *   SUCCESS: Database disconnected.
  *
  */
-bool disconnect(handles* connection) {
+state disconnect(database** db) {
+
+  // The database pointer is NULL.
+  if ((*db) == NULL)
+    return NO_DATABASE_FOUND;
 
   SQLRETURN retCode = SQL_SUCCESS; // Return code
 
   //Disconnect From the database
-  retCode = SQLDisconnect( connection->hDbc);
-  if(retCode != SQL_SUCCESS){
-    freeHandles(&connection);
+  retCode = SQLDisconnect((*db)->hnd->hDbc);
+  if (retCode != SQL_SUCCESS || retCode != SQL_SUCCESS_WITH_INFO) {
+    generateDatabaseError((*db)->err, (*db)->hnd);
+    return DATABASE_DISCONNECT_FAILURE;
   }
 
   //Free allocated memory before returning
-  freeHandles(&connection);
-  return true;
+  freeDatabase(db);
+  return SUCCESS;
 }

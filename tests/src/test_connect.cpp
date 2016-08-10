@@ -24,12 +24,12 @@
  *
  */
 void TestConnect::testValidConnection(void) {
-  handles* connection = connect((char *) VALID_CONN_STR);
+  handle* connection = connect((char *) VALID_CONN_STR);
 
   // Ensure nothing is NULL where it shouldn't be.
-  CPPUNIT_ASSERT_MESSAGE("Handles struct is NULL", connection != NULL);
-  CPPUNIT_ASSERT_MESSAGE("Handles struct hEnv was SQL_NULL_HENV", connection->hEnv != SQL_NULL_HENV);
-  CPPUNIT_ASSERT_MESSAGE("Handles struct hDbc was SQL_NULL_HDBC", connection->hDbc != SQL_NULL_HDBC);
+  CPPUNIT_ASSERT_MESSAGE("handle struct is NULL", connection != NULL);
+  CPPUNIT_ASSERT_MESSAGE("handle struct hEnv was SQL_NULL_HENV", connection->hEnv != SQL_NULL_HENV);
+  CPPUNIT_ASSERT_MESSAGE("handle struct hDbc was SQL_NULL_HDBC", connection->hDbc != SQL_NULL_HDBC);
 
   SQLRETURN retCode = SQL_SUCCESS;
   SQLINTEGER connectionState = SQL_CD_TRUE;
@@ -67,7 +67,7 @@ void TestConnect::testValidConnectionMultiple(void) {
  *
  */
 void TestConnect::testInvalidConnection(void) {
-  handles* connection = connect((char*) INVALID_CONN_STR);
+  handle* connection = connect((char*) INVALID_CONN_STR);
 
   // TODO: Disconnect the connection if not NULL and free.
   CPPUNIT_ASSERT_MESSAGE("We have a connection on an invalid connection string", connection == NULL);
