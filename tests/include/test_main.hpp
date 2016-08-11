@@ -28,6 +28,7 @@
 
 // Test file headers
 #include "test_connect.hpp"
+#include "test_disconnect.hpp"
 #include "test_handle.hpp"
 
 int main();

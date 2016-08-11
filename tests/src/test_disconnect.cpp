@@ -24,9 +24,9 @@
 */
 void TestDisconnect::testDisconnectSuccess(void) {
 
- // Connect to the database.
- database* db = NULL;
- state c = connect(&db, (char*) VALID_CONN_STR);
+  // Connect to the database.
+  database* db = NULL;
+  state c = connect(&db, (char*) VALID_CONN_STR);
 
   if(c != SUCCESS)
     freeDatabase(&db);
@@ -36,8 +36,8 @@ void TestDisconnect::testDisconnectSuccess(void) {
   state s = disconnect(&db);
   freeDatabase(&db);
 
-  // Ensure we had a successful disconnection.
-  CPPUNIT_ASSERT_MESSAGE("Couldn't Disconnect successfully from the database", s == SUCCESS);
+  // Ensure we had a successful disconnection.
+  CPPUNIT_ASSERT_MESSAGE("Couldn't Disconnect successfully from the database", s == SUCCESS);
 
 
 }
@@ -50,20 +50,19 @@ void TestDisconnect::testDisconnectSuccess(void) {
 */
 void TestDisconnect::testDisconnectFailure(void) {
 
- // Create a NULL database
- database* db = NULL;
- state d = createDatabase(&db);
+  // Create a NULL database
+  database* db = NULL;
+  state d = createDatabase(&db);
 
- if(d != SUCCESS)
+  if(d != SUCCESS)
+    freeDatabase(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("Couldn't create the database", d == SUCCESS);
+
+  state s = disconnect(&db);
   freeDatabase(&db);
-
- CPPUNIT_ASSERT_MESSAGE("Couldn't create the database", d == SUCCESS);
-
- state s = disconnect(&db);
- freeDatabase(&db);
- // Ensure we had an unsuccessful disconnection.
- CPPUNIT_ASSERT_MESSAGE("Proper disconnect from the database", s == DATABASE_DISCONNECT_FAILURE);
-
+  // Ensure we had an unsuccessful disconnection.
+  CPPUNIT_ASSERT_MESSAGE("Proper disconnect from the database", s == DATABASE_DISCONNECT_FAILURE);
 
 }
 

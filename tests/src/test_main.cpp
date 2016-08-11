@@ -19,6 +19,7 @@
 // Register the tests to run.
 //CPPUNIT_TEST_SUITE_REGISTRATION(Testhandle);
 CPPUNIT_TEST_SUITE_REGISTRATION(TestConnect);
+CPPUNIT_TEST_SUITE_REGISTRATION(TestDisconnect);
 
 /*
  * Function:  main
