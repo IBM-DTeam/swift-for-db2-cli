@@ -53,7 +53,7 @@ state createDatabase(database** db) {
     free((*db)->err);
     free(*db);
     *db = NULL;
-    return SETUP_DATABASE_FAILURE;
+    return MALLOC_FAILURE;
   }
   (*db)->hnd = h;
 

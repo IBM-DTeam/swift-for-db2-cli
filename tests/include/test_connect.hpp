@@ -22,24 +22,29 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-
 // The functions to test
 #include "connect.h"
 
 class TestConnect : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TestConnect);
-  CPPUNIT_TEST(testValidConnection);
-  CPPUNIT_TEST(testValidConnectionMultiple);
-  CPPUNIT_TEST(testInvalidConnection);
-  CPPUNIT_TEST(testInvalidConnectionMultiple);
-  CPPUNIT_TEST(testMixedConnections);
+  CPPUNIT_TEST(testConnectSuccess);
+  CPPUNIT_TEST(testConnectSuccessMultiple);
+  CPPUNIT_TEST(testConnectCatastrophicFailure);
+  CPPUNIT_TEST(testConnectCatastrophicFailureMultiple);
+  CPPUNIT_TEST(testConnectSetupDatabaseFailure);
+  CPPUNIT_TEST(testConnectSetupDatabaseFailureMultiple);
+  CPPUNIT_TEST(testConnectDatabaseExists);
+  CPPUNIT_TEST(testConnectDatabaseExistsMultiple);
   CPPUNIT_TEST_SUITE_END();
 protected:
-  void testValidConnection(void);
-  void testValidConnectionMultiple(void);
-  void testInvalidConnection(void);
-  void testInvalidConnectionMultiple(void);
-  void testMixedConnections(void);
+  void testConnectSuccess(void);
+  void testConnectSuccessMultiple(void);
+  void testConnectCatastrophicFailure(void);
+  void testConnectCatastrophicFailureMultiple(void);
+  void testConnectSetupDatabaseFailure(void);
+  void testConnectSetupDatabaseFailureMultiple(void);
+  void testConnectDatabaseExists(void);
+  void testConnectDatabaseExistsMultiple(void);
 };
 
 #endif

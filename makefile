@@ -4,9 +4,9 @@ VALID_CONN_STR = -DVALID_CONN_STR='"DRIVER={DB2};DATABASE=BLUDB;UID=dash6435;PWD
 INVALID_CONN_STR = -DINVALID_CONN_STR='"DRIVER={DB2};DATABASE=someDB;UID=someUID;PWD=somePWD;HOSTNAME=someHost;PORT=somePort"'
 
 CC = g++
-OBJECT_FLAGS = -c -Wall -Wextra
+OBJECT_FLAGS = -c -Wall -Wextra -g
 OBJECT_FLAGS_SO = $(OBJECT_FLAGS) -fPIC
-COMPILE_FLAGS = -Wall -Wextra
+COMPILE_FLAGS = -Wall -Wextra -g
 SHARED_LIBRARY = -shared
 SHARED_LIBRARY_VERSION = 1.0
 
@@ -37,7 +37,7 @@ install : ibmdb2
 	sudo cp -rf include/* /usr/local/include/ibmdb2/
 
 # Compile tests
-test : database.o error.o handle.o test_handle.o connect.o test_connect.o test_main.o
+test : database.o error.o handle.o connect.o test_connect.o test_main.o
 	$(CC) $(COMPILE_FLAGS) -o $@ $? $(TEST_LIBRARIES) $(TEST_LINKS)
 
 # Main files
@@ -57,10 +57,10 @@ disconnect.o : $(INCLUDE)/disconnect.h $(SRC)/disconnect.c $(INCLUDE)/database.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/disconnect.c
 
 # Test files
-test_main.o : test_handle.o test_connect.o $(TEST_INCLUDE)/test_main.hpp $(TEST_SRC)/test_main.cpp
+test_main.o : $(TEST_INCLUDE)/test_main.hpp $(TEST_SRC)/test_main.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(TEST_SRC)/test_main.cpp
 
-test_connect.o : test_handle.o connect.o $(TEST_INCLUDE)/test_connect.hpp $(TEST_SRC)/test_connect.cpp
+test_connect.o : connect.o $(TEST_INCLUDE)/test_connect.hpp $(TEST_SRC)/test_connect.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(TEST_SRC)/test_connect.cpp
 
 test_handle.o : handle.o $(TEST_INCLUDE)/test_handle.hpp $(TEST_SRC)/test_handle.cpp
