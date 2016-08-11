@@ -27,7 +27,7 @@ The Swift SDK for DB2 CLI allows you to connect to your IBM DB2 database or prod
 - [ ] Query and get results.
 - [ ] Create Prepared Statements.
 - [ ] Perform Transactions.
-- [ ] Disconnect from your database.
+- [x] Disconnect from your database.
 
 ## Prerequisites
 
@@ -37,7 +37,7 @@ The Swift SDK for DB2 CLI allows you to connect to your IBM DB2 database or prod
   - `sudo ./setup/install.sh`
 
 2. For OS X, you will need to execute the following:
-  
+
   - `brew install wget cppunit`
   - `sudo ./setup/install.sh`
 
@@ -51,7 +51,8 @@ Visit the [Wiki](https://github.com/IBM-DTeam/swift-for-db2-cli/wiki) for exampl
 
 ## Contributing
 1. Clone this repository, `git clone https://github.com/IBM-DTeam/swift-for-db2-cli`
-2. Build and run tests
+2. Make your changes, build, run tests and run once more with valgrind.
+3. Make a pull request.
 
   ### Notes
   * You can configure the variables VALID_CONN_STR and INVALID_CONN_STR in the makefile if you wish to. However, they are already set for you.

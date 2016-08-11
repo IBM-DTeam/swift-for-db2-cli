@@ -376,6 +376,9 @@ state generateDatabaseError(error* e, handle* h) {
  */
 void freePackageError(error* e) {
 
+  if (e == NULL)
+    return;
+
   free(e->package->message);
   free(e->package->file);
   free(e->package);
@@ -390,6 +393,9 @@ void freePackageError(error* e) {
  * e: The error struct to free databaseError in.
  */
 void freeDatabaseError(error* e) {
+
+  if (e == NULL)
+    return;
 
   databaseError* head = e->database;
   databaseError* temp;
