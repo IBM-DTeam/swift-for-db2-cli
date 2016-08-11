@@ -18,88 +18,131 @@
 
 
 /*
- * Function:  TestConnect::testValidConnection
+ * Function:  TestConnect::testConnectSuccess
  * ------------------
  * Connects to a database with a valid connection string.
  *
  */
-void TestConnect::testValidConnection(void) {
-  handle* connection = connect((char *) VALID_CONN_STR);
+void TestConnect::testConnectSuccess(void) {
 
-  // Ensure nothing is NULL where it shouldn't be.
-  CPPUNIT_ASSERT_MESSAGE("handle struct is NULL", connection != NULL);
-  CPPUNIT_ASSERT_MESSAGE("handle struct hEnv was SQL_NULL_HENV", connection->hEnv != SQL_NULL_HENV);
-  CPPUNIT_ASSERT_MESSAGE("handle struct hDbc was SQL_NULL_HDBC", connection->hDbc != SQL_NULL_HDBC);
+  // Connect to the database.
+  database* db = NULL;
+  state s = connect(&db, (char*) VALID_CONN_STR);
 
-  SQLRETURN retCode = SQL_SUCCESS;
-  SQLINTEGER connectionState = SQL_CD_TRUE;
+  // Clean up
+  freeDatabase(&db);
 
-  // Check if the database connection is dead.
-  retCode = SQLGetConnectAttr(connection->hDbc,
-                              SQL_ATTR_CONNECTION_DEAD,
-                              (SQLPOINTER) &connectionState,
-                              (SQLINTEGER) sizeof(connectionState),
-                              NULL);
-
-  CPPUNIT_ASSERT_MESSAGE("SQLGetConnectAttr cannot check if the connection is dead", retCode == SQL_SUCCESS);
-  CPPUNIT_ASSERT_MESSAGE("Database connection is dead before disconnecting manually", retCode == SQL_CD_FALSE);
-
-  // TODO: Disconnect & free object.
+  // Ensure we had a successful connection.
+  CPPUNIT_ASSERT_MESSAGE("Couldn't connect successfully to the database", s == SUCCESS);
 }
 
 /*
- * Function:  TestConnect::testValidConnectionMultiple
+ * Function:  TestConnect::testConnectSuccessMultiple
  * ------------------
- * Connects to a database with a valid connection string multiple times.
+ * Connects to a database with a valid connection string, multiple times.
  *
  */
-void TestConnect::testValidConnectionMultiple(void) {
+void TestConnect::testConnectSuccessMultiple(void) {
+
   int i = 0;
-  for (; i < 10; i++) {
-    testValidConnection();
-  }
+  for (; i < 5; i++)
+    testConnectSuccess();
+
 }
 
 /*
- * Function:  TestConnect::testInvalidConnection
+ * Function:  TestConnect::testConnectCatastrophicFailure
+ * ------------------
+ * Fake a catastrophic failure to see our recovery.
+ *
+ */
+void TestConnect::testConnectCatastrophicFailure(void) {
+  // Nothing here for now.
+  CPPUNIT_ASSERT_MESSAGE("Stub", 1);
+}
+
+/*
+ * Function:  TestConnect::testConnectCatastrophicFailureMultiple
+ * ------------------
+ * Fake a catastrophic failure to see our recovery, multiple times.
+ *
+ */
+void TestConnect::testConnectCatastrophicFailureMultiple(void) {
+  // Nothing here for now.
+  CPPUNIT_ASSERT_MESSAGE("Stub", 1);
+}
+
+/*
+ * Function:  TestConnect::testConnectSetupDatabaseFailure
  * ------------------
  * Connects to a database with an invalid connection string.
  *
  */
-void TestConnect::testInvalidConnection(void) {
-  handle* connection = connect((char*) INVALID_CONN_STR);
+void TestConnect::testConnectSetupDatabaseFailure(void) {
+  // Try to connect to the database.
+  database* db = NULL;
+  state s = connect(&db, (char*) INVALID_CONN_STR);
 
-  // TODO: Disconnect the connection if not NULL and free.
-  CPPUNIT_ASSERT_MESSAGE("We have a connection on an invalid connection string", connection == NULL);
+  // Clean up
+  freeDatabase(&db);
+
+  // Ensure we had a database setup failure.
+  CPPUNIT_ASSERT_MESSAGE("The database didn't fail to setup.", s == SETUP_DATABASE_FAILURE);
 
 }
 
 /*
- * Function:  TestConnect::testInvalidConnectionMultiple
+ * Function:  TestConnect::testConnectSetupDatabaseFailureMultiple
  * ------------------
- * Connects to a database with an invalid connection string multiple times.
+ * Connects to a database with an invalid connection string, multiple times.
  *
  */
-void TestConnect::testInvalidConnectionMultiple(void) {
+void TestConnect::testConnectSetupDatabaseFailureMultiple(void) {
+
   int i = 0;
-  for (; i < 10; i++) {
-    testInvalidConnection();
-  }
+  for (; i < 5; i++)
+    testConnectSetupDatabaseFailure();
+
 }
 
 /*
- * Function:  TestConnect::testMixedConnections
+ * Function:  TestConnect::testConnectDatabaseExists
  * ------------------
- * Connects to a database with a mix of valid and invalid connection string
- * multiple times.
+ * Connects to a database with an existing database in the database**.
  *
  */
-void TestConnect::testMixedConnections(void) {
+void TestConnect::testConnectDatabaseExists(void) {
+
+  // Try to connect to the database
+  database* db = NULL;
+  state s = connect(&db, (char*) INVALID_CONN_STR);
+
+  // Ensure we didn't connect to it
+  if (s != SETUP_DATABASE_FAILURE)
+    freeDatabase(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("Database didn't fail to setup.", s == SETUP_DATABASE_FAILURE);
+
+  // Now we try to connect again to hit DATABASE_EXISTS
+  s = connect(&db, (char*) INVALID_CONN_STR);
+
+  // Clean up
+  freeDatabase(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("The database didn't exist", s == DATABASE_EXISTS);
+
+}
+
+/*
+ * Function:  TestConnect::testConnectDatabaseExistsMultiple
+ * ------------------
+ * Connects to a database with an existing database in the database**, multiple times.
+ *
+ */
+void TestConnect::testConnectDatabaseExistsMultiple(void) {
+
   int i = 0;
-  for (; i < 10; i++) {
-    if (i % 2 == 0)
-      testValidConnection();
-    else
-      testInvalidConnection();
-  }
+  for (; i < 5; i++)
+    testConnectDatabaseExists();
+
 }
