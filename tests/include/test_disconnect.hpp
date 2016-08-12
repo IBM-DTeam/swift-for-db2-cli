@@ -30,13 +30,19 @@
 class TestDisconnect : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TestDisconnect);
   CPPUNIT_TEST(testDisconnectFailure);
+  CPPUNIT_TEST(testDisconnectFailureMultiple);
   CPPUNIT_TEST(testDisconnectSuccess);
+  CPPUNIT_TEST(testDisconnectSuccessMultiple);
   CPPUNIT_TEST(testDisconnectNoDatabase);
+  CPPUNIT_TEST(testDisconnectNoDatabaseMultiple);
   CPPUNIT_TEST_SUITE_END();
 protected:
   void testDisconnectFailure(void);
+  void testDisconnectFailureMultiple(void);
   void testDisconnectSuccess(void);
+  void testDisconnectSuccessMultiple(void);
   void testDisconnectNoDatabase(void);
+  void testDisconnectNoDatabaseMultiple(void);
 };
 
 #endif

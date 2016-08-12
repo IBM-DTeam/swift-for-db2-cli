@@ -17,32 +17,6 @@
 #include "test_disconnect.hpp"
 
 /*
-* Function:  TestDisconnect::testDisconnectSuccess
-* ------------------
-* Disconnects from a running DB
-*
-*/
-void TestDisconnect::testDisconnectSuccess(void) {
-
-  // Connect to the database.
-  database* db = NULL;
-  state c = connect(&db, (char*) VALID_CONN_STR);
-
-  if(c != SUCCESS)
-    freeDatabase(&db);
-
-  CPPUNIT_ASSERT_MESSAGE("Couldn't connect to the databse", c == SUCCESS);
-
-  state s = disconnect(&db);
-  freeDatabase(&db);
-
-  // Ensure we had a successful disconnection.
-  CPPUNIT_ASSERT_MESSAGE("Couldn't Disconnect successfully from the database", s == SUCCESS);
-
-
-}
-
-/*
 * Function:  TestDisconnect::testDisconnectFailure
 * ------------------
 * Fails to disconnect from a database
@@ -66,6 +40,59 @@ void TestDisconnect::testDisconnectFailure(void) {
 
 }
 
+/*
+* Function:  TestDisconnect::testDisconnectFailureMultiple
+* ------------------
+* Fails to disconnect from a database, multiple times
+*
+*/
+void TestDisconnect::testDisconnectFailureMultiple(void) {
+
+  int i = 0;
+  for (; i < 5; i++)
+    testDisconnectFailure();
+
+}
+
+/*
+* Function:  TestDisconnect::testDisconnectSuccess
+* ------------------
+* Disconnects from a running DB
+*
+*/
+void TestDisconnect::testDisconnectSuccess(void) {
+
+  // Connect to the database.
+  database* db = NULL;
+  state c = connect(&db, (char*) VALID_CONN_STR);
+
+  if(c != SUCCESS)
+    freeDatabase(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("Couldn't connect to the databse", c == SUCCESS);
+
+  state s = disconnect(&db);
+  freeDatabase(&db);
+
+  // Ensure we had a successful disconnection.
+  CPPUNIT_ASSERT_MESSAGE("Couldn't Disconnect successfully from the database", s == SUCCESS);
+
+}
+
+/*
+* Function:  TestDisconnect::testDisconnectSuccessMultiple
+* ------------------
+* Disconnects from a running DB, multiple times.
+*
+*/
+void TestDisconnect::testDisconnectSuccessMultiple(void) {
+
+  int i = 0;
+  for (; i < 5; i++)
+    testDisconnectSuccess();
+
+}
+
 
 /*
 * Function:  TestDisconnect::testDisconnectNoDatabase
@@ -79,5 +106,19 @@ void TestDisconnect::testDisconnectNoDatabase(void) {
   state s = disconnect(&db);
 
   CPPUNIT_ASSERT_MESSAGE("The database exists and there was a successfull disconnect", s == NO_DATABASE_FOUND);
+
+}
+
+/*
+* Function:  TestDisconnect::testDisconnectNoDatabaseMultiple
+* ------------------
+* Fails to disconnect from a database, multiple times
+*
+*/
+void TestDisconnect::testDisconnectNoDatabaseMultiple(void) {
+
+  int i = 0;
+  for (; i < 5; i++)
+    testDisconnectNoDatabase();
 
 }
