@@ -14,24 +14,29 @@
  * limitations under the License.
  **/
 
-#ifndef test_main_h
-#define test_main_h
+#ifndef test_database_h
+#define test_database_h
 
-#include <cppunit/ui/text/TextTestRunner.h>
+#include <string>
+#include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/TestResultCollector.h>
-#include <cppunit/TestRunner.h>
-#include <cppunit/BriefTestProgressListener.h>
-#include <cppunit/CompilerOutputter.h>
 
-// Test file headers
-#include "test_database.hpp"
-#include "test_connect.hpp"
-#include "test_disconnect.hpp"
-#include "test_handle.hpp"
+// The functions to test
+#include "database.h"
 
-int main();
+class TestDatabase : public CppUnit::TestFixture {
+  CPPUNIT_TEST_SUITE(TestDatabase);
+  CPPUNIT_TEST(testDatabaseSuccess);
+  CPPUNIT_TEST(testDatabaseSuccessMultiple);
+  CPPUNIT_TEST(testDatabaseMallocFailure);
+  CPPUNIT_TEST(testDatabaseMallocFailureMultiple);
+  CPPUNIT_TEST_SUITE_END();
+protected:
+  void testDatabaseSuccess(void);
+  void testDatabaseSuccessMultiple(void);
+  void testDatabaseMallocFailure(void);
+  void testDatabaseMallocFailureMultiple(void);
+};
 
 #endif

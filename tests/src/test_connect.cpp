@@ -68,8 +68,11 @@ void TestConnect::testConnectCatastrophicFailure(void) {
  *
  */
 void TestConnect::testConnectCatastrophicFailureMultiple(void) {
-  // Nothing here for now.
-  CPPUNIT_ASSERT_MESSAGE("Stub", 1);
+
+  int i = 0;
+  for (; i < 5; i++)
+    testConnectCatastrophicFailure();
+
 }
 
 /*

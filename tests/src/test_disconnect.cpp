@@ -72,7 +72,6 @@ void TestDisconnect::testDisconnectSuccess(void) {
   CPPUNIT_ASSERT_MESSAGE("Couldn't connect to the databse", c == SUCCESS);
 
   state s = disconnect(&db);
-  freeDatabase(&db);
 
   // Ensure we had a successful disconnection.
   CPPUNIT_ASSERT_MESSAGE("Couldn't Disconnect successfully from the database", s == SUCCESS);
