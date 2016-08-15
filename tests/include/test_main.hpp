@@ -31,6 +31,7 @@
 #include "test_connect.hpp"
 #include "test_disconnect.hpp"
 #include "test_handle.hpp"
+#include "test_error.hpp"
 
 int main();
 
