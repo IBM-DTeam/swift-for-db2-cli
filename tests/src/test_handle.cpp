@@ -18,31 +18,95 @@
 
 
 /*
- * Function:  Testhandle::testcreateHandle
+ * Function:  TestHandle::testCreateHandleSuccess
  * ------------------
- * Tests if the handle are created correctly.
+ * Create a Handle struct, successfully.
  *
  */
-void Testhandle::testcreateHandle(void) {
-  handle* h = createHandle();
+void TestHandle::testCreateHandleSuccess(void) {
 
-  CPPUNIT_ASSERT_MESSAGE("The handle struct is NULL", h != NULL);
-  CPPUNIT_ASSERT_MESSAGE("The handle struct is h->hDbc NULL", h->hDbc == SQL_NULL_HDBC);
-  CPPUNIT_ASSERT_MESSAGE("The handle struct is h->hEnv NULL", h->hEnv == SQL_NULL_HENV);
+  // Create the handle
+  handle* h = NULL;
+  state s = createHandle(&h);
 
+  // Clean up
   freeHandle(&h);
+
+  CPPUNIT_ASSERT_MESSAGE("Couldn't create the handle.", s == SUCCESS);
 
 }
 
 /*
- * Function:  Testhandle::testfreeHandle
+ * Function:  TestHandle::testCreateHandleSuccessMultiple
  * ------------------
- * Tests if the handle are created correctly.
+ * Create a Handle struct, successfully, multiple times.
  *
  */
-void Testhandle::testfreeHandle(void) {
-  handle* h = createHandle();
+void TestHandle::testCreateHandleSuccessMultiple(void) {
+
+  int i = 0;
+  for (; i < 5; i++)
+    testCreateHandleSuccess();
+
+}
+
+/*
+ * Function:  TestHandle::testCreateHandleMallocFailure
+ * ------------------
+ * Create a Handle struct, but fail due to a malloc issue.
+ *
+ */
+void TestHandle::testCreateHandleMallocFailure(void) {
+
+  // Nothing here for now.
+  CPPUNIT_ASSERT_MESSAGE("Stub", 1);
+
+}
+
+/*
+ * Function:  TestHandle::testCreateHandleMallocFailureMultiple
+ * ------------------
+ * Create a Handle struct, but fail due to a malloc issue, multiple times.
+ *
+ */
+void TestHandle::testCreateHandleMallocFailureMultiple(void) {
+
+  int i = 0;
+  for (; i < 5; i++)
+    testCreateHandleMallocFailure();
+
+}
+
+/*
+ * Function:  TestHandle::testFreeHandle
+ * ------------------
+ * Creates and frees a basic handle struct, multiple times.
+ *
+ */
+void TestHandle::testFreeHandle(void) {
+
+  // Create the handle
+  handle* h = NULL;
+  state s = createHandle(&h);
+  CPPUNIT_ASSERT_MESSAGE("State wasn't successful", s == SUCCESS);
+
+  // Clean up
   freeHandle(&h);
 
-  CPPUNIT_ASSERT_MESSAGE("The handle were not freed", h == NULL);
+  CPPUNIT_ASSERT_MESSAGE("Couldn't handle wasn't freed properly.", h == NULL);
+
+}
+
+/*
+ * Function:  TestHandle::testFreeHandleMultiple
+ * ------------------
+ * Creates and frees a basic handle struct, multiple times.
+ *
+ */
+void TestHandle::testFreeHandleMultiple(void) {
+
+  int i = 0;
+  for (; i < 5; i++)
+    testFreeHandle();
+
 }

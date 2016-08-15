@@ -88,7 +88,7 @@ void TestDatabase::testCreateDatabaseMallocFailureMultiple(void) {
  */
 void TestDatabase::testFreeDatabase(void) {
 
-  database* db;
+  database* db = NULL;
 
   state s = createDatabase(&db);
   CPPUNIT_ASSERT_MESSAGE("State wasn't successful", s == SUCCESS);
@@ -96,7 +96,7 @@ void TestDatabase::testFreeDatabase(void) {
   freeDatabase(&db);
 
   // Valgrind will check for leaks.
-  CPPUNIT_ASSERT_MESSAGE("Database wasn't NULL", db == NULL);
+  CPPUNIT_ASSERT_MESSAGE("Database wasn't freed properly.", db == NULL);
 
 
 }

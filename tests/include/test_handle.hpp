@@ -25,14 +25,22 @@
 // The functions to test
 #include "handle.h"
 
-class Testhandle : public CppUnit::TestFixture {
-  CPPUNIT_TEST_SUITE(Testhandle);
-  CPPUNIT_TEST(testcreateHandle);
-  CPPUNIT_TEST(testfreeHandle);
+class TestHandle : public CppUnit::TestFixture {
+  CPPUNIT_TEST_SUITE(TestHandle);
+  CPPUNIT_TEST(testCreateHandleSuccess);
+  CPPUNIT_TEST(testCreateHandleSuccessMultiple);
+  CPPUNIT_TEST(testCreateHandleMallocFailure);
+  CPPUNIT_TEST(testCreateHandleMallocFailureMultiple);
+  CPPUNIT_TEST(testFreeHandle);
+  CPPUNIT_TEST(testFreeHandleMultiple);
   CPPUNIT_TEST_SUITE_END();
 protected:
-  void testcreateHandle(void);
-  void testfreeHandle(void);
+  void testCreateHandleSuccess(void);
+  void testCreateHandleSuccessMultiple(void);
+  void testCreateHandleMallocFailure(void);
+  void testCreateHandleMallocFailureMultiple(void);
+  void testFreeHandle(void);
+  void testFreeHandleMultiple(void);
 };
 
 #endif
