@@ -6,7 +6,7 @@ INVALID_CONN_STR = -DINVALID_CONN_STR='"DRIVER={DB2};DATABASE=someDB;UID=someUID
 CC = g++
 OBJECT_FLAGS = -c -Wall -Wextra -g
 OBJECT_FLAGS_SO = $(OBJECT_FLAGS) -fPIC
-COMPILE_FLAGS = -Wall -Wextra -g
+COMPILE_FLAGS = -Wall -Wextra -g -pedantic -ansi
 SHARED_LIBRARY = -shared
 SHARED_LIBRARY_VERSION = 1.0
 

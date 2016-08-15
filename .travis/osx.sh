@@ -23,13 +23,13 @@
 set -e
 
 # Install dependencies
-brew install wget cppunit
+brew install wget cppunit > /dev/null
 
 # Project location
 cd ${TRAVIS_BUILD_DIR}
 
 # Install ODBC CLI
-sudo ./setup/install.sh
+sudo ./setup/install.sh > /dev/null
 
 # Environment variables
 . ./setup/env.sh
@@ -40,3 +40,5 @@ sudo make install
 make clean
 make test
 ./test
+valgrind --leak-check=full --show-reachable=yes --undef-value-errors=no --error-exitcode=-1 ./test
+make clean

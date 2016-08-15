@@ -35,22 +35,25 @@ docker pull ubuntu:xenial
 docker pull ubuntu:yakkety
 
 # Install dependencies
-update="apt-get -qq update"
-upgrade="apt-get -qq -y upgrade"
-install_dependencies="apt-get -qq install -y wget make g++ gcc libcppunit-dev sudo libxml2"
-install_odbc_cli="cd /swift-for-db2-cli && ./setup/install.sh && . ./setup/env.sh"
+update="apt-get update > /dev/null"
+upgrade="apt-get -y upgrade  > /dev/null"
+install_dependencies="apt-get install -y wget make g++ gcc libcppunit-dev sudo libxml2 valgrind"  > /dev/null
+install_odbc_cli="cd /swift-for-db2-cli && ./setup/install.sh  > /dev/null && . ./setup/env.sh"
 
 # Build the project and test it
-build_and_test="make && make install && make clean && make test && ./test && make clean"
+build_and_test="make && make install && make clean && make test && ./test"
+
+# Check for memory leaks
+check_memory="valgrind --leak-check=full --show-reachable=yes --undef-value-errors=no --error-exitcode=-1 ./test && make clean"
 
 echo "********** TESTING Ubuntu 14.04 - TRUSTY **********"
-docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:trusty /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test}"
+docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:trusty /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test &&}"
 
 echo "********** TESTING Ubuntu 15.10 - WILY **********"
-docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:wily /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test}"
+docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:wily /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test} && ${build_and_test &&}"
 
 echo "********** TESTING Ubuntu 16.04 - XENIAL **********"
-docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:xenial /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test}"
+docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:xenial /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test} && ${build_and_test &&}"
 
 echo "********** TESTING Ubuntu 16.10 - YAKKETY **********"
-docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:yakkety /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test}"
+docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:yakkety /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test} && ${build_and_test &&}"
