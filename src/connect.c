@@ -27,6 +27,7 @@
  *
  * returns:
  *   SUCCESS: There is a connection to the database.
+ *   SUCCESS_WITH_INFO: There is a connection to the database with a message.
  *   CATASTROPHIC_FAILURE: The database struct cannot be setup (malloc'd).
  *   SETUP_DATABASE_FAILURE: Cannot setup the bridge to the database, check errors.
  *   DATABASE_EXISTS: A database already exists at this location.

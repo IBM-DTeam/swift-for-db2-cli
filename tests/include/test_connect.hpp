@@ -27,8 +27,8 @@
 
 class TestConnect : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TestConnect);
-  CPPUNIT_TEST(testConnectSuccess);
-  CPPUNIT_TEST(testConnectSuccessMultiple);
+  CPPUNIT_TEST(testConnectSuccessAndSuccessWithInfo);
+  CPPUNIT_TEST(testConnectSuccessAndSuccessWithInfoMultiple);
   CPPUNIT_TEST(testConnectCatastrophicFailure);
   CPPUNIT_TEST(testConnectCatastrophicFailureMultiple);
   CPPUNIT_TEST(testConnectSetupDatabaseFailure);
@@ -37,8 +37,8 @@ class TestConnect : public CppUnit::TestFixture {
   CPPUNIT_TEST(testConnectDatabaseExistsMultiple);
   CPPUNIT_TEST_SUITE_END();
 protected:
-  void testConnectSuccess(void);
-  void testConnectSuccessMultiple(void);
+  void testConnectSuccessAndSuccessWithInfo(void);
+  void testConnectSuccessAndSuccessWithInfoMultiple(void);
   void testConnectCatastrophicFailure(void);
   void testConnectCatastrophicFailureMultiple(void);
   void testConnectSetupDatabaseFailure(void);

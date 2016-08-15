@@ -23,7 +23,7 @@
  * Connects to a database with a valid connection string.
  *
  */
-void TestConnect::testConnectSuccess(void) {
+void TestConnect::testConnectSuccessAndSuccessWithInfo(void) {
 
   // Connect to the database.
   database* db = NULL;
@@ -33,7 +33,7 @@ void TestConnect::testConnectSuccess(void) {
   freeDatabase(&db);
 
   // Ensure we had a successful connection.
-  CPPUNIT_ASSERT_MESSAGE("Couldn't connect successfully to the database", s == SUCCESS);
+  CPPUNIT_ASSERT_MESSAGE("Couldn't connect successfully to the database", s == SUCCESS || s == SUCCESS_WITH_INFO);
 }
 
 /*
@@ -42,11 +42,11 @@ void TestConnect::testConnectSuccess(void) {
  * Connects to a database with a valid connection string, multiple times.
  *
  */
-void TestConnect::testConnectSuccessMultiple(void) {
+void TestConnect::testConnectSuccessAndSuccessWithInfoMultiple(void) {
 
   int i = 0;
   for (; i < 5; i++)
-    testConnectSuccess();
+    testConnectSuccessAndSuccessWithInfo();
 
 }
 
