@@ -27,16 +27,20 @@
 
 class TestDatabase : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TestDatabase);
-  CPPUNIT_TEST(testDatabaseSuccess);
-  CPPUNIT_TEST(testDatabaseSuccessMultiple);
-  CPPUNIT_TEST(testDatabaseMallocFailure);
-  CPPUNIT_TEST(testDatabaseMallocFailureMultiple);
+  CPPUNIT_TEST(testCreateDatabaseSuccess);
+  CPPUNIT_TEST(testCreateDatabaseSuccessMultiple);
+  CPPUNIT_TEST(testCreateDatabaseMallocFailure);
+  CPPUNIT_TEST(testCreateDatabaseMallocFailureMultiple);
+  CPPUNIT_TEST(testFreeDatabase);
+  CPPUNIT_TEST(testFreeDatabaseMultiple);
   CPPUNIT_TEST_SUITE_END();
 protected:
-  void testDatabaseSuccess(void);
-  void testDatabaseSuccessMultiple(void);
-  void testDatabaseMallocFailure(void);
-  void testDatabaseMallocFailureMultiple(void);
+  void testCreateDatabaseSuccess(void);
+  void testCreateDatabaseSuccessMultiple(void);
+  void testCreateDatabaseMallocFailure(void);
+  void testCreateDatabaseMallocFailureMultiple(void);
+  void testFreeDatabase(void);
+  void testFreeDatabaseMultiple(void);
 };
 
 #endif
