@@ -37,7 +37,7 @@ docker pull ubuntu:yakkety
 # Install dependencies
 update="apt-get update > /dev/null"
 upgrade="apt-get -y upgrade  > /dev/null"
-install_dependencies="apt-get install -y wget make g++ gcc libcppunit-dev sudo libxml2 valgrind"  > /dev/null
+install_dependencies="apt-get install -y wget make g++ gcc libcppunit-dev sudo libxml2 valgrind > /dev/null"
 install_odbc_cli="cd /swift-for-db2-cli && ./setup/install.sh  > /dev/null && . ./setup/env.sh"
 
 # Build the project and test it
