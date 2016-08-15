@@ -23,7 +23,7 @@
 set -e
 
 # Install dependencies
-brew install wget cppunit > /dev/null
+brew install wget cppunit valgrind > /dev/null
 
 # Project location
 cd ${TRAVIS_BUILD_DIR}

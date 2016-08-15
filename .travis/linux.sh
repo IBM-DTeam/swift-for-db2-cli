@@ -47,7 +47,7 @@ build_and_test="make && make install && make clean && make test && ./test"
 check_memory="valgrind --leak-check=full --show-reachable=yes --undef-value-errors=no --error-exitcode=-1 ./test && make clean"
 
 echo "********** TESTING Ubuntu 14.04 - TRUSTY **********"
-docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:trusty /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test &&} && ${check_memory}"
+docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:trusty /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test} && ${check_memory}"
 
 echo "********** TESTING Ubuntu 15.10 - WILY **********"
 docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:wily /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test} && ${check_memory}"
