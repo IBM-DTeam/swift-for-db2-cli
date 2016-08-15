@@ -16,13 +16,43 @@
 
 #include "test_disconnect.hpp"
 
+
 /*
-* Function:  TestDisconnect::testDisconnectFailure
+* Function:  TestDisconnect::testDisconnectNoDatabaseFound
 * ------------------
 * Fails to disconnect from a database
 *
 */
-void TestDisconnect::testDisconnectFailure(void) {
+void TestDisconnect::testDisconnectNoDatabaseFound(void) {
+
+  database* db = NULL;
+  state s = disconnect(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("The database exists and there was a successfull disconnect", s == NO_DATABASE_FOUND);
+
+}
+
+/*
+* Function:  TestDisconnect::testDisconnectNoDatabaseFoundMultiple
+* ------------------
+* Fails to disconnect from a database, multiple times
+*
+*/
+void TestDisconnect::testDisconnectNoDatabaseFoundMultiple(void) {
+
+  int i = 0;
+  for (; i < 5; i++)
+    testDisconnectNoDatabaseFound();
+
+}
+
+/*
+* Function:  TestDisconnect::testDisconnectDatabaseDisconnectFailure
+* ------------------
+* Fails to disconnect from a database
+*
+*/
+void TestDisconnect::testDisconnectDatabaseDisconnectFailure(void) {
 
   // Create a NULL database
   database* db = NULL;
@@ -41,16 +71,16 @@ void TestDisconnect::testDisconnectFailure(void) {
 }
 
 /*
-* Function:  TestDisconnect::testDisconnectFailureMultiple
+* Function:  TestDisconnect::testDisconnectDatabaseDisconnectFailureMultiple
 * ------------------
 * Fails to disconnect from a database, multiple times
 *
 */
-void TestDisconnect::testDisconnectFailureMultiple(void) {
+void TestDisconnect::testDisconnectDatabaseDisconnectFailureMultiple(void) {
 
   int i = 0;
   for (; i < 5; i++)
-    testDisconnectFailure();
+    testDisconnectDatabaseDisconnectFailure();
 
 }
 
@@ -89,35 +119,5 @@ void TestDisconnect::testDisconnectSuccessMultiple(void) {
   int i = 0;
   for (; i < 5; i++)
     testDisconnectSuccess();
-
-}
-
-
-/*
-* Function:  TestDisconnect::testDisconnectNoDatabase
-* ------------------
-* Fails to disconnect from a database
-*
-*/
-void TestDisconnect::testDisconnectNoDatabase(void) {
-
-  database* db = NULL;
-  state s = disconnect(&db);
-
-  CPPUNIT_ASSERT_MESSAGE("The database exists and there was a successfull disconnect", s == NO_DATABASE_FOUND);
-
-}
-
-/*
-* Function:  TestDisconnect::testDisconnectNoDatabaseMultiple
-* ------------------
-* Fails to disconnect from a database, multiple times
-*
-*/
-void TestDisconnect::testDisconnectNoDatabaseMultiple(void) {
-
-  int i = 0;
-  for (; i < 5; i++)
-    testDisconnectNoDatabase();
 
 }
