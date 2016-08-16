@@ -18,6 +18,18 @@
 }
 {
   ignore_versioned_libs
+  Memcheck:Addr4
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  ignore_versioned_libs
+  Memcheck:Addr16
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  ignore_versioned_libs
   Memcheck:Leak
   ...
   obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
