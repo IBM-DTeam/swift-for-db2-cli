@@ -1,7 +1,11 @@
-# Valid Connection String
-VALID_CONN_STR = -DVALID_CONN_STR='"DRIVER={DB2};DATABASE=BLUDB;UID=dash6435;PWD=0NKUFZxcskVZ;HOSTNAME=dashdb-entry-yp-dal09-09.services.dal.bluemix.net;PORT=50000"'
-# Invalid Connection String
+VALID_CONN_STR = -DVALID_CONN_STR='"DRIVER={DB2};DATABASE=BLUDB;HOSTNAME=awh-yp-small03.services.dal.bluemix.net;PORT=50000;PROTOCOL=TCPIP;UID=dash104953;PWD=Exd8nmHNmSHT"'
 INVALID_CONN_STR = -DINVALID_CONN_STR='"DRIVER={DB2};DATABASE=someDB;UID=someUID;PWD=somePWD;HOSTNAME=someHost;PORT=somePort"'
+VALID_SELECT_QUERY_STR = -DVALID_SELECT_QUERY_STR='"SELECT * COL1 FROM MYTABLE WHERE COL1 = 1"'
+INVALID_SELECT_QUERY_STR = -DINVALID_SELECT_QUERY_STR='"SELECT * COL1 FROM MYTABLE WHERE COL1 = 4"'
+VALID_INSERT_QUERY_STR = -DVALID_SELECT_QUERY_STR='"INSERT INTO MYTABLE VALUES(3, 'hey')"'
+INVALID_INSERT_QUERY_STR = -DINVALID_SELECT_QUERY_STR='"INSERT INTO MYTABLENOTEXIST VALUES(3, 'hey')"'
+VALID_CREATE_QUERY_STR = -DVALID_SELECT_QUERY_STR='" CREATE TABLE "MYTABLE2" ( "COL1" INT, "COL2" VARCHAR(5) )"'
+INVALID_DROP_QUERY_STR = -DVALID_SELECT_QUERY_STR='" DROP TABLE MYTABLENOTEXIST"'
 
 CC = g++
 OBJECT_FLAGS = -c -Wall -Wextra -g
@@ -27,7 +31,7 @@ PRODUCTION_LINKS = -ldb2
 TEST_LINKS = $(PRODUCTION_LINKS) -lcppunit
 
 # Shared Library
-ibmdb2 : database.o error.o handle.o connect.o disconnect.o
+ibmdb2 : database.o error.o handle.o connect.o disconnect.o query.o
 	$(CC) $(COMPILE_FLAGS) $(SHARED_LIBRARY) -o lib$@.so.$(SHARED_LIBRARY_VERSION) $? $(PRODUCTION_LIBRARIES) $(PRODUCTION_LINKS)
 
 # Copy Shared Library and Includes
@@ -37,7 +41,7 @@ install : ibmdb2
 	sudo cp -rf include/* /usr/local/include/ibmdb2/
 
 # Compile tests
-test : database.o error.o handle.o connect.o disconnect.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_main.o
+test : database.o error.o handle.o connect.o disconnect.o query.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_main.o
 	$(CC) $(COMPILE_FLAGS) -o $@ $? $(TEST_LIBRARIES) $(TEST_LINKS)
 
 # Main files
@@ -55,6 +59,9 @@ connect.o : $(INCLUDE)/connect.h $(SRC)/connect.c $(INCLUDE)/database.h $(INCLUD
 
 disconnect.o : $(INCLUDE)/disconnect.h $(SRC)/disconnect.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/disconnect.c
+
+query.o : $(INCLUDE)/query.h $(SRC)/query.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
+	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/query.c
 
 # Test files
 test_main.o : $(TEST_INCLUDE)/test_main.hpp $(TEST_SRC)/test_main.cpp
