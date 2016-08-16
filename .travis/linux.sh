@@ -44,7 +44,7 @@ install_odbc_cli="cd /swift-for-db2-cli && ./setup/install.sh > /dev/null && . .
 build_and_test="make && make install && make clean && make test && ./test"
 
 # Check for memory leaks
-check_memory="ls -la && valgrind -v ./test && make clean"
+check_memory="valgrind --tool=memcheck --leak-check=full --show-reachable=yes --errors-for-leak-kinds=all --track-origins=yes --error-exitcode=1 --suppressions=.valgrind ./test && make clean"
 
 echo "********** TESTING Ubuntu 14.04 - TRUSTY **********"
 docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:trusty /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test} && ${check_memory}"

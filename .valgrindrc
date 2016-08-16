@@ -1,7 +1,0 @@
---tool=memcheck
---leak-check=full
---show-reachable=yes
---errors-for-leak-kinds=all
---track-origins=yes
---error-exitcode=1
---suppressions=./.valgrindsupp
