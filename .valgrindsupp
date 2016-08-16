@@ -17,6 +17,42 @@
   obj:/usr/local/ibmdb/lib/lib*.so.*
 }
 {
+  ignore_versioned_libs
+  Memcheck:Leak
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+}
+{
+  ignore_versioned_libs
+  Memcheck:Value8
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+}
+{
+  ignore_versioned_libs
+  Memcheck:Cond
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+}
+{
+  ignore_versioned_libs
+  Memcheck:Leak
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+}
+{
+  ignore_versioned_libs
+  Memcheck:Value8
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+}
+{
+  ignore_versioned_libs
+  Memcheck:Cond
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+}
+{
   malloc-leaks-cxx-stl-string-classes
   Memcheck:Leak
   match-leak-kinds: reachable
