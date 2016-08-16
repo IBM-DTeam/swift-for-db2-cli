@@ -51,7 +51,7 @@ Visit the [Wiki](https://github.com/IBM-DTeam/swift-for-db2-cli/wiki) for exampl
 
 ## Contributing
 1. Clone this repository, `git clone https://github.com/IBM-DTeam/swift-for-db2-cli`
-2. Make your changes, build, run tests and run once more with valgrind.
+2. Make your changes, build, run tests and run once more with valgrind (no extra flags needed, there's a .valgrindrc provided).
 3. Make a pull request.
 
   ### Notes

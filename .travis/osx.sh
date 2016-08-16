@@ -40,5 +40,5 @@ sudo make install
 make clean
 make test
 ./test
-valgrind --tool=memcheck --leak-check=full --show-reachable=yes --errors-for-leak-kinds=all --undef-value-errors=no --error-exitcode=1 ./test
+valgrind ./test
 make clean

@@ -1,0 +1,29 @@
+{
+  ignore_versioned_libs
+  Memcheck:Leak
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  ignore_versioned_libs
+  Memcheck:Value8
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  ignore_versioned_libs
+  Memcheck:Cond
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  malloc-leaks-cxx-stl-string-classes
+  Memcheck:Leak
+  match-leak-kinds: reachable
+  fun:malloc
+  obj:/usr/*lib*/*/libstdc++.so*
+  fun:call_init.part.0
+  fun:call_init
+  fun:_dl_init
+  obj:*lib*/*/ld-2.*.so
+}
