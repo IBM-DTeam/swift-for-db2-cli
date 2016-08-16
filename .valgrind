@@ -1,0 +1,109 @@
+{
+  ignore_libdb2
+  Memcheck:Leak
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  ignore_libdb2
+  Memcheck:Leak
+  fun:malloc
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  ignore_libdb2
+  Memcheck:Leak
+  fun:calloc
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  ignore_libdb2
+  Memcheck:Addr4
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  ignore_libdb2
+  Memcheck:Addr16
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+  ...
+  obj:/usr/local/ibmdb/lib/lib*.so.*
+}
+{
+  ignore_libdb2
+  Memcheck:Leak
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Leak
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  obj:/usr/local/ibmdb/lib/*.dylib
+  ...
+  obj:/usr/local/ibmdb/lib/*.dylib
+}
+{
+  malloc-leaks-cxx-stl-string-classes
+  Memcheck:Leak
+  match-leak-kinds: reachable
+  fun:malloc
+  obj:/usr/*lib*/*/libstdc++.so*
+  fun:call_init.part.0
+  fun:call_init
+  fun:_dl_init
+  obj:*lib*/*/ld-2.*.so
+}
