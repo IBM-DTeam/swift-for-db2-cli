@@ -40,5 +40,5 @@ sudo make install
 make clean
 make test
 ./test
-valgrind ./test
+valgrind -v ./test
 make clean
