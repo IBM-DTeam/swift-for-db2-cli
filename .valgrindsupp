@@ -35,14 +35,20 @@
   obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
 }
 {
-  ignore_versioned_libs
+  ignore_unversioned_libs
   Memcheck:Leak
   ...
   obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
 }
 {
-  ignore_versioned_libs
+  ignore_unversioned_libs
   Memcheck:Value8
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+}
+{
+  ignore_unversioned_libs
+  Memcheck:Cond
   ...
   obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
 }
@@ -50,7 +56,7 @@
   ignore_versioned_libs
   Memcheck:Cond
   ...
-  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+  obj:/usr/local/ibmdb/lib/*.dylib
 }
 {
   malloc-leaks-cxx-stl-string-classes
