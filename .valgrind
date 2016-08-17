@@ -63,6 +63,11 @@
 }
 {
   ignore_libdb2
+  Memcheck:Value8
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+}
+{
+  ignore_libdb2
   Memcheck:Cond
   obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
   ...
@@ -88,6 +93,13 @@
   obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
   ...
   obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  fun:_platform_memcmp
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
 }
 {
   ignore_libdb2
