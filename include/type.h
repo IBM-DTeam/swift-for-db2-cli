@@ -27,7 +27,8 @@
 #define NO_DATABASE_FOUND -6
 #define DATABASE_EXISTS -7
 #define STATEMENT_HANDLE_EXISTS -8
-#define QUERY_FAILURE -8
+#define QUERY_FAILURE -9
+#define STMT_HANDLE_SETUP_FAILURE -10
 
 typedef int state;
 

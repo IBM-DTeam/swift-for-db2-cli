@@ -31,6 +31,7 @@
   *   NO_DATABASE_FOUND: Database does not exist
   *   STATEMENT_HANDLE_EXISTS: The provided handle is already allocated
   *   QUERY_FAILURE: Execution of query failed
+  *   STMT_HANDLE_SETUP_FAILURE: failed to properly set up the statement handle
   *
   */
 state query(database* db, SQLHANDLE* hStmt, char* query){
@@ -47,11 +48,17 @@ state query(database* db, SQLHANDLE* hStmt, char* query){
 
   // Allocate handle for STATEMENT_HANDLE_EXISTS
   retCode = SQLAllocHandle(SQL_HANDLE_STMT, db->hnd->hDbc, hStmt);
+  if(retCode != SQL_SUCCESS){
+    if (retCode == SQL_SUCCESS_WITH_INFO) {
+      haveInfo = true;
+    } else {
+      return STMT_HANDLE_SETUP_FAILURE;
+    }
+  }
 
  // Directly execute ad hoc queries
   retCode = SQLExecDirect(*hStmt, (SQLCHAR*) query, strlen(query));
   if(retCode != SQL_SUCCESS){
-    generateDatabaseError(db->err, db->hnd);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
