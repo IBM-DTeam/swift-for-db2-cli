@@ -34,20 +34,24 @@
   *   STMT_HANDLE_SETUP_FAILURE: failed to properly set up the statement handle
   *
   */
-state query(database* db, SQLHANDLE* hStmt, char* query){
+state query(database* db, stmtHandle** hStmtStruct, char* query){
   bool haveInfo = false;
   SQLRETURN retCode = SQL_SUCCESS;
+  *hStmtStruct = (stmtHandle*) malloc(sizeof(stmtHandle));
+
+  if(*hStmtStruct== NULL)
+    return MALLOC_FAILURE;
 
   // Check if database exists
   if (db == NULL)
     return NO_DATABASE_FOUND;
 
   // Check to make sure statement handle doesn't exist
-  if (hStmt != NULL)
+  if (hStmtStruct != NULL)
     return STATEMENT_HANDLE_EXISTS;
 
-  // Allocate handle for STATEMENT_HANDLE_EXISTS
-  retCode = SQLAllocHandle(SQL_HANDLE_STMT, db->hnd->hDbc, hStmt);
+  // Allocate handle for STATEMENT_HANDLE
+  retCode = SQLAllocHandle(SQL_HANDLE_STMT, db->hnd->hDbc, (SQLHANDLE*) (*hStmtStruct)->hStmts);
   if(retCode != SQL_SUCCESS){
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
@@ -57,7 +61,16 @@ state query(database* db, SQLHANDLE* hStmt, char* query){
   }
 
  // Directly execute ad hoc queries
-  retCode = SQLExecDirect(*hStmt, (SQLCHAR*) query, strlen(query));
+  retCode = SQLExecDirect(*(*hStmtStruct)->hStmts, (SQLCHAR*) query, strlen(query));
+
+  if(retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO){
+    SQLNumResultCols(*(*hStmtStruct)->hStmts, ((*hStmtStruct)->sNumResults));
+
+    if(*((*hStmtStruct)->sNumResults) > 0){
+
+    }
+
+  }
   if(retCode != SQL_SUCCESS){
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;

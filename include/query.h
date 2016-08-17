@@ -25,6 +25,12 @@
 #include "type.h"
 #include "database.h"
 
+typedef struct stmtHandle {
+  SQLHSTMT* hStmts;
+  int queryType;
+  SQLSMALLINT * sNumResults;
+} stmtHandle;
+
 // Methods
-state query(database** db, SQLHANDLE* hStmt, char* query);
+state query(database** db, SQLHANDLE* hStmtStruct, char* query);
 #endif

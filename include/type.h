@@ -30,6 +30,11 @@
 #define QUERY_FAILURE -9
 #define STMT_HANDLE_SETUP_FAILURE -10
 
+// Type of query
+#define RECIEVE_SELECT 3
+#define UPDATE 4
+#define OTHER 5
+
 typedef int state;
 
 #endif
