@@ -14,21 +14,17 @@
  * limitations under the License.
  **/
 
-#ifndef type_h
-#define type_h
+#ifndef query_h
+#define query_h
 
-#define SUCCESS 1
-#define SUCCESS_WITH_INFO 2
-#define CATASTROPHIC_FAILURE -1
-#define MALLOC_FAILURE -2
-#define SETUP_DATABASE_FAILURE -3
-#define FETCH_DATABASE_ERROR_FAILURE -4
-#define DATABASE_DISCONNECT_FAILURE -5
-#define NO_DATABASE_FOUND -6
-#define DATABASE_EXISTS -7
-#define STATEMENT_HANDLE_EXISTS -8
-#define QUERY_FAILURE -8
+#include <stdlib.h>
+#include <string.h>
+#include <sqlcli1.h>
 
-typedef int state;
+#include "error.h"
+#include "type.h"
+#include "database.h"
 
+// Methods
+state query(database** db, SQLHANDLE* hStmt, char* query);
 #endif
