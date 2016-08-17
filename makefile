@@ -22,7 +22,7 @@ TEST_SRC = tests/src
 
 # Includes and Libraries for different build environments
 PRODUCTION_SEARCH_PATH = -Iinclude -I/usr/local/ibmdb/include
-PRODUCTION_LIBRARIES = -L/usr/local/ibmdb/lib -L/usr/local/lib
+PRODUCTION_LIBRARIES = -L/usr/local/ibmdb/lib
 TEST_SEARCH_PATH = $(PRODUCTION_SEARCH_PATH) -Itests/include -I/usr/local/include/ibmdb2
 TEST_LIBRARIES = $(PRODUCTION_LIBRARIES)
 

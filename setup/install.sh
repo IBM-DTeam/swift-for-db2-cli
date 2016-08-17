@@ -68,6 +68,7 @@ sudo echo "export IBM_DB_LIB=/usr/local/ibmdb/lib:\$IBM_DB_LIB" >> /etc/profile.
 sudo echo "export IBM_DB_INCLUDE=/usr/local/ibmdb/include:\$IBM_DB_INCLUDE" >> /etc/profile.d/db2_swift.sh
 sudo echo "export DB2_HOME=/usr/local/ibmdb/include:\$DB2_HOME" >> /etc/profile.d/db2_swift.sh
 sudo echo "export DB2LIB=/usr/local/ibmdb/lib:\$DB2LIB" >> /etc/profile.d/db2_swift.sh
+sudo echo "export DYLD_LIBRARY_PATH=/usr/local/ibmdb/lib:\$DYLD_LIBRARY_PATH" >> /etc/profile.d/db2_swift.sh
 
 if [ $UNAME = "Darwin" ]; then
   if ! grep -Fxq "if [ -d /etc/profile.d ]; then" /etc/profile ; then
