@@ -19,7 +19,7 @@
 /*
  * Function:  initializeError
  * ------------------
- * Srtups up the error struct
+ * Setups up the error struct
  *
  * e: Where to create the error struct
  *
