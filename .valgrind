@@ -175,14 +175,28 @@
   Memcheck:Leak
   obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
   ...
-  obj:/usr/local/ibmdb/icc/N/icc/icclib/*.dylib
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
 }
 {
   ignore_libdb2
   Memcheck:Value8
   obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
   ...
-  obj:/usr/local/ibmdb/icc/N/icc/icclib/*.dylib
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Jump
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
 }
 {
   ignore_libdb2
@@ -190,6 +204,158 @@
   fun:malloc
   obj:/usr/lib/system/libsystem_c.dylib
   ...
+}
+{
+  ignore_libdb2
+  Memcheck:Leak
+  fun:malloc_zone_malloc
+  ...
+  obj:/usr/lib/*.dylib
+}
+
+{
+  ignore_libdb2
+  Memcheck:Leak
+  fun:calloc
+  ...
+  fun:???
+}
+{
+  ignore_libdb2
+  Memcheck:Leak
+  fun:malloc
+  ...
+  fun:???
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  fun:bn_mul4x_mont_gather5
+  ...
+  fun:???
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  fun:bn_mul4x_mont
+  ...
+  fun:???
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  fun:host_info
+  ...
+  fun:sqleuApplicationInit
+  ...
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  fun:host_info
+  ...
+  fun:sqleuApplicationInit
+  ...
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  fun:Gen
+  ...
+  fun:???
+  ...
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  obj:/usr/local/ibmdb/lib/*.dylib
+  ...
+  obj:/usr/local/ibmdb/lib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+  ...
+  fun:???
+  ...
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  fun:bn_sqr4x_mont
+  ...
+  fun:???
+  ...
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  obj:/usr/lib/system/*.dylib
+  ...
+  fun:pkey_rsa_verify
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  obj:/usr/lib/system/*.dylib
+  ...
+  fun:pkey_rsa_verify
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  fun:bn_mul4x_mont
+  ...
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  fun:bn_mul4x_mont_gather5
+  ...
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  fun:Entropy_to_TRNG
+  ...
+}
+
+{
+  ignore_libdb2
+  Memcheck:Cond
+  fun:malloc
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Param
+  __pthread_sigmask(set)
+  fun:__pthread_sigmask
+  ...
+  obj:/usr/local/ibmdb/lib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  fun:bn_mul4x_mont_gather5
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Value8
+  fun:bn_mul4x_mont_gather5
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/icclib/*.dylib
+}
+{
+  ignore_libdb2
+  Memcheck:Cond
+  obj:/usr/lib/system/*.dylib
+  ...
+  obj:/usr/local/ibmdb/lib/icc/N/icc/osslib/*.dylib
 }
 {
   malloc-leaks-cxx-stl-string-classes
