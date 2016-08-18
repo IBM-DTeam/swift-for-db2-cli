@@ -50,7 +50,7 @@ ibmdb2 : database.o error.o handle.o connect.o disconnect.o query.o
 
 # Copy Shared Library and Includes
 install : ibmdb2
-	sudo cp lib$?.so.$(SHARED_LIBRARY_VERSION) /usr/local/lib
+	sudo cp lib$?.$(EXTENSION) /usr/local/lib
 	sudo mkdir -p /usr/local/include/ibmdb2
 	sudo cp -rf include/* /usr/local/include/ibmdb2/
 
