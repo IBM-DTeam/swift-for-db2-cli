@@ -27,8 +27,10 @@
 
 typedef struct retrieveQuery{
   SQLSMALLINT* sNumColResults;
-  SQLCHAR *      ColumnName;
-  SQLSMALLINT *  DataTypePtr;
+  SQLCHAR**      ColumnNames;
+  SQLSMALLINT**  ColumnDataTypes;
+  SQLCHAR**      ColumnDatas;
+  SQLINTEGER     rowCount;
 } retrieveQuery;
 
 typedef struct updateData{

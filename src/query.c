@@ -15,7 +15,7 @@
  **/
 
  #include "query.h"
-
+ #define MAX_COL_NAME_LEN 256
 
  /*
   * Function:  query
@@ -35,18 +35,7 @@
   *
   */
 state query(database* db, queryStruct** hStmtStruct, char* query){
-  SQLULEN *      ColumnSizePtr = NULL;
-  SQLSMALLINT *  DecimalDigitsPtr = NULL;
-  SQLSMALLINT    BufferLength = 0;
-  SQLUSMALLINT   ColumnNumber = 0;
-  SQLSMALLINT *  NameLengthPtr = NULL;
-  SQLSMALLINT *  NullablePtr= NULL;
-
-
-  SQLSMALLINT    TargetType = 0;
-  SQLPOINTER     TargetValuePtr = NULL;
-  SQLLEN         BufferLength2 = 0;
-  SQLLEN *       StrLen_or_Ind = NULL;
+  int MAX_COL =0;
 
   bool haveInfo = false;
   SQLRETURN retCode = SQL_SUCCESS;
@@ -94,24 +83,102 @@ state query(database* db, queryStruct** hStmtStruct, char* query){
       //SQLRowCount
     //The Query was a Select Statement
     }else{
-      retCode = SQLDescribeCol( *(*hStmtStruct)->hStmts, ColumnNumber, (*hStmtStruct)->retrieve->ColumnName, BufferLength, NameLengthPtr, (*hStmtStruct)->retrieve->DataTypePtr, ColumnSizePtr, DecimalDigitsPtr, NullablePtr);
-      if(retCode != SQL_SUCCESS || retCode != SQL_SUCCESS_WITH_INFO){
+      (*hStmtStruct)->retrieve->rowCount = 0;
+      MAX_COL = *((*hStmtStruct)->retrieve->sNumColResults);
+      (*hStmtStruct)->retrieve->ColumnNames = (SQLCHAR **) malloc(MAX_COL * sizeof(SQLCHAR*));
+      (*hStmtStruct)->retrieve->ColumnDatas = (SQLCHAR **) malloc(MAX_COL * sizeof(SQLCHAR*));
+      (*hStmtStruct)->retrieve->ColumnDataTypes = (SQLSMALLINT **) malloc(MAX_COL * sizeof(SQLSMALLINT*));
 
-      //SQLDescribeCol worked
-      }else{
-        retCode = SQLBindCol(*(*hStmtStruct)->hStmts, ColumnNumber, TargetType, TargetValuePtr, BufferLength2, StrLen_or_Ind);
+      SQLSMALLINT    ColumnNameLen[MAX_COL];
+
+      SQLULEN        ColumnDataSize[MAX_COL];
+      SQLSMALLINT    ColumnDataDigits[MAX_COL];
+      SQLSMALLINT    ColumnDataNullable[MAX_COL];
+      SQLLEN         ColumnDataLen[MAX_COL];
 
 
+      for (int i=0;i<MAX_COL;i++) {
+         (*hStmtStruct)->retrieve->ColumnNames[i]=NULL;
+         (*hStmtStruct)->retrieve->ColumnDatas[i]=NULL;
       }
+
+      for(int i = 0; i < MAX_COL; i++){
+        (*hStmtStruct)->retrieve->ColumnNames[i] = (SQLCHAR*) malloc(MAX_COL_NAME_LEN * sizeof(SQLCHAR));
+        retCode = SQLDescribeCol(
+          *(*hStmtStruct)->hStmts,
+          i,
+          (*hStmtStruct)->retrieve->ColumnNames[i],
+          MAX_COL_NAME_LEN,
+          &ColumnNameLen[i],
+          (*hStmtStruct)->retrieve->ColumnDataTypes[i],
+          &ColumnDataSize[i],
+          &ColumnDataDigits[i],
+          &ColumnDataNullable[i]);
+        if(retCode != SQL_SUCCESS && retCode != SQL_SUCCESS_WITH_INFO){
+          }
+
+        retCode = SQLBindCol(
+          *(*hStmtStruct)->hStmts,
+          i,
+          *(*hStmtStruct)->retrieve->ColumnDataTypes[i],
+          (*hStmtStruct)->retrieve->ColumnDatas[i],
+          ColumnDataSize[i],
+          &ColumnDataLen[i]);
     }
 
-  }
-  if(retCode != SQL_SUCCESS){
-    if (retCode == SQL_SUCCESS_WITH_INFO) {
-      haveInfo = true;
-    } else {
-      return QUERY_FAILURE;
+    for(int i = 0;;i++){
+      retCode = SQLFetch(*(*hStmtStruct)->hStmts);
+       if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
+         ((*hStmtStruct)->retrieve->rowCount)++;
+       } else {
+           if (retCode != SQL_NO_DATA) {
+
+           } else {
+               break;
+           }
+       }
+
     }
+
   }
   return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
  }
+
+ return SUCCESS;
+}
+
+
+/*
+ * Function:  freeQueryStruct
+ * ------------------
+ * Frees queryStruct with retrieve filled
+ *
+ */
+void freeQueryStruct(queryStruct** hStmtStruct) {
+  if (*hStmtStruct == NULL)
+    return;
+
+  if((*hStmtStruct)->retrieve == NULL)
+    return;
+
+  if((*hStmtStruct)->retrieve->sNumColResults == NULL)
+    return;
+
+  if((*hStmtStruct)->retrieve->ColumnNames == NULL)
+    return;
+
+  for(int i = 0; i < *((*hStmtStruct)->retrieve->sNumColResults); i++ ){
+    if((*hStmtStruct)->retrieve->ColumnNames[i] == NULL)
+      return;
+
+    free((*hStmtStruct)->retrieve->ColumnNames[i]);
+
+  }
+
+  free((*hStmtStruct)->retrieve->ColumnNames);
+  free((*hStmtStruct)->retrieve->ColumnDatas);
+  free((*hStmtStruct)->retrieve->ColumnDataTypes);
+  free((*hStmtStruct)->retrieve);
+  free(*hStmtStruct );
+
+}
