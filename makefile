@@ -1,11 +1,16 @@
 VALID_CONN_STR = -DVALID_CONN_STR='"DRIVER={DB2};DATABASE=BLUDB;HOSTNAME=awh-yp-small03.services.dal.bluemix.net;PORT=50000;PROTOCOL=TCPIP;UID=dash104953;PWD=Exd8nmHNmSHT"'
 INVALID_CONN_STR = -DINVALID_CONN_STR='"DRIVER={DB2};DATABASE=someDB;UID=someUID;PWD=somePWD;HOSTNAME=someHost;PORT=somePort"'
+
 VALID_SELECT_QUERY_STR = -DVALID_SELECT_QUERY_STR='"SELECT * COL1 FROM MYTABLE WHERE COL1 = 1"'
 INVALID_SELECT_QUERY_STR = -DINVALID_SELECT_QUERY_STR='"SELECT * COL1 FROM MYTABLE WHERE COL1 = 4"'
+
 VALID_INSERT_QUERY_STR = -DVALID_SELECT_QUERY_STR='"INSERT INTO MYTABLE VALUES(3, 'hey')"'
 INVALID_INSERT_QUERY_STR = -DINVALID_SELECT_QUERY_STR='"INSERT INTO MYTABLENOTEXIST VALUES(3, 'hey')"'
+
 VALID_CREATE_QUERY_STR = -DVALID_SELECT_QUERY_STR='" CREATE TABLE "MYTABLE2" ( "COL1" INT, "COL2" VARCHAR(5) )"'
 INVALID_DROP_QUERY_STR = -DVALID_SELECT_QUERY_STR='" DROP TABLE MYTABLENOTEXIST"'
+
+OS := $(shell uname)
 
 CC = g++
 OBJECT_FLAGS = -c -Wall -Wextra -g
@@ -30,22 +35,23 @@ TEST_LIBRARIES = $(PRODUCTION_LIBRARIES)
 PRODUCTION_LINKS = -ldb2
 TEST_LINKS = $(PRODUCTION_LINKS) -lcppunit
 
-OS := $(shell uname)
+# Extension depends on OS
 ifeq ($(OS), Darwin)
-    EXTENSION = $(SHARED_LIBRARY_VERSION).dylib
+	EXTENSION = $(SHARED_LIBRARY_VERSION).dylib
 else ifeq ($(OS), Linux)
-    EXTENSION = so.$(SHARED_LIBRARY_VERSION)
+	EXTENSION = so.$(SHARED_LIBRARY_VERSION)
 else
-    @echo "OS not supported, proceed with caution."
+	@echo "OS not supported, proceed with caution."
 endif
 
 # Shared Library
 ibmdb2 : database.o error.o handle.o connect.o disconnect.o query.o
 	$(CC) $(COMPILE_FLAGS) $(SHARED_LIBRARY) -o lib$@.$(EXTENSION) $? $(PRODUCTION_LIBRARIES) $(PRODUCTION_LINKS)
 
+
 # Copy Shared Library and Includes
 install : ibmdb2
-	sudo cp lib$?.so.$(SHARED_LIBRARY_VERSION) /usr/local/lib
+	sudo cp lib$?.$(EXTENSION) /usr/local/lib
 	sudo mkdir -p /usr/local/include/ibmdb2
 	sudo cp -rf include/* /usr/local/include/ibmdb2/
 
@@ -93,10 +99,11 @@ test_disconnect.o : disconnect.o $(TEST_INCLUDE)/test_disconnect.hpp $(TEST_SRC)
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(TEST_SRC)/test_disconnect.cpp
 
 clean :
-	rm -rf *.o
-	rm -rf *.i
-	rm -rf *.s
-	rm -rf test
-	rm -rf ibmdb2
-	rm -rf core
-	rm -rf lib*.so.*
+	rm -f *.o
+	rm -f *.i
+	rm -f *.s
+	rm -f test
+	rm -f ibmdb2
+	rm -f core
+	rm -f lib*.so.*
+	rm -f lib*.dylib
