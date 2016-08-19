@@ -23,7 +23,7 @@
 set -e
 
 # Install dependencies
-brew install wget cppunit valgrind > /dev/null
+brew install wget cppunit valgrind python > /dev/null
 
 # Project location
 cd ${TRAVIS_BUILD_DIR}
@@ -41,4 +41,3 @@ make clean
 make test
 ./test
 valgrind --tool=memcheck --leak-check=full --show-reachable=yes --errors-for-leak-kinds=all --track-origins=yes --error-exitcode=1 --suppressions=.valgrind ./test
-make clean

@@ -37,14 +37,14 @@ docker pull ubuntu:yakkety
 # Install dependencies
 update="apt-get update > /dev/null"
 upgrade="apt-get -y upgrade  > /dev/null"
-install_dependencies="apt-get install -y wget make g++ gcc libcppunit-dev sudo libxml2 valgrind > /dev/null"
+install_dependencies="apt-get install -y wget make g++ gcc libcppunit-dev sudo libxml2 valgrind python python-pip > /dev/null"
 install_odbc_cli="cd /swift-for-db2-cli && ./setup/install.sh > /dev/null && . ./setup/env.sh"
 
 # Build the project and test it
 build_and_test="make && make install && make clean && make test && ./test"
 
 # Check for memory leaks
-check_memory="valgrind --tool=memcheck --leak-check=full --show-reachable=yes --errors-for-leak-kinds=all --track-origins=yes --error-exitcode=1 --suppressions=.valgrind ./test && make clean"
+check_memory="valgrind --tool=memcheck --leak-check=full --show-reachable=yes --errors-for-leak-kinds=all --track-origins=yes --error-exitcode=1 --suppressions=.valgrind ./test"
 
 echo "********** TESTING Ubuntu 14.04 - TRUSTY **********"
 docker run -v ${TRAVIS_BUILD_DIR}:/swift-for-db2-cli -i -t ubuntu:trusty /bin/bash -c "${update} && ${upgrade} && ${install_dependencies} && ${install_odbc_cli} && ${build_and_test} && ${check_memory}"

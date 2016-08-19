@@ -2,7 +2,8 @@
 
 **Swift SDK for DB2 CLI**
 
-[![Build Status - Master](https://travis-ci.org/IBM-DTeam/swift-for-db2-cli.svg?branch=master)](https://travis-ci.org/IBM-DTeam/swift-for-db2-cli)
+[![Build Status - Master](https://travis-ci.org/IBM-DTeam/swift-for-db2-cli.svg?branch=new)](https://travis-ci.org/IBM-DTeam/swift-for-db2-cli)
+![Coverage](https://coveralls.io/repos/github/IBM-DTeam/swift-for-db2-cli/badge.svg?branch=new)
 ![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
