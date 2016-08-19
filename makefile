@@ -30,9 +30,18 @@ TEST_LIBRARIES = $(PRODUCTION_LIBRARIES)
 PRODUCTION_LINKS = -ldb2
 TEST_LINKS = $(PRODUCTION_LINKS) -lcppunit
 
+OS := $(shell uname)
+ifeq ($(OS), Darwin)
+    EXTENSION = $(SHARED_LIBRARY_VERSION).dylib
+else ifeq ($(OS), Linux)
+    EXTENSION = so.$(SHARED_LIBRARY_VERSION)
+else
+    @echo "OS not supported, proceed with caution."
+endif
+
 # Shared Library
 ibmdb2 : database.o error.o handle.o connect.o disconnect.o query.o
-	$(CC) $(COMPILE_FLAGS) $(SHARED_LIBRARY) -o lib$@.so.$(SHARED_LIBRARY_VERSION) $? $(PRODUCTION_LIBRARIES) $(PRODUCTION_LINKS)
+	$(CC) $(COMPILE_FLAGS) $(SHARED_LIBRARY) -o lib$@.$(EXTENSION) $? $(PRODUCTION_LIBRARIES) $(PRODUCTION_LINKS)
 
 # Copy Shared Library and Includes
 install : ibmdb2

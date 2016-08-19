@@ -25,6 +25,24 @@
 #include "type.h"
 #include "database.h"
 
+typedef struct retrieveQuery{
+  SQLSMALLINT* sNumColResults;
+  SQLCHAR *      ColumnName;
+  SQLSMALLINT *  DataTypePtr;
+} retrieveQuery;
+
+typedef struct updateData{
+
+} updateData;
+
+typedef struct queryStruct{
+  SQLHSTMT* hStmts;
+  int queryType;
+  updateData* update;
+  retrieveQuery* retrieve;
+}queryStruct;
+
+
 typedef struct stmtHandle {
   SQLHSTMT* hStmts;
   int queryType;
