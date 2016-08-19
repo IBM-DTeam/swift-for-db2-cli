@@ -17,3 +17,6 @@ language: cpp
 
 notifications:
   slack: ibm-analytics:LgaBAvT7hSn8vGXR4elXTfW1
+
+after_success:
+  - coveralls
