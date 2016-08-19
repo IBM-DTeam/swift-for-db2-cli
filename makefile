@@ -46,7 +46,8 @@ endif
 
 # Shared Library
 ibmdb2 : database.o error.o handle.o connect.o disconnect.o query.o
-		$(CC) $(COMPILE_FLAGS) $(SHARED_LIBRARY) -o lib$@.$(EXTENSION) $? $(PRODUCTION_LIBRARIES) $(PRODUCTION_LINKS)
+	$(CC) $(COMPILE_FLAGS) $(SHARED_LIBRARY) -o lib$@.$(EXTENSION) $? $(PRODUCTION_LIBRARIES) $(PRODUCTION_LINKS)
+
 
 # Copy Shared Library and Includes
 install : ibmdb2
