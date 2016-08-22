@@ -33,24 +33,15 @@ typedef struct retrieveQuery{
   SQLINTEGER     rowCount;
 } retrieveQuery;
 
-typedef struct updateData{
-
-} updateData;
-
 typedef struct queryStruct{
+  SQLLEN * RowCountPtr;
   SQLHSTMT* hStmts;
   int queryType;
-  updateData* update;
   retrieveQuery* retrieve;
 }queryStruct;
 
-
-typedef struct stmtHandle {
-  SQLHSTMT* hStmts;
-  int queryType;
-  SQLSMALLINT * sNumResults;
-} stmtHandle;
-
 // Methods
+void freeQueryStruct(queryStruct** hStmtStruct);
 state query(database** db, SQLHANDLE* hStmtStruct, char* query);
+
 #endif
