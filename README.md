@@ -1,63 +1,57 @@
-![swift-for-db2-cli](https://ibm.app.box.com/representation/file_version_81797080661/image_2048/1.png?shared_name=b1f1yajuxqlip32zoe185bp27mhcc4pw)
+# swift-for-db2-cli
 
-**Swift SDK for DB2 CLI**
+This is the source repository for the ODBC CLI for the package [swift-for-db2](https://github.com/IBM-DTeam/swift-for-db2).
 
-[![Build Status - Master](https://travis-ci.org/IBM-DTeam/swift-for-db2-cli.svg?branch=new)](https://travis-ci.org/IBM-DTeam/swift-for-db2-cli)
-![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
-![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
-![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
+Package Info
+---
+* Platforms: x86_64, i386, i686, PowerPC, S390
+* Operating Systems: Ubuntu 14.04, 15.10 or Mac OS X
+* Dependencies: clang, unixodbc-dev, unzip, wget, tar
 
-## Summary
+Installation
+---
 
-The Swift SDK for DB2 CLI allows you to connect to your IBM DB2 database or products based off IBM DB2 and execute queries in C/C++.
+Both Mac OS and Ubuntu require libdispatch (https://github.com/apple/swift-corelibs-libdispatch/blob/experimental/foundation/INSTALL).
 
-## Table of Contents
-* [Summary](#summary)
-* [Features](#features)
-* [Prerequisites](#prerequisites)
-* [Installation](#installation)
-* [Using Swift SDK for DB2 CLI](#using-swift-sdk-for-db2-cli)
-* [Usage Examples](#usage-examples)
-* [Contributing](#contributing)
-* [License](#license)
+Ubuntu 14.04 and 15.10
+```
+sudo apt-get update
+sudo apt-get install -y clang unixodbc-dev unzip wget tar
+wget https://github.com/IBM-DTeam/swift-for-db2-cli/archive/master.zip && unzip master.zip && cd swift-for-db2-cli-master && sudo ./cli.sh && . env.sh && cd .. && rm -f master.zip && rm -rf swift-for-db2-cli-master
+```
 
-## Features:
+Mac OS X
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install wget unixodbc
+wget https://github.com/IBM-DTeam/swift-for-db2-cli/archive/master.zip && unzip master.zip && cd swift-for-db2-cli-master && sudo ./cli.sh && . env.sh && cd .. && rm -f master.zip && rm -rf swift-for-db2-cli-master
+```
 
-- [x] Connect to your database.
-- [ ] Query and get results.
-- [ ] Create Prepared Statements.
-- [ ] Perform Transactions.
-- [x] Disconnect from your database.
+Contributors
+---
+* Gregory Wlodarek (gregorywlodarek@gmail.com)
+* Angad Singh (angaduom@gmail.com)
+* Nick Dujay (nickdujay@gmail.com)
+* IBM
 
-## Prerequisites
+Licence
+---
+Copyright (c) 2016 IBM
 
-1. For Linux, you will need to execute the following:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-  - `sudo apt-get update && sudo apt-get install wget g++ gcc libcppunit-dev`
-  - `sudo ./setup/install.sh`
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-2. For OS X, you will need to execute the following:
-
-  - `brew install wget cppunit`
-  - `sudo ./setup/install.sh`
-
-## Installation
-
-  - `make`
-  - `sudo make install`
-
-## Usage Examples
-Visit the [Wiki](https://github.com/IBM-DTeam/swift-for-db2-cli/wiki) for examples on how to use the Swift SDK for DB2 CLI.
-
-## Contributing
-1. Clone this repository, `git clone https://github.com/IBM-DTeam/swift-for-db2-cli`
-2. Make your changes, build, run tests and run once more with valgrind (no extra flags needed, there's a .valgrindrc provided).
-3. Make a pull request.
-
-  ### Notes
-  * You can configure the variables VALID_CONN_STR and INVALID_CONN_STR in the makefile if you wish to. However, they are already set for you.
-
-You can find info on contributing to Swift SDK for DB2 CLI in our [contributing guidelines](CONTRIBUTING.md).
-
-## License
-This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE.txt).
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
