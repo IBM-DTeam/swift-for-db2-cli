@@ -32,9 +32,9 @@ typedef struct cellData {
 
 typedef struct retrieveQuery{
   SQLSMALLINT      sNumColResults;
-  char***          columnName;
-  short int**      columnDataType;
-  cellData**       columnData;
+  char**           columnName;
+  short int*       columnDataType;
+  cellData*        columnData;
   SQLINTEGER       rowCount;
 } retrieveQuery;
 

@@ -103,15 +103,17 @@ state query(database* db, queryStruct** hStmtStruct, char* query){
       // Initialize and malloc retrieve variables
       (*hStmtStruct)->retrieve->sNumColResults = numColumns;
       (*hStmtStruct)->retrieve->rowCount = 0;
-      (*hStmtStruct)->retrieve->columnName = (char***) malloc(numColumns * sizeof(char**));
-      (*hStmtStruct)->retrieve->columnData = (cellData**) malloc(numColumns * sizeof(cellData*));
-      (*hStmtStruct)->retrieve->columnDataType = (short int**) malloc(numColumns * sizeof(short int*));
+      (*hStmtStruct)->retrieve->columnName = (char**) malloc(numColumns * sizeof(char*));
+      (*hStmtStruct)->retrieve->columnData = (cellData*) malloc(numColumns * sizeof(cellData));
+      (*hStmtStruct)->retrieve->columnDataType = (short int*) malloc(numColumns * sizeof(short int));
+
 
       //Initialize variables
       for (int i = 0; i < numColumns; i++) {
          (*hStmtStruct)->retrieve->columnName[i] = NULL;
-         (*hStmtStruct)->retrieve->columnDataType[i] = NULL;
-         (*hStmtStruct)->retrieve->columnData[i] = NULL;
+         (*hStmtStruct)->retrieve->columnDataType[i] = -1;
+         (*hStmtStruct)->retrieve->columnData[i].item = NULL;
+         (*hStmtStruct)->retrieve->columnData[i].next = NULL;
       }
 
       // Get info about each column
@@ -126,22 +128,23 @@ state query(database* db, queryStruct** hStmtStruct, char* query){
         // Get SQLDescribeCol info
         retCode = SQLDescribeCol(
           (*hStmtStruct)->hStmts,
-          i,
+          i + 1,
           colName,
           500,
           &columnNameLen,
-          (*hStmtStruct)->retrieve->columnDataType[i],
+          &((*hStmtStruct)->retrieve->columnDataType[i]),
           &columnDataSize,
           &columnDataDigits,
           &columnDataNullable);
 
         if(retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO){
-          *((*hStmtStruct)->retrieve->columnName[i]) = (char*) malloc(sizeof(char) * columnNameLen);
-          strcpy(*((*hStmtStruct)->retrieve->columnName[i]), (char*) colName);
+
+          (*hStmtStruct)->retrieve->columnName[i] = (char*) malloc(sizeof(char) * (columnNameLen + 1));
+          strcpy((*hStmtStruct)->retrieve->columnName[i], (char*) colName);
           free(colName);
           printf("\nColumn type: %d, Column name: %s\n",
-           *((*hStmtStruct)->retrieve->columnDataType[i]),
-            *((*hStmtStruct)->retrieve->columnName[i]));
+           (*hStmtStruct)->retrieve->columnDataType[i],
+            (*hStmtStruct)->retrieve->columnName[i]);
         }
 
 
