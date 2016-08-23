@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include "query.h"
 
+#define MAX_COL_NAME 256
 
  /*
   * Function:  query
@@ -118,7 +119,7 @@ state query(database* db, queryStruct** hStmtStruct, char* query){
 
       // Get info about each column
       for(int i = 0; i < numColumns; i++){
-        SQLCHAR* colName = (SQLCHAR*) malloc(sizeof(SQLCHAR) * 500);
+        SQLCHAR* colName = (SQLCHAR*) malloc(sizeof(SQLCHAR) * MAX_COL_NAME);
 
         SQLSMALLINT    columnNameLen;
         SQLULEN        columnDataSize;
@@ -130,7 +131,7 @@ state query(database* db, queryStruct** hStmtStruct, char* query){
           (*hStmtStruct)->hStmts,
           i + 1,
           colName,
-          500,
+          MAX_COL_NAME,
           &columnNameLen,
           &((*hStmtStruct)->retrieve->columnDataType[i]),
           &columnDataSize,
