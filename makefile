@@ -1,14 +1,14 @@
 VALID_CONN_STR = -DVALID_CONN_STR='"DRIVER={DB2};DATABASE=BLUDB;HOSTNAME=awh-yp-small03.services.dal.bluemix.net;PORT=50000;PROTOCOL=TCPIP;UID=dash104953;PWD=Exd8nmHNmSHT"'
 INVALID_CONN_STR = -DINVALID_CONN_STR='"DRIVER={DB2};DATABASE=someDB;UID=someUID;PWD=somePWD;HOSTNAME=someHost;PORT=somePort"'
 
-VALID_SELECT_QUERY_STR = -DVALID_SELECT_QUERY_STR='"SELECT * COL1 FROM MYTABLE WHERE COL1 = 1"'
-INVALID_SELECT_QUERY_STR = -DINVALID_SELECT_QUERY_STR='"SELECT * COL1 FROM MYTABLE WHERE COL1 = 4"'
+VALID_SELECT_QUERY_STR = -DVALID_SELECT_QUERY_STR='"SELECT * FROM MYTABLE"'
+INVALID_SELECT_QUERY_STR = -DINVALID_SELECT_QUERY_STR='"SELECT * FROM MYTABLE WHERE COL1 = 4"'
 
-VALID_INSERT_QUERY_STR = -DVALID_SELECT_QUERY_STR='"INSERT INTO MYTABLE VALUES(3, 'hey')"'
-INVALID_INSERT_QUERY_STR = -DINVALID_SELECT_QUERY_STR='"INSERT INTO MYTABLENOTEXIST VALUES(3, 'hey')"'
+VALID_INSERT_QUERY_STR = -DVALID_INSERT_QUERY_STR='"INSERT INTO MYTABLE VALUES(3, 'hey')"'
+INVALID_INSERT_QUERY_STR = -DINVALID_INSERT_QUERY_STR='"INSERT INTO MYTABLENOTEXIST VALUES(3, 'hey')"'
 
-VALID_CREATE_QUERY_STR = -DVALID_SELECT_QUERY_STR='" CREATE TABLE "MYTABLE2" ( "COL1" INT, "COL2" VARCHAR(5) )"'
-INVALID_DROP_QUERY_STR = -DVALID_SELECT_QUERY_STR='" DROP TABLE MYTABLENOTEXIST"'
+VALID_CREATE_QUERY_STR = -DVALID_CREATE_QUERY_STR='" CREATE TABLE "MYTABLE2" ( "COL1" INT, "COL2" VARCHAR(5) )"'
+INVALID_DROP_QUERY_STR = -DINVALID_DROP_QUERY_STR='" DROP TABLE MYTABLENOTEXIST"'
 
 OS := $(shell uname)
 
@@ -56,7 +56,7 @@ install : ibmdb2
 	sudo cp -rf include/* /usr/local/include/ibmdb2/
 
 # Compile tests
-test : database.o error.o handle.o connect.o disconnect.o query.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_main.o
+test : database.o error.o handle.o connect.o disconnect.o query.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_query.o test_main.o
 	$(CC) $(COMPILE_FLAGS) -o $@ $? $(TEST_LIBRARIES) $(TEST_LINKS)
 
 # Main files
@@ -93,6 +93,9 @@ test_handle.o : handle.o $(TEST_INCLUDE)/test_handle.hpp $(TEST_SRC)/test_handle
 
 test_error.o : error.o $(TEST_INCLUDE)/test_error.hpp $(TEST_SRC)/test_error.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(TEST_SRC)/test_error.cpp
+
+test_query.o : query.o $(TEST_INCLUDE)/test_query.hpp $(TEST_SRC)/test_query.cpp
+	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(VALID_SELECT_QUERY_STR) $(INVALID_SELECT_QUERY_STR) $(VALID_INSERT_QUERY_STR) $(INVALID_INSERT_QUERY_STR) $(VALID_CREATE_QUERY_STR) $(INVALID_DROP_QUERY_STR) $(TEST_SRC)/test_query.cpp
 
 
 test_disconnect.o : disconnect.o $(TEST_INCLUDE)/test_disconnect.hpp $(TEST_SRC)/test_disconnect.cpp

@@ -14,26 +14,25 @@
  * limitations under the License.
  **/
 
-#ifndef test_main_h
-#define test_main_h
+#ifndef test_query_h
+#define test_query_h
 
-#include <cppunit/ui/text/TextTestRunner.h>
+#include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/TestResultCollector.h>
-#include <cppunit/TestRunner.h>
-#include <cppunit/BriefTestProgressListener.h>
-#include <cppunit/CompilerOutputter.h>
 
-// Test file headers
-#include "test_database.hpp"
-#include "test_connect.hpp"
-#include "test_disconnect.hpp"
-#include "test_handle.hpp"
-#include "test_error.hpp"
-#include "test_query.hpp"
 
-int main();
+// The functions to test
+#include "query.h"
+#include "connect.h"
+
+class TestQuery : public CppUnit::TestFixture {
+  CPPUNIT_TEST_SUITE(TestQuery);
+  CPPUNIT_TEST(testSelectQuerySuccess);
+
+  CPPUNIT_TEST_SUITE_END();
+protected:
+  void testSelectQuerySuccess(void);
+};
 
 #endif

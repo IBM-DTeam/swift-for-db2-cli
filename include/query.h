@@ -26,22 +26,22 @@
 #include "database.h"
 
 typedef struct retrieveQuery{
-  SQLSMALLINT* sNumColResults;
-  SQLCHAR**      ColumnNames;
-  SQLSMALLINT**  ColumnDataTypes;
-  SQLCHAR**      ColumnDatas;
+  SQLSMALLINT    sNumColResults;
+  SQLCHAR**      columnName;
+  SQLSMALLINT**  columnDataType;
+  SQLCHAR**      columnData;
   SQLINTEGER     rowCount;
 } retrieveQuery;
 
 typedef struct queryStruct{
-  SQLLEN * RowCountPtr;
-  SQLHSTMT* hStmts;
+  SQLLEN rowCountPtr;
+  SQLHSTMT hStmts;
   int queryType;
   retrieveQuery* retrieve;
 }queryStruct;
 
 // Methods
 void freeQueryStruct(queryStruct** hStmtStruct);
-state query(database** db, SQLHANDLE* hStmtStruct, char* query);
+state query(database* db, queryStruct** hStmtStruct, char* query);
 
 #endif
