@@ -25,20 +25,25 @@
 #include "type.h"
 #include "database.h"
 
+typedef struct cellData {
+  char*            item;
+  cellData*        next;
+} cellData;
+
 typedef struct retrieveQuery{
-  SQLSMALLINT    sNumColResults;
-  SQLCHAR**      columnName;
-  SQLSMALLINT**  columnDataType;
-  SQLCHAR**      columnData;
-  SQLINTEGER     rowCount;
+  SQLSMALLINT      sNumColResults;
+  char***          columnName;
+  short int**      columnDataType;
+  cellData**       columnData;
+  SQLINTEGER       rowCount;
 } retrieveQuery;
 
 typedef struct queryStruct{
-  SQLLEN rowCountPtr;
-  SQLHSTMT hStmts;
-  int queryType;
-  retrieveQuery* retrieve;
-}queryStruct;
+  SQLLEN           rowCountPtr;
+  SQLHSTMT         hStmts;
+  int              queryType;
+  retrieveQuery*   retrieve;
+} queryStruct;
 
 // Methods
 void freeQueryStruct(queryStruct** hStmtStruct);
