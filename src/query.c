@@ -147,15 +147,6 @@ state query(database* db, queryStruct** hStmtStruct, char* query){
             (*hStmtStruct)->retrieve->columnName[i]);
         }
 
-
-        // // Get SQLBindCol info
-        // retCode = SQLBindCol(
-        //   (*hStmtStruct)->hStmts,
-        //   i,
-        //   *((*hStmtStruct)->retrieve->columnDataType[i]),
-        //   (*hStmtStruct)->retrieve->columnData[i],
-        //   columnDataSize[i],
-        //   &columnDataLen[i]);
     }
 
     return SUCCESS;
