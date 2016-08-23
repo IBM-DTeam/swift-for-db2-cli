@@ -105,7 +105,7 @@ state query(database* db, queryStruct** hStmtStruct, char* query){
       (*hStmtStruct)->retrieve->sNumColResults = numColumns;
       (*hStmtStruct)->retrieve->rowCount = 0;
       (*hStmtStruct)->retrieve->columnName = (char**) malloc(numColumns * sizeof(char*));
-      (*hStmtStruct)->retrieve->columnData = (cellData*) malloc(numColumns * sizeof(cellData));
+      (*hStmtStruct)->retrieve->columnData = (data*) malloc(numColumns * sizeof(data));
       (*hStmtStruct)->retrieve->columnDataType = (short int*) malloc(numColumns * sizeof(short int));
 
 

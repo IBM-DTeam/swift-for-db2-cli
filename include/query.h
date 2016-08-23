@@ -25,16 +25,16 @@
 #include "type.h"
 #include "database.h"
 
-typedef struct cellData {
+typedef struct data {
   char*            item;
-  cellData*        next;
-} cellData;
+  data*            next;
+} data;
 
 typedef struct retrieveQuery{
   SQLSMALLINT      sNumColResults;
   char**           columnName;
   short int*       columnDataType;
-  cellData*        columnData;
+  data*            columnData;
   SQLINTEGER       rowCount;
 } retrieveQuery;
 
