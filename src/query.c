@@ -81,7 +81,10 @@ state query(database* db, queryStruct** hStmtStruct, char* query){
     retCode = SQLNumResultCols((*hStmtStruct)->hStmts, (SQLSMALLINT*) &numColumns);
     //SQLNumResultCols Didn't work and we don't have a SELECT statement
     if(numColumns == 0){
+
       retCode = SQLRowCount((*hStmtStruct)->hStmts, &((*hStmtStruct)->rowCountPtr));
+
+
       if(retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO){
         //It was an other query. i.e chreate drop etc.
         if((*hStmtStruct)->rowCountPtr == -1){
@@ -169,6 +172,11 @@ state query(database* db, queryStruct** hStmtStruct, char* query){
   }
   return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
 }else{
+    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    while (db->err->database != NULL) {
+        fprintf(stderr, "%s:%d:%s\n",db->err->database->state, db->err->database->native, db->err->database->desc);
+        db->err->database = db->err->database->next;
+    }
   // GC: free what you malloc'd
   // return somehting like CANNOT_QUERY
   return CATASTROPHIC_FAILURE;
