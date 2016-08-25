@@ -23,7 +23,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 // Origin of error
 #define NO_ERROR 0
