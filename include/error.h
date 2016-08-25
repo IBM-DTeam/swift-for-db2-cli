@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 // Origin of error
 #define NO_ERROR 0
@@ -58,7 +59,7 @@ state initializeError(error** e);
 void resetError(error* e);
 void freeError(error** e);
 state generatePackageError(error* e, const char* file, int line, const char* message);
-state generateDatabaseError(error* e, handle* h);
+state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType);
 void freePackageError(error* e);
 void freeDatabaseError(error* e);
 

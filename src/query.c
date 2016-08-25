@@ -64,7 +64,7 @@ state query(database* db, queryStruct** hStmtStruct, char* query){
   retCode = SQLAllocHandle(SQL_HANDLE_STMT, db->hnd->hDbc, &((*hStmtStruct)->hStmts));
 
   if(retCode != SQL_SUCCESS){
-    generateDatabaseError(db->err, db->hnd);
+    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {

@@ -53,7 +53,7 @@ state connect(database** db, const char* connectionString) {
   // Allocate an environment handle
   retCode = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &((*db)->hnd->hEnv));
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError((*db)->err, (*db)->hnd);
+    generateDatabaseError((*db)->err, (*db)->hnd->hEnv, SQL_HANDLE_ENV);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
@@ -64,7 +64,7 @@ state connect(database** db, const char* connectionString) {
   // ODBC 3 support
   retCode = SQLSetEnvAttr((*db)->hnd->hEnv, SQL_ATTR_ODBC_VERSION, (void*) SQL_OV_ODBC3, 0);
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError((*db)->err, (*db)->hnd);
+    generateDatabaseError((*db)->err, (*db)->hnd->hEnv, SQL_HANDLE_ENV);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
@@ -75,7 +75,7 @@ state connect(database** db, const char* connectionString) {
   // Allocate a connection handle
   retCode = SQLAllocHandle(SQL_HANDLE_DBC, (*db)->hnd->hEnv, &((*db)->hnd->hDbc));
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError((*db)->err, (*db)->hnd);
+    generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
@@ -95,7 +95,7 @@ state connect(database** db, const char* connectionString) {
                             );
 
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError((*db)->err, (*db)->hnd);
+    generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
