@@ -41,7 +41,7 @@ state disconnect(database** db) {
   //Disconnect From the database
   retCode = SQLDisconnect((*db)->hnd->hDbc);
   if (!(retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO)) {
-    generateDatabaseError((*db)->err, (*db)->hnd);
+    generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
     return DATABASE_DISCONNECT_FAILURE;
   }
 

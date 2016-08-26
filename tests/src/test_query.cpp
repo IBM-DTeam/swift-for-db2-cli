@@ -40,71 +40,20 @@ void TestQuery::testSelectQuerySuccess(void) {
   freeQueryStruct(&testQuery);
 }
 
-// /*
-//  * Function:  TestQuery::testConnectSuccess
-//  * ------------------
-//  * Connects to a database with a valid connection string.
-//  *
-//  */
-// void TestQuery::testSelectQueryFail(void) {
-//
-//   // Connect to the database.
-//   database* db = NULL;
-//   state s = connect(&db, (char*) VALID_CONN_STR);
-//
-//   // Clean up
-//   freeDatabase(&db);
-//
-//   // Ensure we had a successful connection.
-//   CPPUNIT_ASSERT_MESSAGE("Couldn't connect successfully to the database", s == SUCCESS || s == SUCCESS_WITH_INFO);
-// }
-//
-// /*
-//  * Function:  TestQuery::testConnectSuccessMultiple
-//  * ------------------
-//  * Connects to a database with a valid connection string, multiple times.
-//  *
-//  */
-// void TestQuery::testUpdateQuerySuccess(void) {
-//
-//   int i = 0;
-//   for (; i < 5; i++)
-//     testConnectSuccessAndSuccessWithInfo();
-//
-// }
-//
-// /*
-//  * Function:  TestQuery::testConnectSuccessMultiple
-//  * ------------------
-//  * Connects to a database with a valid connection string, multiple times.
-//  *
-//  */
-// void TestQuery::testUpdateQueryFail(void) {
-//
-//   int i = 0;
-//   for (; i < 5; i++)
-//     testConnectSuccessAndSuccessWithInfo();
-//
-// }
-//
-// /*
-//  * Function:  TestQuery::testConnectCatastrophicFailure
-//  * ------------------
-//  * Fake a catastrophic failure to see our recovery.
-//  *
-//  */
-// void TestQuery::testOtherQuerySuccess(void) {
-//   // Nothing here for now.
-//   CPPUNIT_ASSERT_MESSAGE("Stub", 1);
-// }
-//
-// /*
-//  * Function:  TestQuery::testConnectCatastrophicFailure
-//  * ------------------
-//  * Fake a catastrophic failure to see our recovery.
-//  *
-//  */
-// void TestQuery::testOtherQueryFail(void) {
-//   // Nothing here for now.
-//   CPPUNIT_ASSERT_MESSAGE("Stub", 1);
-// }
+
+
+void TestQuery::testUpdateQuerySuccess(void) {
+
+  // Connect to the database.
+  database* db = NULL;
+  state s = connect(&db, (char*) VALID_CONN_STR);
+  queryStruct* testQuery = NULL;
+
+  state d = query(db, &testQuery, (char*) VALID_INSERT_QUERY_STR);
+  printf("\n%d\n", testQuery->rowCountPtr);
+//*((*testQuery)->retrieve->ColumnDatas[0])
+
+  // Clean up
+  freeDatabase(&db);
+  freeQueryStruct(&testQuery);
+}

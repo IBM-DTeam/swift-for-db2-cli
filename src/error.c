@@ -157,7 +157,7 @@ state generatePackageError(error* e, const char* file, int line, const char* mes
  *   MALLOC_FAILURE: Error could not be generated due to a malloc failure.
  *   FETCH_DATABASE_ERROR_FAILURE: Cannot get the error from the database.
  */
-state generateDatabaseError(error* e, handle* h) {
+state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType){
 
   // Reset the error
   resetError(e);
@@ -173,10 +173,9 @@ state generateDatabaseError(error* e, handle* h) {
   SQLSMALLINT len;
   SQLRETURN retCode;
 
-  // Do environment handle first
   do {
-    retCode = SQLGetDiagRec(SQL_HANDLE_ENV, h->hEnv, ++i, state, &native, desc,
-                        sizeof(desc), &len );
+    retCode = SQLGetDiagRec(hType, h, ++i, state, &native,
+                            desc, sizeof(desc), &len );
     if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
 
       // If the head of the error linked list is empty.
@@ -258,101 +257,8 @@ state generateDatabaseError(error* e, handle* h) {
 
       }
 
-    } else {
-      // Clear the struct on a database error.
-      if (e->database == NULL)
-        e->errorType = NO_ERROR;
-      resetError(e);
-      return FETCH_DATABASE_ERROR_FAILURE;
-    }
-
-  } while( retCode == SQL_SUCCESS );
-
-  // Do database handle next
-  do {
-    retCode = SQLGetDiagRec(SQL_HANDLE_DBC, h->hDbc, ++i, state, &native, desc,
-                        sizeof(desc), &len );
-    if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
-
-      // If the head of the error linked list is empty.
-      if (e->database == NULL) {
-
-        // Malloc a databaseError struct.
-        e->database = (databaseError*) malloc(sizeof(databaseError));
-        if (e->database == NULL) {
-          e->errorType = NO_ERROR;
-          return MALLOC_FAILURE;
-        }
-
-        // Malloc the state string.
-        e->database->state = (char*) malloc(sizeof(SQLCHAR) * 7);
-        if (e->database->state == NULL) {
-          e->errorType = NO_ERROR;
-          free(e->database);
-          e->database = NULL;
-          return MALLOC_FAILURE;
-        }
-        strcpy(e->database->state, (char*) state);
-
-        // Set the structs native variable.
-        e->database->native = native;
-
-        // Malloc the description string.
-        e->database->desc = (char*) malloc(sizeof(SQLCHAR) * 256);
-        if (e->database->desc == NULL) {
-          e->errorType = NO_ERROR;
-          free(e->database->state);
-          free(e->database);
-          e->database = NULL;
-          return MALLOC_FAILURE;
-        }
-        strcpy(e->database->desc, (char*) desc);
-
-        // Set the next databaseError to NULL.
-        e->database->next = NULL;
-      } else {
-
-        // Find the next empty position in the error linked list.
-        databaseError* position = e->database;
-        while (position->next != NULL)
-          position = position->next;
-
-        // Malloc the next databaseError.
-        position->next = (databaseError*) malloc(sizeof(databaseError));
-        if (position->next == NULL) {
-          resetError(e);
-          return MALLOC_FAILURE;
-        }
-
-        // Malloc the state string.
-        position->next->state = (char*) malloc(sizeof(SQLCHAR) * 7);
-        if (position->next->state == NULL) {
-          free(position->next);
-          position->next = NULL;
-          resetError(e);
-          return MALLOC_FAILURE;
-        }
-        strcpy(position->next->state, (char*) state);
-
-        // Set the structs native variable.
-        position->next->native = native;
-
-        // Malloc the desc string.
-        position->next->desc = (char*) malloc(sizeof(SQLCHAR) * 256);
-        if (position->next->desc == NULL) {
-          free(position->next->state);
-          free(position->next);
-          position->next = NULL;
-          resetError(e);
-          return MALLOC_FAILURE;
-        }
-        strcpy(position->next->desc, (char*) desc);
-
-        // Set the next error to NULL.
-        position->next->next = NULL;
-
-      }
-
+    } else if (retCode == SQL_NO_DATA) {
+      return SUCCESS;
     } else {
       // Clear the struct on a database error.
       if (e->database == NULL)
@@ -364,7 +270,6 @@ state generateDatabaseError(error* e, handle* h) {
   } while( retCode == SQL_SUCCESS );
 
   return SUCCESS;
-
 }
 
 /*

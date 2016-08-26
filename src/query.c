@@ -49,7 +49,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
   if (*hStmtStruct != NULL)
     return HANDLE_STATEMENT_EXISTS;
 
-  *hStmtStruct = (queryStruct *)malloc(sizeof(queryStruct));
+  *hStmtStruct = (queryStruct*) malloc(sizeof(queryStruct));
   if (*hStmtStruct == NULL)
     return MALLOC_FAILURE;
 
@@ -60,10 +60,9 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
   (*hStmtStruct)->retrieve = NULL;
 
   // Allocate a statement handle
-  retCode =
-      SQLAllocHandle(SQL_HANDLE_STMT, db->hnd->hDbc, &((*hStmtStruct)->hStmts));
+  retCode = SQLAllocHandle(SQL_HANDLE_STMT, db->hnd->hDbc, &((*hStmtStruct)->hStmts));
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError(db->err, db->hnd);
+    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
@@ -74,15 +73,13 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
   }
 
   // Directly execute ad hoc queries
-  retCode =
-      SQLExecDirect((*hStmtStruct)->hStmts, (SQLCHAR *)query, strlen(query));
+  retCode = SQLExecDirect((*hStmtStruct)->hStmts, (SQLCHAR*)query, strlen(query));
   if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
-    retCode =
-        SQLNumResultCols((*hStmtStruct)->hStmts, (SQLSMALLINT *)&numColumns);
+    retCode = SQLNumResultCols((*hStmtStruct)->hStmts, (SQLSMALLINT*) &numColumns);
     // SQLNumResultCols Didn't work and we don't have a SELECT statement
     if (numColumns == 0) {
-      retCode =
-          SQLRowCount((*hStmtStruct)->hStmts, &((*hStmtStruct)->rowCountPtr));
+
+      retCode = SQLRowCount((*hStmtStruct)->hStmts, &((*hStmtStruct)->rowCountPtr));
       if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
         // It was an other query. i.e chreate drop etc.
         if ((*hStmtStruct)->rowCountPtr == -1) {
@@ -95,7 +92,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
     } else {
       // Select query, allocate appropriate structures
-      (*hStmtStruct)->retrieve = (retrieveQuery *)malloc(sizeof(retrieveQuery));
+      (*hStmtStruct)->retrieve = (retrieveQuery*) malloc(sizeof(retrieveQuery));
 
       if ((*hStmtStruct)->retrieve == NULL)
         return MALLOC_FAILURE;
@@ -104,14 +101,10 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
       // Initialize and malloc retrieve variables
       (*hStmtStruct)->retrieve->sNumColResults = numColumns;
       (*hStmtStruct)->retrieve->rowCount = 0;
-      (*hStmtStruct)->retrieve->columnName =
-          (char **)malloc(numColumns * sizeof(char *));
-      (*hStmtStruct)->retrieve->columnData =
-          (data *)malloc(numColumns * sizeof(data));
-      (*hStmtStruct)->retrieve->columnDataType =
-          (short int *)malloc(numColumns * sizeof(short int));
-      (*hStmtStruct)->retrieve->columnDataSize =
-          (SQLULEN *)malloc(numColumns * sizeof(SQLULEN));
+      (*hStmtStruct)->retrieve->columnName = (char**) malloc(numColumns * sizeof(char *));
+      (*hStmtStruct)->retrieve->columnData = (data*) malloc(numColumns * sizeof(data));
+      (*hStmtStruct)->retrieve->columnDataType = (short int*) malloc(numColumns * sizeof(short int));
+      (*hStmtStruct)->retrieve->columnDataSize = (SQLULEN*) malloc(numColumns * sizeof(SQLULEN));
 
       // Initialize variables
       for (int i = 0; i < numColumns; i++) {
@@ -124,7 +117,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
       // Get info about each column
       for (int i = 0; i < numColumns; i++) {
-        SQLCHAR *colName = (SQLCHAR *)malloc(sizeof(SQLCHAR) * MAX_COL_NAME);
+        SQLCHAR *colName = (SQLCHAR*) malloc(sizeof(SQLCHAR) * MAX_COL_NAME);
 
         SQLSMALLINT columnNameLen;
         SQLSMALLINT columnDataDigits;
@@ -139,19 +132,18 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
         if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
 
-          (*hStmtStruct)->retrieve->columnName[i] =
-              (char *)malloc(sizeof(char) * (columnNameLen + 1));
+          (*hStmtStruct)->retrieve->columnName[i] = (char*) malloc(sizeof(char) * (columnNameLen + 1));
           strcpy((*hStmtStruct)->retrieve->columnName[i], (char *)colName);
           free(colName);
           printf("\nColumn type: %d, Column name: %s, Column data size%d\n",
                  (*hStmtStruct)->retrieve->columnDataType[i],
                  (*hStmtStruct)->retrieve->columnName[i],
-                 (*hStmtStruct)->retrieve->columnName[i]);
+                 (*hStmtStruct)->retrieve->columnDataSize[i]);
         }
       }
 
       // Setup temporary pointers to cell heads
-      data *tempHead[numColumns] = NULL;
+      data *tempHead[numColumns];
       for (int i = 0; i < numColumns; i++)
         tempHead[i] = &((*hStmtStruct)->retrieve->columnData[i]);
 
@@ -164,7 +156,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
           if ((*hStmtStruct)->retrieve->rowCount > 1) {
             for (int i = 0; i < numColumns; i++) {
-              tempHead[i]->next = (data *)malloc(sizeof(data));
+              tempHead[i]->next = (data*) malloc(sizeof(data));
               // check malloc
               tempHead[i] = tempHead[i]->next;
               tempHead[i]->item = NULL;
@@ -196,7 +188,8 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
     return QUERY_EXECUTION_FAILURE;
   }
 
-  return SUCCESS;
+  return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
+
 }
 
 /*
