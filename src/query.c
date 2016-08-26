@@ -75,22 +75,53 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
   // Directly execute ad hoc queries
   retCode = SQLExecDirect((*hStmtStruct)->hStmts, (SQLCHAR*)query, strlen(query));
   if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
+    if (retCode == SQL_SUCCESS_WITH_INFO)
+      generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+
     retCode = SQLNumResultCols((*hStmtStruct)->hStmts, (SQLSMALLINT*) &numColumns);
-    // SQLNumResultCols Didn't work and we don't have a SELECT statement
+    if (retCode != SQL_SUCCESS) {
+      generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+      if (retCode == SQL_SUCCESS_WITH_INFO) {
+        haveInfo = true;
+      } else {
+        SQLFreeHandle(SQL_HANDLE_STMT, (*hStmtStruct)->hStmts);
+        free(*hStmtStruct);
+        *hStmtStruct = NULL;
+        return GET_NUM_COLUMNS_FAILURE;
+      }
+    }
+
+    // SQLNumResultCols Didn't generate a result set, it wasn't a SELECT or VALUES query.
     if (numColumns == 0) {
 
       retCode = SQLRowCount((*hStmtStruct)->hStmts, &((*hStmtStruct)->rowCountPtr));
       if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
+        if (retCode == SQL_SUCCESS_WITH_INFO)
+          generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+
         // It was an other query. i.e chreate drop etc.
         if ((*hStmtStruct)->rowCountPtr == -1) {
+
+          (*hStmtStruct)->type = OTHER;
           return SUCCESS;
+
         } else {
+
           // It was an update query i.e update insert etc
+          (*hStmtStruct)->type = INFO;
           return SUCCESS;
         }
+      } else {
+        SQLFreeHandle(SQL_HANDLE_STMT, (*hStmtStruct)->hStmts);
+        free(*hStmtStruct);
+        *hStmtStruct = NULL;
+        return GET_NUM_ROWS_FAILURE;
       }
 
     } else {
+
+      (*hStmtStruct)->type = RECIEVE;
+
       // Select query, allocate appropriate structures
       (*hStmtStruct)->retrieve = (retrieveQuery*) malloc(sizeof(retrieveQuery));
 
@@ -181,7 +212,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
     return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
 
   } else {
-
+    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     SQLFreeHandle(SQL_HANDLE_STMT, (*hStmtStruct)->hStmts);
     free(*hStmtStruct);
     *hStmtStruct = NULL;
