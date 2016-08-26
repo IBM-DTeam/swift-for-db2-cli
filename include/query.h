@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <sqlcli1.h>
 
 #include "error.h"
@@ -34,6 +35,7 @@ typedef struct retrieveQuery{
   SQLSMALLINT      sNumColResults;
   char**           columnName;
   short int*       columnDataType;
+  SQLULEN*         columnDataSize;
   data*            columnData;
   SQLINTEGER       rowCount;
 } retrieveQuery;
@@ -41,7 +43,7 @@ typedef struct retrieveQuery{
 typedef struct queryStruct{
   SQLLEN           rowCountPtr;
   SQLHSTMT         hStmts;
-  int              queryType;
+  queryType        type;
   retrieveQuery*   retrieve;
 } queryStruct;
 
