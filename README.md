@@ -1,4 +1,4 @@
-![swift-for-db2-cli](https://ibm.ent.box.com/representation/file_version_100177933883/image_2048/1.png)
+![swift-for-db2-cli](https://ibm.ent.box.com/representation/file_version_100160380166/image_2048/1.png?shared_name=b1f1yajuxqlip32zoe185bp27mhcc4pw)
 
 **Swift SDK for DB2 CLI**
 
