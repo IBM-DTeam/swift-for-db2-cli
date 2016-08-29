@@ -148,14 +148,14 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
       // Get info about each column
       for (int i = 0; i < numColumns; i++) {
-        SQLCHAR *colName = (SQLCHAR*) malloc(sizeof(SQLCHAR) * MAX_COL_NAME);
+        char colName[MAX_COL_NAME];
 
         SQLSMALLINT columnNameLen;
         SQLSMALLINT columnDataDigits;
         SQLSMALLINT columnDataNullable;
 
         // Get SQLDescribeCol info
-        retCode = SQLDescribeCol((*hStmtStruct)->hStmts, i + 1, colName,
+        retCode = SQLDescribeCol((*hStmtStruct)->hStmts, i + 1, (SQLCHAR*) colName,
                                  MAX_COL_NAME, &columnNameLen,
                                  &((*hStmtStruct)->retrieve->columnDataType[i]),
                                  &((*hStmtStruct)->retrieve->columnDataSize[i]),
@@ -165,7 +165,6 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
           (*hStmtStruct)->retrieve->columnName[i] = (char*) malloc(sizeof(char) * (columnNameLen + 1));
           strcpy((*hStmtStruct)->retrieve->columnName[i], (char *)colName);
-          free(colName);
           printf("\nColumn type: %d, Column name: %s, Column data size%d\n",
                  (*hStmtStruct)->retrieve->columnDataType[i],
                  (*hStmtStruct)->retrieve->columnName[i],
