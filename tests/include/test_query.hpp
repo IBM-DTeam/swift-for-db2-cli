@@ -28,13 +28,15 @@
 
 class TestQuery : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TestQuery);
-  //CPPUNIT_TEST(testSelectQuerySuccess);
+  CPPUNIT_TEST(testSelectQuerySuccess);
   CPPUNIT_TEST(testUpdateQuerySuccess);
+  CPPUNIT_TEST(testQueryFail);
 
   CPPUNIT_TEST_SUITE_END();
 protected:
   void testSelectQuerySuccess(void);
   void testUpdateQuerySuccess(void);
+  void testQueryFail(void);
 };
 
 #endif

@@ -32,9 +32,10 @@ void TestQuery::testSelectQuerySuccess(void) {
   queryStruct* testQuery = NULL;
 
   state d = query(db, &testQuery, (char*) VALID_SELECT_QUERY_STR);
-  printf("%s\n", testQuery->retrieve->columnData[0]);
-//*((*testQuery)->retrieve->ColumnDatas[0])
 
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database", s == SUCCESS || s == SUCCESS_WITH_INFO);
+
+  CPPUNIT_ASSERT_MESSAGE("Query failed to execute", d == SUCCESS || d == SUCCESS_WITH_INFO);
   // Clean up
   freeDatabase(&db);
   freeQueryStruct(&testQuery);
@@ -48,10 +49,28 @@ void TestQuery::testUpdateQuerySuccess(void) {
   database* db = NULL;
   state s = connect(&db, (char*) VALID_CONN_STR);
   queryStruct* testQuery = NULL;
-
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database", s == SUCCESS || s == SUCCESS_WITH_INFO);
   state d = query(db, &testQuery, (char*) VALID_INSERT_QUERY_STR);
-  printf("\n%d\n", testQuery->rowCountPtr);
-//*((*testQuery)->retrieve->ColumnDatas[0])
+
+  CPPUNIT_ASSERT_MESSAGE("Query Failed", d == SUCCESS || d == SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Failed to insert value", testQuery->rowCountPtr == 1);
+
+  // Clean up
+  freeDatabase(&db);
+  freeQueryStruct(&testQuery);
+}
+
+
+void TestQuery::testQueryFail(void) {
+
+  // Connect to the database.
+  database* db = NULL;
+  state s = connect(&db, (char*) VALID_CONN_STR);
+  queryStruct* testQuery = NULL;
+
+  state d = query(db, &testQuery, (char*) INVALID_INSERT_QUERY_STR);
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database", s == SUCCESS || s == SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Query passed", d == QUERY_EXECUTION_FAILURE);
 
   // Clean up
   freeDatabase(&db);
