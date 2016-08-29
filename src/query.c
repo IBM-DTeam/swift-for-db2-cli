@@ -247,13 +247,8 @@ void freeQueryStruct(queryStruct **hStmtStruct) {
   for (int i = 0; i < (*hStmtStruct)->retrieve->sNumColResults; i++) {
     if ((*hStmtStruct)->retrieve->columnName[i] == NULL)
       return;
-    // if((*hStmtStruct)->retrieve->columnData[i] == NULL)
-    // return;
 
-    // if((*hStmtStruct)->retrieve->columnDataType[i] == NULL)
-    // return;
-
-    // free((*hStmtStruct)->retrieve->columnName[i]);
+      free((*hStmtStruct)->retrieve->columnName[i]);
     // free((*hStmtStruct)->retrieve->columnData[i]);
     // free((*hStmtStruct)->retrieve->columnDataType[i]);
   }
