@@ -44,7 +44,7 @@ else
 endif
 
 # Shared Library
-ibmdb2 : database.o error.o handle.o connect.o disconnect.o query.o
+ibmdb2 : database.o error.o handle.o connect.o disconnect.o query.o transaction.o
 	$(CC) $(COMPILE_FLAGS) $(SHARED_LIBRARY) -o lib$@.$(EXTENSION) $? $(PRODUCTION_LIBRARIES) $(PRODUCTION_LINKS)
 
 
@@ -77,6 +77,9 @@ disconnect.o : $(INCLUDE)/disconnect.h $(SRC)/disconnect.c $(INCLUDE)/database.h
 query.o : $(INCLUDE)/query.h $(SRC)/query.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/query.c
 
+transaction.o : $(INCLUDE)/transaction.h $(SRC)/transaction.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
+	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/transaction.c
+
 # Test files
 test_main.o : $(TEST_INCLUDE)/test_main.hpp $(TEST_SRC)/test_main.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(TEST_SRC)/test_main.cpp
@@ -96,6 +99,8 @@ test_error.o : error.o $(TEST_INCLUDE)/test_error.hpp $(TEST_SRC)/test_error.cpp
 test_query.o : query.o $(TEST_INCLUDE)/test_query.hpp $(TEST_SRC)/test_query.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(VALID_SELECT_QUERY_STR) $(VALID_INSERT_QUERY_STR) $(INVALID_INSERT_QUERY_STR) $(VALID_CREATE_QUERY_STR) $(TEST_SRC)/test_query.cpp
 
+# test_transaction.o : transaction.o $(TEST_INCLUDE)/test_transaction.hpp $(TEST_SRC)/test_transaction.cpp
+# 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(TEST_SRC)/test_transaction.cpp
 
 test_disconnect.o : disconnect.o $(TEST_INCLUDE)/test_disconnect.hpp $(TEST_SRC)/test_disconnect.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(TEST_SRC)/test_disconnect.cpp
