@@ -14,8 +14,8 @@
  * limitations under the License.
  **/
 
-#ifndef transaction_h
-#define transaction_h
+#ifndef prepared_h
+#define prepared_h
 
 #include <stdlib.h>
 #include <string.h>
@@ -25,7 +25,6 @@
 #include "error.h"
 #include "type.h"
 #include "database.h"
-
-state beginTrans(database** db);
+#include "query.h"
 
 #endif
