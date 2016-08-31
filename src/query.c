@@ -66,8 +66,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
-      free(*hStmtStruct);
-      *hStmtStruct = NULL;
+      freeQueryStruct(hStmtStruct);
       return STMT_HANDLE_SETUP_FAILURE;
     }
   }
@@ -75,18 +74,19 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
   // Directly execute ad hoc queries
   retCode = SQLExecDirect((*hStmtStruct)->hStmts, (SQLCHAR*)query, strlen(query));
   if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
-    if (retCode == SQL_SUCCESS_WITH_INFO)
+    if (retCode == SQL_SUCCESS_WITH_INFO) {
       generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+      haveInfo = true;
+    }
 
+    // Get the number of columns
     retCode = SQLNumResultCols((*hStmtStruct)->hStmts, (SQLSMALLINT*) &numColumns);
     if (retCode != SQL_SUCCESS) {
       generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
       if (retCode == SQL_SUCCESS_WITH_INFO) {
         haveInfo = true;
       } else {
-        SQLFreeHandle(SQL_HANDLE_STMT, (*hStmtStruct)->hStmts);
-        free(*hStmtStruct);
-        *hStmtStruct = NULL;
+        freeQueryStruct(hStmtStruct);
         return GET_NUM_COLUMNS_FAILURE;
       }
     }
@@ -96,10 +96,12 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
       retCode = SQLRowCount((*hStmtStruct)->hStmts, &((*hStmtStruct)->rowCountPtr));
       if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
-        if (retCode == SQL_SUCCESS_WITH_INFO)
+        if (retCode == SQL_SUCCESS_WITH_INFO) {
           generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+          haveInfo = true;
+        }
 
-        // It was an other query. i.e chreate drop etc.
+        // It was an other query. i.e create, drop, etc.
         if ((*hStmtStruct)->rowCountPtr == -1) {
 
           (*hStmtStruct)->type = OTHER;
@@ -107,35 +109,60 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
         } else {
 
-          // It was an update query i.e update insert etc
+          // It was an update query i.e update, insert, etc
           (*hStmtStruct)->type = INFO;
           return SUCCESS;
         }
       } else {
-        SQLFreeHandle(SQL_HANDLE_STMT, (*hStmtStruct)->hStmts);
-        free(*hStmtStruct);
-        *hStmtStruct = NULL;
+        freeQueryStruct(hStmtStruct);
         return GET_NUM_ROWS_FAILURE;
       }
 
     } else {
 
+      // The query returned a result set
       (*hStmtStruct)->type = RECIEVE;
 
-      // Select query, allocate appropriate structures
+      // Allocate appropriate structures
       (*hStmtStruct)->retrieve = (retrieveQuery*) malloc(sizeof(retrieveQuery));
-
-      if ((*hStmtStruct)->retrieve == NULL)
+      if ((*hStmtStruct)->retrieve == NULL) {
+        freeQueryStruct(hStmtStruct);
         return MALLOC_FAILURE;
+      }
 
       // The Query was a SELECT or VALUES Statement
       // Initialize and malloc retrieve variables
       (*hStmtStruct)->retrieve->sNumColResults = numColumns;
       (*hStmtStruct)->retrieve->rowCount = 0;
+      (*hStmtStruct)->retrieve->columnName = NULL;
+      (*hStmtStruct)->retrieve->columnData = NULL;
+      (*hStmtStruct)->retrieve->columnDataType = NULL;
+      (*hStmtStruct)->retrieve->columnDataSize = NULL;
+
+
       (*hStmtStruct)->retrieve->columnName = (char**) malloc(numColumns * sizeof(char *));
+      if ((*hStmtStruct)->retrieve->columnName == NULL) {
+        freeQueryStruct(hStmtStruct);
+        return MALLOC_FAILURE;
+      }
+
       (*hStmtStruct)->retrieve->columnData = (data*) malloc(numColumns * sizeof(data));
+      if ((*hStmtStruct)->retrieve->columnData == NULL) {
+        freeQueryStruct(hStmtStruct);
+        return MALLOC_FAILURE;
+      }
+
       (*hStmtStruct)->retrieve->columnDataType = (short int*) malloc(numColumns * sizeof(short int));
+      if ((*hStmtStruct)->retrieve->columnDataType == NULL) {
+        freeQueryStruct(hStmtStruct);
+        return MALLOC_FAILURE;
+      }
+
       (*hStmtStruct)->retrieve->columnDataSize = (SQLULEN*) malloc(numColumns * sizeof(SQLULEN));
+      if ((*hStmtStruct)->retrieve->columnDataSize == NULL) {
+        freeQueryStruct(hStmtStruct);
+        return MALLOC_FAILURE;
+      }
 
       // Initialize variables
       for (int i = 0; i < numColumns; i++) {
@@ -162,32 +189,55 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
                                  &columnDataDigits, &columnDataNullable);
 
         if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
+          if (retCode == SQL_SUCCESS_WITH_INFO) {
+            generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+            haveInfo = true;
+          }
 
           (*hStmtStruct)->retrieve->columnName[i] = (char*) malloc(sizeof(char) * (columnNameLen + 1));
+          if ((*hStmtStruct)->retrieve->columnName[i] == NULL) {
+            freeQueryStruct(hStmtStruct);
+            return MALLOC_FAILURE;
+          }
+
           strcpy((*hStmtStruct)->retrieve->columnName[i], (char *)colName);
-          printf("\nColumn type: %d, Column name: %s, Column data size%d\n",
-                 (*hStmtStruct)->retrieve->columnDataType[i],
-                 (*hStmtStruct)->retrieve->columnName[i],
-                 (*hStmtStruct)->retrieve->columnDataSize[i]);
+
+        } else {
+          freeQueryStruct(hStmtStruct);
+          return DESCRIBE_COL_FAILURE;
         }
       }
 
       // Setup temporary pointers to cell heads
       data *tempHead[numColumns];
       for (int i = 0; i < numColumns; i++)
-        tempHead[i] = &((*hStmtStruct)->retrieve->columnData[i]);
+        tempHead[i] = (*hStmtStruct)->retrieve->columnData + i;
 
       // Get actual data until no more data is returned
       while (true) {
+
+        // Get the next row
         retCode = SQLFetch((*hStmtStruct)->hStmts);
         if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
+          if (retCode == SQL_SUCCESS_WITH_INFO) {
+            generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+            haveInfo = true;
+          }
 
+          // Increment the row count
           ((*hStmtStruct)->retrieve->rowCount)++;
 
+          // Already initialized struct for rowCount 0, above.
           if ((*hStmtStruct)->retrieve->rowCount > 1) {
             for (int i = 0; i < numColumns; i++) {
               tempHead[i]->next = (data*) malloc(sizeof(data));
-              // check malloc
+              if (tempHead[i]->next == NULL) {
+                // Malloc failed, cleanup.
+                freeQueryStruct(hStmtStruct);
+                return MALLOC_FAILURE;
+              }
+
+              // Initialize the struct
               tempHead[i] = tempHead[i]->next;
               tempHead[i]->item = NULL;
               tempHead[i]->next = NULL;
@@ -196,12 +246,58 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
           for (int i = 0; i < numColumns; i++) {
 
+            SQLLEN binaryLenOrInd = 0;
+            char cell[(*hStmtStruct)->retrieve->columnDataSize[i] + 1];
+            while (true) {
+
+              // Where to continue writing in the char array.
+              int writeIndex = 0;
+
+              // Get the data for the cell
+              retCode = SQLGetData((*hStmtStruct)->hStmts, i + 1, SQL_C_CHAR, cell + writeIndex, sizeof(cell) - (sizeof(char) * writeIndex), &binaryLenOrInd);
+              if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
+                // Set the next write index for the char array
+                writeIndex = strlen(cell) + 1;
+              } else {
+                // We encountered an error getting the cell data
+                if (retCode != SQL_NO_DATA) {
+                  generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+                  freeQueryStruct(hStmtStruct);
+                  return CANNOT_GET_DATA;
+                } else {
+                  // No more data for this cell.
+                  // Copy it over to the data list and move onto
+                  // the next cell.
+
+                  // If the cell held a NULL, we do nothing
+                  if (binaryLenOrInd != SQL_NULL_DATA) {
+                    tempHead[i]->item = (char*) malloc(sizeof(char) * (strlen(cell) + 1));
+                    if (tempHead[i]->item == NULL) {
+                      // Malloc failed, cleanup.
+                      freeQueryStruct(hStmtStruct);
+                      return MALLOC_FAILURE;
+                    }
+
+                    // Copy the cell data over into our structure.
+                    strcpy(tempHead[i]->item, cell);
+
+                  }
+
+                  break;
+                }
+              }
+            }
           }
 
         } else {
+          // We encountered an error getting the row
           if (retCode != SQL_NO_DATA) {
-            // free and return err
+            // Error, clean up and return.
+            generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+            freeQueryStruct(hStmtStruct);
+            return CANNOT_FETCH_ROW;
           } else {
+            // No more rows.
             break;
           }
         }
@@ -212,9 +308,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
   } else {
     generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
-    SQLFreeHandle(SQL_HANDLE_STMT, (*hStmtStruct)->hStmts);
-    free(*hStmtStruct);
-    *hStmtStruct = NULL;
+    freeQueryStruct(hStmtStruct);
     return QUERY_EXECUTION_FAILURE;
   }
 
@@ -235,35 +329,76 @@ void freeQueryStruct(queryStruct **hStmtStruct) {
     return;
 
   // Check if the retrieve struct exists
-  if ((*hStmtStruct)->retrieve == NULL)
-    return;
+  if ((*hStmtStruct)->retrieve != NULL) {
 
-  // Check if Column names has been made
-  if ((*hStmtStruct)->retrieve->columnName == NULL)
-    return;
+    // Ensure we have at least 1 or more columns
+    if ((*hStmtStruct)->retrieve->sNumColResults > 0) {
 
-  // Loop through the column names and free all names
-  // Check Column names actually exist
-  for (int i = 0; i < (*hStmtStruct)->retrieve->sNumColResults; i++) {
-    if ((*hStmtStruct)->retrieve->columnName[i] == NULL)
-      return;
+      for (int i = 0; i < (*hStmtStruct)->retrieve->sNumColResults; i++) {
+        
+        // Free the column name's
+        if ((*hStmtStruct)->retrieve->columnName[i] != NULL) {
+          fprintf(stderr, "\n\nCOL: %s\n", (*hStmtStruct)->retrieve->columnName[i]);
+          free((*hStmtStruct)->retrieve->columnName[i]);
+        }
 
-      free((*hStmtStruct)->retrieve->columnName[i]);
-    // free((*hStmtStruct)->retrieve->columnData[i]);
-    // free((*hStmtStruct)->retrieve->columnDataType[i]);
+        // Temporary pointers to help us free
+        data* head = (*hStmtStruct)->retrieve->columnData + i;
+        data* previous = (*hStmtStruct)->retrieve->columnData + i;
+
+        // Goes through every row (j) for the column (i)
+        for (int j = 0; j < (*hStmtStruct)->retrieve->rowCount; j++) {
+
+          fprintf(stderr, "----- ROW: %s\n", head->item);
+
+          // Clears the items
+          if (head->item != NULL)
+            free(head->item);
+
+          // Goes to the next item.
+          if (head->next != NULL) {
+            previous = head;
+            head = head->next;
+            free(previous);
+          } else {
+            free(head);
+            break;
+          }
+
+        }
+
+      }
+
+    }
+
+    // Free the column name
+    if ((*hStmtStruct)->retrieve->columnName != NULL)
+      free((*hStmtStruct)->retrieve->columnName);
+
+    // Free the column data type
+    if ((*hStmtStruct)->retrieve->columnDataType != NULL)       
+      free((*hStmtStruct)->retrieve->columnDataType);
+
+    // Free the column data size
+    if ((*hStmtStruct)->retrieve->columnDataSize != NULL)
+      free((*hStmtStruct)->retrieve->columnDataSize);
+
+    // Free the column data
+    if ((*hStmtStruct)->retrieve->columnData != NULL)
+      free((*hStmtStruct)->retrieve->columnData);
+
+    // Free retrieve itself.
+    free((*hStmtStruct)->retrieve);
+
   }
-  // Free ColumnNames after freeing each column name
-  free((*hStmtStruct)->retrieve->columnName);
 
-  // Free the data collected
-  free((*hStmtStruct)->retrieve->columnData);
-
-  // Free DataTypes
-  free((*hStmtStruct)->retrieve->columnDataType);
-
-  // Free the inner retrieve struct
-  free((*hStmtStruct)->retrieve);
+  // Free the handle statement
+  if ((*hStmtStruct)->hStmts != SQL_NULL_HSTMT)
+    SQLFreeHandle(SQL_HANDLE_STMT, (*hStmtStruct)->hStmts);
 
   // Free the final statement struct
   free(*hStmtStruct);
+
+  *hStmtStruct = NULL;
+
 }

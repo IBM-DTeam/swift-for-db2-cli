@@ -36,6 +36,7 @@ void TestQuery::testSelectQuerySuccess(void) {
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database", s == SUCCESS || s == SUCCESS_WITH_INFO);
 
   CPPUNIT_ASSERT_MESSAGE("Query failed to execute", d == SUCCESS || d == SUCCESS_WITH_INFO);
+  
   // Clean up
   freeDatabase(&db);
   freeQueryStruct(&testQuery);
