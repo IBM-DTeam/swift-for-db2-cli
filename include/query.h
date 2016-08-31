@@ -36,7 +36,7 @@ typedef struct retrieveQuery{
   char**           columnName;
   short int*       columnDataType;
   SQLULEN*         columnDataSize;
-  data*            columnData;
+  data**           columnData;
   SQLINTEGER       rowCount;
 } retrieveQuery;
 

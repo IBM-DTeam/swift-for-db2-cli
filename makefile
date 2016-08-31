@@ -55,7 +55,7 @@ install : ibmdb2
 	sudo cp -rf include/* /usr/local/include/ibmdb2/
 
 # Compile tests
-test : database.o error.o handle.o connect.o disconnect.o query.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_query.o test_transaction.o test_main.o
+test : database.o error.o handle.o connect.o disconnect.o query.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_query.o test_main.o
 	$(CC) $(COMPILE_FLAGS) -o $@ $? $(TEST_LIBRARIES) $(TEST_LINKS)
 
 # Main files

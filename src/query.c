@@ -140,16 +140,33 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
       (*hStmtStruct)->retrieve->columnDataSize = NULL;
 
 
-      (*hStmtStruct)->retrieve->columnName = (char**) malloc(numColumns * sizeof(char *));
+      (*hStmtStruct)->retrieve->columnName = (char**) malloc(numColumns * sizeof(char*));
       if ((*hStmtStruct)->retrieve->columnName == NULL) {
         freeQueryStruct(hStmtStruct);
         return MALLOC_FAILURE;
       }
 
-      (*hStmtStruct)->retrieve->columnData = (data*) malloc(numColumns * sizeof(data));
+      for (int i = 0; i < numColumns; i++)
+        (*hStmtStruct)->retrieve->columnName[i] = NULL;
+
+      (*hStmtStruct)->retrieve->columnData = (data**) malloc(numColumns * sizeof(data*));
       if ((*hStmtStruct)->retrieve->columnData == NULL) {
         freeQueryStruct(hStmtStruct);
         return MALLOC_FAILURE;
+      }
+
+      for (int i = 0; i < numColumns; i++)
+        (*hStmtStruct)->retrieve->columnData[i] = NULL;
+
+      for (int i = 0; i < numColumns; i++) {
+        (*hStmtStruct)->retrieve->columnData[i] = (data*) malloc(sizeof(data));
+        if ((*hStmtStruct)->retrieve->columnData[i] == NULL) {
+          freeQueryStruct(hStmtStruct);
+          return MALLOC_FAILURE;
+        }
+
+        (*hStmtStruct)->retrieve->columnData[i]->item = NULL;
+        (*hStmtStruct)->retrieve->columnData[i]->next = NULL;
       }
 
       (*hStmtStruct)->retrieve->columnDataType = (short int*) malloc(numColumns * sizeof(short int));
@@ -169,8 +186,8 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
         (*hStmtStruct)->retrieve->columnName[i] = NULL;
         (*hStmtStruct)->retrieve->columnDataType[i] = -1;
         (*hStmtStruct)->retrieve->columnDataSize[i] = 0;
-        (*hStmtStruct)->retrieve->columnData[i].item = NULL;
-        (*hStmtStruct)->retrieve->columnData[i].next = NULL;
+        (*hStmtStruct)->retrieve->columnData[i]->item = NULL;
+        (*hStmtStruct)->retrieve->columnData[i]->next = NULL;
       }
 
       // Get info about each column
@@ -211,7 +228,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
       // Setup temporary pointers to cell heads
       data *tempHead[numColumns];
       for (int i = 0; i < numColumns; i++)
-        tempHead[i] = (*hStmtStruct)->retrieve->columnData + i;
+        tempHead[i] = (*hStmtStruct)->retrieve->columnData[i];
 
       // Get actual data until no more data is returned
       while (true) {
@@ -343,8 +360,8 @@ void freeQueryStruct(queryStruct **hStmtStruct) {
         }
 
         // Temporary pointers to help us free
-        data* head = (*hStmtStruct)->retrieve->columnData + i;
-        data* previous = (*hStmtStruct)->retrieve->columnData + i;
+        data* head = (*hStmtStruct)->retrieve->columnData[i];
+        data* previous = (*hStmtStruct)->retrieve->columnData[i];
 
         // Goes through every row (j) for the column (i)
         for (int j = 0; j < (*hStmtStruct)->retrieve->rowCount; j++) {
