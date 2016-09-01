@@ -30,10 +30,12 @@ void TestConnect::testConnectSuccessAndSuccessWithInfo(void) {
   state s = connect(&db, (char*) VALID_CONN_STR);
 
   // Clean up
-  freeDatabase(&db);
+  if (s != CATASTROPHIC_FAILURE)
+    freeDatabase(&db);
 
   // Ensure we had a successful connection.
   CPPUNIT_ASSERT_MESSAGE("Couldn't connect successfully to the database", s == SUCCESS || s == SUCCESS_WITH_INFO);
+
 }
 
 /*
@@ -57,8 +59,10 @@ void TestConnect::testConnectSuccessAndSuccessWithInfoMultiple(void) {
  *
  */
 void TestConnect::testConnectCatastrophicFailure(void) {
+
   // Nothing here for now.
   CPPUNIT_ASSERT_MESSAGE("Stub", 1);
+
 }
 
 /*
@@ -82,12 +86,14 @@ void TestConnect::testConnectCatastrophicFailureMultiple(void) {
  *
  */
 void TestConnect::testConnectSetupDatabaseFailure(void) {
+
   // Try to connect to the database.
   database* db = NULL;
   state s = connect(&db, (char*) INVALID_CONN_STR);
 
   // Clean up
-  freeDatabase(&db);
+  if (s != CATASTROPHIC_FAILURE)
+    freeDatabase(&db);
 
   // Ensure we had a database setup failure.
   CPPUNIT_ASSERT_MESSAGE("The database didn't fail to setup.", s == SETUP_DATABASE_FAILURE);
@@ -121,7 +127,7 @@ void TestConnect::testConnectDatabaseExists(void) {
   state s = connect(&db, (char*) INVALID_CONN_STR);
 
   // Ensure we didn't connect to it
-  if (s != SETUP_DATABASE_FAILURE)
+  if (s != SETUP_DATABASE_FAILURE && s != CATASTROPHIC_FAILURE)
     freeDatabase(&db);
 
   CPPUNIT_ASSERT_MESSAGE("Database didn't fail to setup.", s == SETUP_DATABASE_FAILURE);
@@ -130,7 +136,8 @@ void TestConnect::testConnectDatabaseExists(void) {
   s = connect(&db, (char*) INVALID_CONN_STR);
 
   // Clean up
-  freeDatabase(&db);
+  if (s != CATASTROPHIC_FAILURE)
+    freeDatabase(&db);
 
   CPPUNIT_ASSERT_MESSAGE("The database didn't exist", s == DATABASE_EXISTS);
 
