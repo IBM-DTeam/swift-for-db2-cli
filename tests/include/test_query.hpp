@@ -25,18 +25,18 @@
 // The functions to test
 #include "query.h"
 #include "connect.h"
+#include "disconnect.h"
 
 class TestQuery : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TestQuery);
-  CPPUNIT_TEST(testSelectQuerySuccess);
-  CPPUNIT_TEST(testUpdateQuerySuccess);
-  CPPUNIT_TEST(testQueryFail);
-
+  CPPUNIT_TEST(testResultQuerySuccess);
+  CPPUNIT_TEST(testInfoQuerySuccess);
+  CPPUNIT_TEST(testInfoQueryFail);
   CPPUNIT_TEST_SUITE_END();
 protected:
-  void testSelectQuerySuccess(void);
-  void testUpdateQuerySuccess(void);
-  void testQueryFail(void);
+  void testResultQuerySuccess(void);
+  void testInfoQuerySuccess(void);
+  void testInfoQueryFail(void);
 };
 
 #endif

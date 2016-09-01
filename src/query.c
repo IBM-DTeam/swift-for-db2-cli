@@ -14,7 +14,6 @@
  * limitations under the License.
  **/
 
-#include <stdio.h>
 #include "query.h"
 
 #define MAX_COL_NAME 256
@@ -22,18 +21,27 @@
 /*
  * Function:  query
  * ------------------
- * Querys the database
+ * Querys the database,and fills out the hStmtStruct properly.
  *
- * db: Where the database struct will be setup.
- * hStmt: The statement handle pointer
- * query: The string of the actual query
+ * More info to come.
+ *
+ * db: Connected and ready database..
+ * hStmt: The statement handle pointer.
+ * query: The string of the query.
  *
  * returns:
  *   SUCCESS: The database struct was setup without issues.
- *   NO_DATABASE_FOUND: Database does not exist
- *   STATEMENT_HANDLE_EXISTS: The provided handle is already allocated
- *   QUERY_FAILURE: Execution of query failed
- *   STMT_HANDLE_SETUP_FAILURE: failed to properly set up the statement handle
+ *   SUCCESS_WITH_INFO: The database strruct was setup without a message.
+ *   NO_DATABASE_FOUND: Database does not exist.
+ *   STATEMENT_HANDLE_EXISTS: The provided handle is already allocated.
+ *   STMT_HANDLE_SETUP_FAILURE: failed to properly set up the statement handle.
+ *   QUERY_EXECUTION_FAILURE: Execution of query failed.
+ *   GET_NUM_COLUMNS_FAILURE: Cannot get the number of columns for the table.
+ *   GET_NUM_ROWS_FAILURE: Cannot get number of rows affected.
+ *   DESCRIBE_COL_FAILURE: Cannot describe the column.
+ *   CANNOT_GET_DATA: Cannot get data for the nth column and nth row.
+ *   CANNOT_FETCH_ROW: Cannot get the next row.
+ *   MALLOC_FAILURE: Failed to allocate memory somewhere.
  *
  */
 state query(database *db, queryStruct **hStmtStruct, char *query) {
@@ -139,25 +147,29 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
       (*hStmtStruct)->retrieve->columnDataType = NULL;
       (*hStmtStruct)->retrieve->columnDataSize = NULL;
 
-
+      // Allocation
       (*hStmtStruct)->retrieve->columnName = (char**) malloc(numColumns * sizeof(char*));
       if ((*hStmtStruct)->retrieve->columnName == NULL) {
         freeQueryStruct(hStmtStruct);
         return MALLOC_FAILURE;
       }
 
+      // Initialize values.
       for (int i = 0; i < numColumns; i++)
         (*hStmtStruct)->retrieve->columnName[i] = NULL;
 
+      // Allocation
       (*hStmtStruct)->retrieve->columnData = (data**) malloc(numColumns * sizeof(data*));
       if ((*hStmtStruct)->retrieve->columnData == NULL) {
         freeQueryStruct(hStmtStruct);
         return MALLOC_FAILURE;
       }
 
+      // Initialize values.
       for (int i = 0; i < numColumns; i++)
         (*hStmtStruct)->retrieve->columnData[i] = NULL;
 
+      // Allocation
       for (int i = 0; i < numColumns; i++) {
         (*hStmtStruct)->retrieve->columnData[i] = (data*) malloc(sizeof(data));
         if ((*hStmtStruct)->retrieve->columnData[i] == NULL) {
@@ -165,16 +177,19 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
           return MALLOC_FAILURE;
         }
 
+        // Initialize values.
         (*hStmtStruct)->retrieve->columnData[i]->item = NULL;
         (*hStmtStruct)->retrieve->columnData[i]->next = NULL;
       }
 
+      // Allocation
       (*hStmtStruct)->retrieve->columnDataType = (short int*) malloc(numColumns * sizeof(short int));
       if ((*hStmtStruct)->retrieve->columnDataType == NULL) {
         freeQueryStruct(hStmtStruct);
         return MALLOC_FAILURE;
       }
 
+      // Allocation
       (*hStmtStruct)->retrieve->columnDataSize = (SQLULEN*) malloc(numColumns * sizeof(SQLULEN));
       if ((*hStmtStruct)->retrieve->columnDataSize == NULL) {
         freeQueryStruct(hStmtStruct);
@@ -211,12 +226,14 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
             haveInfo = true;
           }
 
+          // Allocate the length of the column name
           (*hStmtStruct)->retrieve->columnName[i] = (char*) malloc(sizeof(char) * (columnNameLen + 1));
           if ((*hStmtStruct)->retrieve->columnName[i] == NULL) {
             freeQueryStruct(hStmtStruct);
             return MALLOC_FAILURE;
           }
 
+          // Copy it over.
           strcpy((*hStmtStruct)->retrieve->columnName[i], (char *)colName);
 
         } else {
@@ -324,6 +341,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
     return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
 
   } else {
+    // Query failed to execute.
     generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     freeQueryStruct(hStmtStruct);
     return QUERY_EXECUTION_FAILURE;
@@ -354,10 +372,8 @@ void freeQueryStruct(queryStruct **hStmtStruct) {
       for (int i = 0; i < (*hStmtStruct)->retrieve->sNumColResults; i++) {
         
         // Free the column name's
-        if ((*hStmtStruct)->retrieve->columnName[i] != NULL) {
-          fprintf(stderr, "\n\nCOL: %s\n", (*hStmtStruct)->retrieve->columnName[i]);
+        if ((*hStmtStruct)->retrieve->columnName[i] != NULL)
           free((*hStmtStruct)->retrieve->columnName[i]);
-        }
 
         // Temporary pointers to help us free
         data* head = (*hStmtStruct)->retrieve->columnData[i];
@@ -365,8 +381,6 @@ void freeQueryStruct(queryStruct **hStmtStruct) {
 
         // Goes through every row (j) for the column (i)
         for (int j = 0; j < (*hStmtStruct)->retrieve->rowCount; j++) {
-
-          fprintf(stderr, "----- ROW: %s\n", head->item);
 
           // Clears the items
           if (head->item != NULL)
@@ -378,6 +392,7 @@ void freeQueryStruct(queryStruct **hStmtStruct) {
             head = head->next;
             free(previous);
           } else {
+            // Last item, free it.
             free(head);
             break;
           }

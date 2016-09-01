@@ -15,65 +15,78 @@
  **/
 
 #include "test_query.hpp"
-#include <stdio.h>
 
 
 /*
- * Function:  TestQuery::testConnectSuccess
+ * Function:  TestQuery::testResultQuerySuccess
  * ------------------
- * Connects to a database with a valid connection string.
+ * Connects to a database, queries the database with a select statement
+ * and disconnects from the database.
  *
  */
-void TestQuery::testSelectQuerySuccess(void) {
+void TestQuery::testResultQuerySuccess(void) {
 
   // Connect to the database.
   database* db = NULL;
   state s = connect(&db, (char*) VALID_CONN_STR);
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+
+  // Query the database.
   queryStruct* testQuery = NULL;
-
-  state d = query(db, &testQuery, (char*) VALID_SELECT_QUERY_STR);
-
-  CPPUNIT_ASSERT_MESSAGE("Can't connect to database", s == SUCCESS || s == SUCCESS_WITH_INFO);
-
-  CPPUNIT_ASSERT_MESSAGE("Query failed to execute", d == SUCCESS || d == SUCCESS_WITH_INFO);
+  s = query(db, &testQuery, (char*) VALID_SELECT_QUERY_STR);
+  CPPUNIT_ASSERT_MESSAGE("Query failed to execute.", s == SUCCESS || s == SUCCESS_WITH_INFO);
   
-  // Clean up
-  freeDatabase(&db);
+  // Disconnect.
+  s = disconnect(&db);
+  CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+
+  // Free the query struct, since we're done with it.
   freeQueryStruct(&testQuery);
+
 }
 
 
 
-void TestQuery::testUpdateQuerySuccess(void) {
+void TestQuery::testInfoQuerySuccess(void) {
 
   // Connect to the database.
   database* db = NULL;
   state s = connect(&db, (char*) VALID_CONN_STR);
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+
+  // Query the database.
   queryStruct* testQuery = NULL;
-  CPPUNIT_ASSERT_MESSAGE("Can't connect to database", s == SUCCESS || s == SUCCESS_WITH_INFO);
-  state d = query(db, &testQuery, (char*) VALID_INSERT_QUERY_STR);
+  s = query(db, &testQuery, (char*) VALID_INSERT_QUERY_STR);
+  CPPUNIT_ASSERT_MESSAGE("Query Failed.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Failed to insert value.", testQuery->rowCountPtr == 1);
 
-  CPPUNIT_ASSERT_MESSAGE("Query Failed", d == SUCCESS || d == SUCCESS_WITH_INFO);
-  CPPUNIT_ASSERT_MESSAGE("Failed to insert value", testQuery->rowCountPtr == 1);
+  // Disconnect.
+  s = disconnect(&db);
+  CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
 
-  // Clean up
-  freeDatabase(&db);
+  // Free the query struct, since we're done with it.
   freeQueryStruct(&testQuery);
+
 }
 
 
-void TestQuery::testQueryFail(void) {
+void TestQuery::testInfoQueryFail(void) {
 
   // Connect to the database.
   database* db = NULL;
   state s = connect(&db, (char*) VALID_CONN_STR);
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+
+  // Query the database.
   queryStruct* testQuery = NULL;
+  s = query(db, &testQuery, (char*) INVALID_INSERT_QUERY_STR);
+  CPPUNIT_ASSERT_MESSAGE("Query passed", s == QUERY_EXECUTION_FAILURE);
 
-  state d = query(db, &testQuery, (char*) INVALID_INSERT_QUERY_STR);
-  CPPUNIT_ASSERT_MESSAGE("Can't connect to database", s == SUCCESS || s == SUCCESS_WITH_INFO);
-  CPPUNIT_ASSERT_MESSAGE("Query passed", d == QUERY_EXECUTION_FAILURE);
+  // Disconnect
+  s = disconnect(&db);
+  CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
 
-  // Clean up
-  freeDatabase(&db);
+  // Free the query struct, since we're done with it.
   freeQueryStruct(&testQuery);
+
 }
