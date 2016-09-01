@@ -88,11 +88,11 @@ void TestHandle::testFreeHandle(void) {
   // Create the handle
   handle* h = NULL;
   state s = createHandle(&h);
-  CPPUNIT_ASSERT_MESSAGE("State wasn't successful", s == SUCCESS);
 
   // Clean up
   freeHandle(&h);
 
+  CPPUNIT_ASSERT_MESSAGE("Couldn't create the handle.", s == SUCCESS);
   CPPUNIT_ASSERT_MESSAGE("Couldn't handle wasn't freed properly.", h == NULL);
 
 }

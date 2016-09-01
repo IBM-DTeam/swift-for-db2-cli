@@ -33,7 +33,8 @@ void TestDatabase::testCreateDatabaseSuccess(void) {
   freeDatabase(&db);
 
   // Ensure we had a successful connection.
-  CPPUNIT_ASSERT_MESSAGE("Couldn't create the database struct", s == SUCCESS);
+  CPPUNIT_ASSERT_MESSAGE("Couldn't create the database.", s == SUCCESS);
+
 }
 
 /*
@@ -88,14 +89,14 @@ void TestDatabase::testCreateDatabaseMallocFailureMultiple(void) {
  */
 void TestDatabase::testFreeDatabase(void) {
 
+  // Create the database struct
   database* db = NULL;
-
   state s = createDatabase(&db);
-  CPPUNIT_ASSERT_MESSAGE("State wasn't successful", s == SUCCESS);
 
+  // Clean up
   freeDatabase(&db);
 
-  // Valgrind will check for leaks.
+  CPPUNIT_ASSERT_MESSAGE("Couldn't create the database.", s == SUCCESS);
   CPPUNIT_ASSERT_MESSAGE("Database wasn't freed properly.", db == NULL);
 
 
@@ -114,6 +115,5 @@ void TestDatabase::testFreeDatabaseMultiple(void) {
   int i = 0;
   for (; i < 5; i++)
     testFreeDatabase();
-
 
 }
