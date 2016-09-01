@@ -39,12 +39,15 @@ void TestQuery::testResultQuerySuccess(void) {
   queryStruct* testQuery = NULL;
   s = query(db, &testQuery, (char*) VALID_SELECT_QUERY_STR);
   
-  // Free the query struct, since we're done with it.
+  // Free the query struct, since we won't pass the test case.
   if (s != SUCCESS && s != SUCCESS_WITH_INFO)
     freeQueryStruct(&testQuery);
 
   CPPUNIT_ASSERT_MESSAGE("Query failed to execute, when it should've.", s == SUCCESS || s == SUCCESS_WITH_INFO);
   CPPUNIT_ASSERT_MESSAGE("Didn't have at least one column.", testQuery->retrieve->sNumColResults > 0);
+
+  // Free the query struct, since we're done with it.
+  freeQueryStruct(&testQuery);
   
   // Disconnect.
   s = disconnect(&db);
@@ -69,12 +72,15 @@ void TestQuery::testInfoQuerySuccess(void) {
   queryStruct* testQuery = NULL;
   s = query(db, &testQuery, (char*) VALID_INSERT_QUERY_STR);
 
-  // Free the query struct, since we're done with it.
+  // Free the query struct, since we won't pass the test case.
   if (s != SUCCESS && s != SUCCESS_WITH_INFO)
     freeQueryStruct(&testQuery);
 
   CPPUNIT_ASSERT_MESSAGE("Query Failed, it should've passed.", s == SUCCESS || s == SUCCESS_WITH_INFO);
   CPPUNIT_ASSERT_MESSAGE("Failed to insert value.", testQuery->rowCountPtr == 1);
+
+  // Free the query struct, since we're done with it.
+  freeQueryStruct(&testQuery);
 
   // Disconnect.
   s = disconnect(&db);
