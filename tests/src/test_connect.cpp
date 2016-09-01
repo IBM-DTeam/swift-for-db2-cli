@@ -30,7 +30,7 @@ void TestConnect::testConnectSuccessAndSuccessWithInfo(void) {
   state s = connect(&db, (char*) VALID_CONN_STR);
 
   // Clean up
-  freeDatabase(&db);
+  disconnect(&db);
 
   // Ensure we had a successful connection.
   CPPUNIT_ASSERT_MESSAGE("Couldn't connect successfully to the database", s == SUCCESS || s == SUCCESS_WITH_INFO);

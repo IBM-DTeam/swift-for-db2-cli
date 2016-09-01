@@ -24,6 +24,7 @@
 
 // The functions to test
 #include "connect.h"
+#include "disconnect.h"
 
 class TestConnect : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TestConnect);
