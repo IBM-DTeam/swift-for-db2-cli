@@ -30,8 +30,7 @@ void TestHandle::testCreateHandleSuccess(void) {
   state s = createHandle(&h);
 
   // Clean up
-  if (s != MALLOC_FAILURE)
-    freeHandle(&h);
+  freeHandle(&h);
 
   CPPUNIT_ASSERT_MESSAGE("Couldn't create the handle.", s == SUCCESS);
 
@@ -91,8 +90,7 @@ void TestHandle::testFreeHandle(void) {
   state s = createHandle(&h);
 
   // Clean up
-  if (s != MALLOC_FAILURE)
-    freeHandle(&h);
+  freeHandle(&h);
 
   CPPUNIT_ASSERT_MESSAGE("Couldn't create the handle.", s == SUCCESS);
   CPPUNIT_ASSERT_MESSAGE("Couldn't handle wasn't freed properly.", h == NULL);

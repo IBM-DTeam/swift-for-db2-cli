@@ -63,8 +63,7 @@ void TestDisconnect::testDisconnectDatabaseDisconnectFailure(void) {
   s = disconnect(&db);
 
   // Clean up
-  if (s == DATABASE_DISCONNECT_FAILURE)
-    freeDatabase(&db);
+  freeDatabase(&db);
 
   // Ensure we had an unsuccessful disconnection.
   CPPUNIT_ASSERT_MESSAGE("Proper disconnect from the database.", s == DATABASE_DISCONNECT_FAILURE);

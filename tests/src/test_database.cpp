@@ -30,8 +30,7 @@ void TestDatabase::testCreateDatabaseSuccess(void) {
   state s = createDatabase(&db);
 
   // Clean up
-  if (s != MALLOC_FAILURE)
-    freeDatabase(&db);
+  freeDatabase(&db);
 
   // Ensure we had a successful connection.
   CPPUNIT_ASSERT_MESSAGE("Couldn't create the database.", s == SUCCESS);
@@ -95,8 +94,7 @@ void TestDatabase::testFreeDatabase(void) {
   state s = createDatabase(&db);
 
   // Clean up
-  if (s != MALLOC_FAILURE)
-    freeDatabase(&db);
+  freeDatabase(&db);
 
   CPPUNIT_ASSERT_MESSAGE("Couldn't create the database.", s == SUCCESS);
   CPPUNIT_ASSERT_MESSAGE("Database wasn't freed properly.", db == NULL);
