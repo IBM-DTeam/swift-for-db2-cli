@@ -55,7 +55,7 @@ install : ibmdb2
 	sudo cp -rf include/* /usr/local/include/ibmdb2/
 
 # Compile tests
-test : database.o error.o handle.o connect.o disconnect.o query.o transaction.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_query.o test_transaction.o test_main.o
+test : database.o error.o handle.o connect.o disconnect.o query.o transaction.o prepared.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_query.o test_transaction.o test_prepared.o test_main.o
 	$(CC) $(COMPILE_FLAGS) -o $@ $? $(TEST_LIBRARIES) $(TEST_LINKS)
 
 # Main files
@@ -83,6 +83,10 @@ transaction.o : $(INCLUDE)/transaction.h $(SRC)/transaction.c $(INCLUDE)/databas
 prepared.o : $(INCLUDE)/prepared.h $(SRC)/prepared.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/prepared.c
 
+
+prepared.o : $(INCLUDE)/prepared.h $(SRC)/prepared.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
+	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/prepared.c
+
 # Test files
 test_main.o : $(TEST_INCLUDE)/test_main.hpp $(TEST_SRC)/test_main.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(TEST_SRC)/test_main.cpp
@@ -105,8 +109,8 @@ test_query.o : query.o $(TEST_INCLUDE)/test_query.hpp $(TEST_SRC)/test_query.cpp
 test_transaction.o : transaction.o $(TEST_INCLUDE)/test_transaction.hpp $(TEST_SRC)/test_transaction.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(VALID_SELECT_QUERY_STR) $(VALID_INSERT_QUERY_STR) $(TEST_SRC)/test_transaction.cpp
 
-# test_prepared.o : prepared.o $(TEST_INCLUDE)/test_prepared.hpp $(TEST_SRC)/test_prepared.cpp
-# 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(TEST_SRC)/test_prepared.cpp
+test_prepared.o : prepared.o $(TEST_INCLUDE)/test_prepared.hpp $(TEST_SRC)/test_prepared.cpp
+	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(TEST_SRC)/test_prepared.cpp
 
 test_disconnect.o : disconnect.o $(TEST_INCLUDE)/test_disconnect.hpp $(TEST_SRC)/test_disconnect.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(TEST_SRC)/test_disconnect.cpp
