@@ -14,27 +14,27 @@
  * limitations under the License.
  **/
 
-#ifndef test_main_h
-#define test_main_h
+#ifndef test_transaction_h
+#define test_transaction_h
 
-#include <cppunit/ui/text/TextTestRunner.h>
+#include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/TestResultCollector.h>
-#include <cppunit/TestRunner.h>
-#include <cppunit/BriefTestProgressListener.h>
-#include <cppunit/CompilerOutputter.h>
 
-// Test file headers
-#include "test_database.hpp"
-#include "test_connect.hpp"
-#include "test_disconnect.hpp"
-#include "test_handle.hpp"
-#include "test_error.hpp"
-#include "test_query.hpp"
-#include "test_transaction.hpp"
 
-int main();
+// The functions to test
+#include "query.h"
+#include "connect.h"
+#include "disconnect.h"
+#include "transaction.h"
+
+
+class TestTransaction : public CppUnit::TestFixture {
+  CPPUNIT_TEST_SUITE(TestTransaction);
+  CPPUNIT_TEST(testTransactionSuccess);
+  CPPUNIT_TEST_SUITE_END();
+protected:
+  void testTransactionSuccess(void);
+};
 
 #endif

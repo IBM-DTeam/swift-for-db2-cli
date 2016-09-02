@@ -26,6 +26,9 @@
 #include "type.h"
 #include "database.h"
 
+
 state beginTrans(database** db);
+state commitTrans(database** db);
+state rollbackTrans(database** db);
 
 #endif

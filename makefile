@@ -55,7 +55,7 @@ install : ibmdb2
 	sudo cp -rf include/* /usr/local/include/ibmdb2/
 
 # Compile tests
-test : database.o error.o handle.o connect.o disconnect.o query.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_query.o test_main.o
+test : database.o error.o handle.o connect.o disconnect.o query.o transaction.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_query.o test_transaction.o test_main.o
 	$(CC) $(COMPILE_FLAGS) -o $@ $? $(TEST_LIBRARIES) $(TEST_LINKS)
 
 # Main files
@@ -102,8 +102,8 @@ test_error.o : error.o $(TEST_INCLUDE)/test_error.hpp $(TEST_SRC)/test_error.cpp
 test_query.o : query.o $(TEST_INCLUDE)/test_query.hpp $(TEST_SRC)/test_query.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(VALID_SELECT_QUERY_STR) $(VALID_INSERT_QUERY_STR) $(INVALID_INSERT_QUERY_STR) $(VALID_CREATE_QUERY_STR) $(TEST_SRC)/test_query.cpp
 
-# test_transaction.o : transaction.o $(TEST_INCLUDE)/test_transaction.hpp $(TEST_SRC)/test_transaction.cpp
-# 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(TEST_SRC)/test_transaction.cpp
+test_transaction.o : transaction.o $(TEST_INCLUDE)/test_transaction.hpp $(TEST_SRC)/test_transaction.cpp
+	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(VALID_SELECT_QUERY_STR) $(VALID_INSERT_QUERY_STR) $(TEST_SRC)/test_transaction.cpp
 
 # test_prepared.o : prepared.o $(TEST_INCLUDE)/test_prepared.hpp $(TEST_SRC)/test_prepared.cpp
 # 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(TEST_SRC)/test_prepared.cpp
