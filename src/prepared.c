@@ -42,6 +42,7 @@ state prepare(database *db, queryStruct **hStmtStruct, char *query, char** value
   bool haveInfo = false;
 
   retCode = SQLPrepare((*hStmtStruct)->hStmts, (SQLCHAR *)query, strlen(query));
+  printf("%s\n", values );
   if (retCode != SQL_SUCCESS) {
     generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
