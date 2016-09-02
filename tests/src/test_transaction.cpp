@@ -57,6 +57,7 @@ void TestTransaction::testTransactionSuccess(void) {
   CPPUNIT_ASSERT_MESSAGE("Didn't have at least one column.", testQuery->retrieve->sNumColResults > 0);
 
   freeQueryStruct(&testQuery);
+  freeQueryStruct(&testQuery2);
 
   // Disconnect.
   s = disconnect(&db);
