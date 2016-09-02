@@ -37,12 +37,11 @@
  *   STMT_HANDLE_SETUP_FAILURE: failed to properly set up the statement handle
  *
  */
-state prepare(database *db, queryStruct **hStmtStruct, char *query, char** values) {
+state prepare(database *db, queryStruct **hStmtStruct, char *query) {
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
 
   retCode = SQLPrepare((*hStmtStruct)->hStmts, (SQLCHAR *)query, strlen(query));
-  printf("%s\n", values );
   if (retCode != SQL_SUCCESS) {
     generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
