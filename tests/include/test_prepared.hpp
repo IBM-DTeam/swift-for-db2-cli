@@ -32,6 +32,7 @@
 class TestPrepared : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TestPrepared);
   CPPUNIT_TEST(testPreparedSuccess);
+
   CPPUNIT_TEST_SUITE_END();
 protected:
   void testPreparedSuccess(void);

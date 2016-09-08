@@ -31,10 +31,18 @@
 
 class TestTransaction : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TestTransaction);
-  CPPUNIT_TEST(testTransactionSuccess);
+  CPPUNIT_TEST(testCommitSuccess);
+  CPPUNIT_TEST(testRollbackSuccess);
+  CPPUNIT_TEST(testBeginTransFailure);
+  CPPUNIT_TEST(testCommitFailure);
+  CPPUNIT_TEST(testRollbackFailure);
   CPPUNIT_TEST_SUITE_END();
 protected:
-  void testTransactionSuccess(void);
+  void testCommitSuccess(void);
+  void testRollbackSuccess(void);
+  void testBeginTransFailure(void);
+  void testCommitFailure(void);
+  void testRollbackFailure(void);
 };
 
 #endif

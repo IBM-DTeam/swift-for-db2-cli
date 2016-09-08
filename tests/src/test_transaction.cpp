@@ -16,15 +16,15 @@
 
 #include "test_transaction.hpp"
 
-
 /*
- * Function:  TestQuery::testResultQuerySuccess
+ * Function:  TestQuery::testCommitSuccess
  * ------------------
  * Connects to a database, queries the database with a select statement
  * and disconnects from the database.
  *
  */
-void TestTransaction::testTransactionSuccess(void) {
+
+void TestTransaction::testCommitSuccess(void) {
 
   database* db = NULL;
   state s = connect(&db, (char*) VALID_CONN_STR);
@@ -36,32 +36,122 @@ void TestTransaction::testTransactionSuccess(void) {
   state b = beginTrans(&db);
   CPPUNIT_ASSERT_MESSAGE("Can't being the transaction.", b == SUCCESS || b == SUCCESS_WITH_INFO);
 
-  // Query the database.
-  queryStruct* testQuery = NULL;
-  queryStruct* testQuery2 = NULL;
-  state v = query(db, &testQuery, (char*) VALID_SELECT_QUERY_STR);
-
-  // Free the query struct, since we won't pass the test case.
-  if (v != SUCCESS && v != SUCCESS_WITH_INFO)
-    freeQueryStruct(&testQuery);
-
-  state t = query(db, &testQuery2, (char*) VALID_INSERT_QUERY_STR);
-  // Free the query struct, since we won't pass the test case.
-  if (t != SUCCESS && s != SUCCESS_WITH_INFO)
-    freeQueryStruct(&testQuery2);
-
   state p = commitTrans(&db);
+
   CPPUNIT_ASSERT_MESSAGE("Couldn't commit the transaction.", p == SUCCESS || p == SUCCESS_WITH_INFO);
-
-  CPPUNIT_ASSERT_MESSAGE("Failed to insert value.", testQuery2->rowCountPtr == 1);
-  CPPUNIT_ASSERT_MESSAGE("Didn't have at least one column.", testQuery->retrieve->sNumColResults > 0);
-
-  freeQueryStruct(&testQuery);
-  freeQueryStruct(&testQuery2);
-
   // Disconnect.
   s = disconnect(&db);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
+
+
+}
+
+/*
+ * Function:  TestQuery::testRollbackSuccess
+ * ------------------
+ * Connects to a database, queries the database with a select statement
+ * and disconnects from the database.
+ *
+ */
+void TestTransaction::testRollbackSuccess(void) {
+
+  database* db = NULL;
+  state s = connect(&db, (char*) VALID_CONN_STR);
+  if (s == SETUP_DATABASE_FAILURE)
+    freeDatabase(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+
+  state b = beginTrans(&db);
+  CPPUNIT_ASSERT_MESSAGE("Can't being the transaction.", b == SUCCESS || b == SUCCESS_WITH_INFO);
+
+  state p = rollbackTrans(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("Couldn't rollback the transaction.", p == SUCCESS || p == SUCCESS_WITH_INFO);
+  // Disconnect.
+  s = disconnect(&db);
+  CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
+
+
+}
+
+/*
+ * Function:  TestQuery::testBeginTransFailure
+ * ------------------
+ * Connects to a database, queries the database with a select statement
+ * and disconnects from the database.
+ *
+ */
+
+void TestTransaction::testBeginTransFailure(void) {
+
+  database* db = NULL;
+  createDatabase(&db);
+
+  state b = beginTrans(&db);
+  freeDatabase(&db);
+  CPPUNIT_ASSERT_MESSAGE("Connected successfully.", b ==SET_CONNECTION_ATTR_FAIL);
+
+}
+
+
+/*
+ * Function:  TestQuery::testCommitFailure
+ * ------------------
+ * Connects to a database, queries the database with a select statement
+ * and disconnects from the database.
+ *
+ */
+
+void TestTransaction::testCommitFailure(void) {
+
+  database* db = NULL;
+  state s = connect(&db, (char*) VALID_CONN_STR);
+  if (s == SETUP_DATABASE_FAILURE)
+    freeDatabase(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+
+  state b = beginTrans(&db);
+  CPPUNIT_ASSERT_MESSAGE("Can't being the transaction.", b == SUCCESS || b == SUCCESS_WITH_INFO);
+
+  (db)->hnd->hDbc = 0;
+  state p = commitTrans(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("Commited the transaction", p = COMMIT_TRANSACTION_FAILURE);
+  // Disconnect.
+  freeDatabase(&db);
+
+
+}
+
+
+/*
+ * Function:  TestQuery::testCommitFailure
+ * ------------------
+ * Connects to a database, queries the database with a select statement
+ * and disconnects from the database.
+ *
+ */
+
+void TestTransaction::testRollbackFailure(void) {
+
+  database* db = NULL;
+  state s = connect(&db, (char*) VALID_CONN_STR);
+  if (s == SETUP_DATABASE_FAILURE)
+    freeDatabase(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+
+  state b = beginTrans(&db);
+  CPPUNIT_ASSERT_MESSAGE("Can't being the transaction.", b == SUCCESS || b == SUCCESS_WITH_INFO);
+
+  (db)->hnd->hDbc = 0;
+  state p = rollbackTrans(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("rollbacked the transaction", p = ROLLBACK_TRANSACTION_FAILURE);
+  // Disconnect.
+  freeDatabase(&db);
 
 
 }

@@ -82,11 +82,7 @@ transaction.o : $(INCLUDE)/transaction.h $(SRC)/transaction.c $(INCLUDE)/databas
 
 prepared.o : $(INCLUDE)/prepared.h $(SRC)/prepared.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/prepared.c
-
-
-prepared.o : $(INCLUDE)/prepared.h $(SRC)/prepared.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
-	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/prepared.c
-
+	
 # Test files
 test_main.o : $(TEST_INCLUDE)/test_main.hpp $(TEST_SRC)/test_main.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(TEST_SRC)/test_main.cpp

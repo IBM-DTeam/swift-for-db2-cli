@@ -21,7 +21,7 @@
 
 
 /*
- * Function:  query
+ * Function:  prepare
  * ------------------
  * Querys the database
  *
@@ -37,7 +37,7 @@
  *   STMT_HANDLE_SETUP_FAILURE: failed to properly set up the statement handle
  *
  */
-state prepare(database *db, queryStruct **hStmtStruct, char *query) {
+state prepare(database *db, queryStruct **hStmtStruct, char *query, char** values) {
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
 
@@ -50,6 +50,14 @@ state prepare(database *db, queryStruct **hStmtStruct, char *query) {
       return SQL_PREPARE_FAILURE;
     }
   }
+
+  for(int i =0 ; i < 4; i++){
+    //retCode = SQLBindParameter((*hStmtStruct)->hStmts, i +1,SQL_PARAM_INPUT,SQL_C_CHAR,SQL_CHAR,FIRSTNAME_LEN,0,strFirstName,FIRSTNAME_LEN,&lenFirstName);
+
+  }
+
+
+
   return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
 
 }
