@@ -19,8 +19,7 @@
 /*
  * Function:  TestQuery::testCommitSuccess
  * ------------------
- * Connects to a database, queries the database with a select statement
- * and disconnects from the database.
+ * Connects to a database, switches to transaction and commits succuessfully
  *
  */
 
@@ -49,8 +48,7 @@ void TestTransaction::testCommitSuccess(void) {
 /*
  * Function:  TestQuery::testRollbackSuccess
  * ------------------
- * Connects to a database, queries the database with a select statement
- * and disconnects from the database.
+ * Connects to a database, switches to transaction and rollsback succuessfully
  *
  */
 void TestTransaction::testRollbackSuccess(void) {
@@ -78,8 +76,7 @@ void TestTransaction::testRollbackSuccess(void) {
 /*
  * Function:  TestQuery::testBeginTransFailure
  * ------------------
- * Connects to a database, queries the database with a select statement
- * and disconnects from the database.
+ * Connects to a database, and fails to switch to transaction
  *
  */
 
@@ -98,8 +95,7 @@ void TestTransaction::testBeginTransFailure(void) {
 /*
  * Function:  TestQuery::testCommitFailure
  * ------------------
- * Connects to a database, queries the database with a select statement
- * and disconnects from the database.
+ * Connects to a database, switches to transaction and commits unsuccessfully
  *
  */
 
@@ -127,10 +123,9 @@ void TestTransaction::testCommitFailure(void) {
 
 
 /*
- * Function:  TestQuery::testCommitFailure
+ * Function:  TestQuery::testrollBackFailure
  * ------------------
- * Connects to a database, queries the database with a select statement
- * and disconnects from the database.
+ * Connects to a database, switches to transaction and rollsback unsuccuessfully
  *
  */
 
