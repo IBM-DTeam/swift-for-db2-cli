@@ -24,9 +24,11 @@ The Swift SDK for DB2 CLI allows you to connect to your IBM DB2 database or prod
 ## Features:
 
 - [x] Connect to your database.
-- [x] Query and get results.
+- [ ] Query and get results.
 - [ ] Create Prepared Statements.
 - [ ] Execute Prepared Statements.
+- [x] Generate Errors.
+- [ ] View Errors.
 - [x] Perform Transactions.
 - [x] Disconnect from your database.
 
