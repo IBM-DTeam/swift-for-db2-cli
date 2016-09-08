@@ -21,7 +21,8 @@
 /*
  * Function:  query
  * ------------------
- * Querys the database,and fills out the hStmtStruct properly.
+ * Querys the database (db) with the provided query and fills out the 
+ * hStmtStruct properly.
  *
  * More info to come.
  *

@@ -97,7 +97,7 @@ test_handle.o : handle.o $(TEST_INCLUDE)/test_handle.hpp $(TEST_SRC)/test_handle
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(TEST_SRC)/test_handle.cpp
 
 test_error.o : error.o $(TEST_INCLUDE)/test_error.hpp $(TEST_SRC)/test_error.cpp
-	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(TEST_SRC)/test_error.cpp
+	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(INVALID_CONN_STR) $(TEST_SRC)/test_error.cpp
 
 test_query.o : query.o $(TEST_INCLUDE)/test_query.hpp $(TEST_SRC)/test_query.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(VALID_SELECT_QUERY_STR) $(VALID_INSERT_QUERY_STR) $(INVALID_INSERT_QUERY_STR) $(VALID_CREATE_QUERY_STR) $(TEST_SRC)/test_query.cpp
