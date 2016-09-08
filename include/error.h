@@ -26,16 +26,7 @@
 
 // Origin of error
 #define NO_ERROR 0
-#define PACKAGE_ERROR 1
-#define DATABASE_ERROR 2
-
-// Package error struct
-typedef struct packageError {
-  float version;
-  char* file;
-  int line;
-  char* message;
-} packageError;
+#define DATABASE_ERROR 1
 
 // Database error struct
 typedef struct databaseError {
@@ -48,7 +39,6 @@ typedef struct databaseError {
 // Error struct
 typedef struct error {
   int errorType;
-  packageError* package;
   databaseError* database;
 } error;
 
@@ -57,9 +47,7 @@ typedef struct error {
 state initializeError(error** e);
 void resetError(error* e);
 void freeError(error** e);
-state generatePackageError(error* e, const char* file, int line, const char* message);
 state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType);
-void freePackageError(error* e);
 void freeDatabaseError(error* e);
 
 #endif

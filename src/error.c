@@ -35,7 +35,6 @@ state initializeError(error** e) {
 
   // Set the default values
   (*e)->errorType = NO_ERROR;
-  (*e)->package = NULL;
   (*e)->database = NULL;
 
   return SUCCESS;
@@ -53,14 +52,11 @@ state initializeError(error** e) {
 void resetError(error* e) {
 
   // Resets the error respective to its current state.
-  if (e->errorType == PACKAGE_ERROR)
-    freePackageError(e);
-  else if (e->errorType == DATABASE_ERROR)
+  if (e->errorType == DATABASE_ERROR)
     freeDatabaseError(e);
 
   // Reset to default values
   e->errorType = NO_ERROR;
-  e->package = NULL;
   e->database = NULL;
 
 }
@@ -82,65 +78,6 @@ void freeError(error** e) {
   free(*e);
 
   *e = NULL;
-
-}
-
-/*
- * Function:  generatePackageError
- * ------------------
- * Creates an error for the package for the user to read.
- *
- * e: The error struct to store the file in.
- * file: Which file the error occured.
- * line: Line of the file the error occured, parameter should be "__LINE__" macro.
- * message: Human readable error message.
- *
- * returns:
- *   SUCCESS: The error was generated.
- *   MALLOC_FAILURE: Error could not be generated due to a malloc failure.
- */
-state generatePackageError(error* e, const char* file, int line, const char* message) {
-
-  // Reset the error
-  resetError(e);
-
-  // The error type is from the package.
-  e->errorType = PACKAGE_ERROR;
-
-  e->package = (packageError*) malloc(sizeof(packageError));
-  if (e->package == NULL) {
-    e->errorType = NO_ERROR;
-    return MALLOC_FAILURE;
-  }
-
-  // Shared library version.
-  e->package->version = VERSION;
-
-  // File where the error originated.
-  e->package->file = (char*) malloc(sizeof(file) + 1);
-  if (e->package->file == NULL) {
-    e->errorType = NO_ERROR;
-    free(e->package);
-    e->package = NULL;
-    return MALLOC_FAILURE;
-  }
-  strcpy(e->package->file, file);
-
-  // Line of the file where the error originated.
-  e->package->line = line;
-
-  // Message with the error.
-  e->package->message = (char*) malloc(sizeof(message) + 1);
-  if (e->package->message == NULL) {
-    e->errorType = NO_ERROR;
-    free(e->package->file);
-    free(e->package);
-    e->package = NULL;
-    return MALLOC_FAILURE;
-  }
-  strcpy(e->package->message, (char*) message);
-
-  return SUCCESS;
 
 }
 
@@ -273,21 +210,6 @@ state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType){
 }
 
 /*
- * Function:  freePackageError
- * ------------------
- * Frees the packageError struct.
- *
- * e: The error struct to free packageError in.
- */
-void freePackageError(error* e) {
-
-  free(e->package->message);
-  free(e->package->file);
-  free(e->package);
-
-}
-
-/*
  * Function:  freeDatabaseError
  * ------------------
  * Frees the databaseError struct.
@@ -306,5 +228,7 @@ void freeDatabaseError(error* e) {
     free(temp->desc);
     free(temp);
   }
+
+  e->database = NULL;
 
 }
