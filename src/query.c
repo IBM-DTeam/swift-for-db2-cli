@@ -56,7 +56,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
   // Check for existing struct
   if (*hStmtStruct != NULL)
-    return HANDLE_STATEMENT_EXISTS;
+    return STATEMENT_HANDLE_EXISTS;
 
   *hStmtStruct = (queryStruct*) malloc(sizeof(queryStruct));
   if (*hStmtStruct == NULL)

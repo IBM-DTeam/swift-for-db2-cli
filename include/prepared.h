@@ -27,4 +27,6 @@
 #include "database.h"
 #include "query.h"
 
+state prepare(database *db, queryStruct **hStmtStruct, char *query, char** values);
+
 #endif

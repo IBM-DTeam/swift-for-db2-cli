@@ -40,6 +40,9 @@
 state prepare(database *db, queryStruct **hStmtStruct, char *query, char** values) {
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
+  int valueSize = sizeof(values)/ sizeof(char**);
+  SQLULEN FIRSTNAME_LEN = 0;
+  SQLLEN lenFirstName = NULL;
 
   retCode = SQLPrepare((*hStmtStruct)->hStmts, (SQLCHAR *)query, strlen(query));
   if (retCode != SQL_SUCCESS) {
@@ -51,13 +54,38 @@ state prepare(database *db, queryStruct **hStmtStruct, char *query, char** value
     }
   }
 
-  for(int i =0 ; i < 4; i++){
-    //retCode = SQLBindParameter((*hStmtStruct)->hStmts, i +1,SQL_PARAM_INPUT,SQL_C_CHAR,SQL_CHAR,FIRSTNAME_LEN,0,strFirstName,FIRSTNAME_LEN,&lenFirstName);
+  for(int i =0 ; i < valueSize; i++){
+    retCode = SQLBindParameter(
+      (*hStmtStruct)->hStmts,
+      i +1,
+      SQL_PARAM_INPUT,
+      SQL_C_CHAR,
+      SQL_CHAR,
+      FIRSTNAME_LEN,
+      0,
+      values[i],
+      strlen(values[i]),
+      &lenFirstName);
+
+    if (retCode != SQL_SUCCESS) {
+      generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+      if (retCode == SQL_SUCCESS_WITH_INFO) {
+        haveInfo = true;
+      } else {
+        return PARAMETER_BIND_FAILURE;
+      }
+    }
 
   }
-
-
-
+  retCode = SQLExecute((*hStmtStruct)->hStmts);
+  if (retCode != SQL_SUCCESS) {
+    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    if (retCode == SQL_SUCCESS_WITH_INFO) {
+      haveInfo = true;
+    } else {
+      return QUERY_EXECUTION_FAILURE;
+    }
+  }
   return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
 
 }
