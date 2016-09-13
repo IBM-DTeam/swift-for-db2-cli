@@ -37,16 +37,45 @@
  *   STMT_HANDLE_SETUP_FAILURE: failed to properly set up the statement handle
  *
  */
-state prepare(database *db, queryStruct **hStmtStruct, char *query, char** values) {
+state prepare(database *db, queryStruct **hStmtStruct, const char * query, char** values) {
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
-  int valueSize = sizeof(values)/ sizeof(char**);
-  SQLULEN FIRSTNAME_LEN = 0;
+  SQLSMALLINT valueSize = 0;
   SQLLEN lenFirstName = NULL;
 
-  retCode = SQLPrepare((*hStmtStruct)->hStmts, (SQLCHAR *)query, strlen(query));
+  if (db == NULL)
+    return NO_DATABASE_FOUND;
+
+  // Check for existing struct
+  if (*hStmtStruct != NULL)
+    return STATEMENT_HANDLE_EXISTS;
+
+  *hStmtStruct = (queryStruct*) malloc(sizeof(queryStruct));
+  if (*hStmtStruct == NULL)
+    return MALLOC_FAILURE;
+
+  // Initialize values
+  (*hStmtStruct)->hStmts = SQL_NULL_HSTMT;
+  (*hStmtStruct)->rowCountPtr = 0;
+  (*hStmtStruct)->type = -1;
+  (*hStmtStruct)->retrieve = NULL;
+
+  retCode = SQLAllocHandle(SQL_HANDLE_STMT, db->hnd->hDbc, &((*hStmtStruct)->hStmts));
   if (retCode != SQL_SUCCESS) {
     generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    if (retCode == SQL_SUCCESS_WITH_INFO) {
+      haveInfo = true;
+    } else {
+      freeQueryStruct(hStmtStruct);
+      return STMT_HANDLE_SETUP_FAILURE;
+    }
+  }
+
+
+  retCode = SQLPrepare((*hStmtStruct)->hStmts, (SQLCHAR *) query, strlen(query));
+  if (retCode != SQL_SUCCESS) {
+    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    printf("%s\n", db->err->database->desc);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
@@ -54,15 +83,46 @@ state prepare(database *db, queryStruct **hStmtStruct, char *query, char** value
     }
   }
 
-  for(int i =0 ; i < valueSize; i++){
+  retCode = SQLNumParams((*hStmtStruct)->hStmts, &valueSize);
+  if (retCode != SQL_SUCCESS) {
+    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    if (retCode == SQL_SUCCESS_WITH_INFO) {
+      haveInfo = true;
+    } else {
+      return COULD_NOT_GET_NUM_PARAMETERS;
+    }
+  }
+
+  for(int i = 0 ; i < (int) valueSize; i++){
+    SQLSMALLINT  dataTypePtr = 0;
+    SQLULEN parameterSizePtr = 0;
+    SQLSMALLINT decimalDigitsPtr = 0;
+    SQLSMALLINT nullablePtr = 0;
+
+    retCode = SQLDescribeParam(
+      (*hStmtStruct)->hStmts,
+      i+1,
+      &dataTypePtr,
+      &parameterSizePtr,
+      &decimalDigitsPtr,
+      &nullablePtr);
+    if (retCode != SQL_SUCCESS) {
+      generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+      if (retCode == SQL_SUCCESS_WITH_INFO) {
+        haveInfo = true;
+      } else {
+        return DESCRIBE_PARAMETER_FAILURE;
+      }
+    }
+
     retCode = SQLBindParameter(
       (*hStmtStruct)->hStmts,
       i +1,
       SQL_PARAM_INPUT,
       SQL_C_CHAR,
-      SQL_CHAR,
-      FIRSTNAME_LEN,
-      0,
+      dataTypePtr,
+      parameterSizePtr,
+      decimalDigitsPtr,
       values[i],
       strlen(values[i]),
       &lenFirstName);
@@ -80,6 +140,8 @@ state prepare(database *db, queryStruct **hStmtStruct, char *query, char** value
   retCode = SQLExecute((*hStmtStruct)->hStmts);
   if (retCode != SQL_SUCCESS) {
     generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    printf("%s\n",db->err->database->desc );
+    printf("%s\n",db->err->database->state);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {

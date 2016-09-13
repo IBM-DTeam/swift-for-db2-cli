@@ -26,7 +26,27 @@
  */
 void TestPrepared::testPreparedSuccess(void) {
 
-  CPPUNIT_ASSERT_MESSAGE("Stub", 1);
+  // Connect to the database.
+  database* db = NULL;
+  const char *query = "INSERT INTO MYTABLES VALUES(?,?);";
+  char** valList = (char**) malloc(sizeof(char*)* 40);
+  valList[0] = (char *)"hi";
+  valList[1] = (char *)"hell";
+
+  state s = connect(&db, (char*) VALID_CONN_STR);
+
+  if (s == SETUP_DATABASE_FAILURE)
+    freeDatabase(&db);
+
+  queryStruct* testQuery = NULL;
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+  state a = prepare(db, &testQuery, query, valList);
+  freeQueryStruct(&testQuery);
+  // Disconnect.
+  CPPUNIT_ASSERT_MESSAGE("Can't preapre.", a == SUCCESS || a == SUCCESS_WITH_INFO);
+  s = disconnect(&db);
+  free(valList);
+  CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
 
 
 }

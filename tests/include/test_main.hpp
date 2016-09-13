@@ -34,6 +34,7 @@
 #include "test_error.hpp"
 #include "test_query.hpp"
 #include "test_transaction.hpp"
+#include "test_prepared.hpp"
 
 int main();
 
