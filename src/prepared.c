@@ -41,7 +41,7 @@ state prepare(database *db, queryStruct **hStmtStruct, const char * query, char*
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
   SQLSMALLINT valueSize = 0;
-  SQLLEN lenFirstName = NULL;
+  SQLLEN lenFirstName = 0;
 
   if (db == NULL)
     return NO_DATABASE_FOUND;
@@ -135,6 +135,10 @@ state prepare(database *db, queryStruct **hStmtStruct, const char * query, char*
         return PARAMETER_BIND_FAILURE;
       }
     }
+
+    strcpy(values[i], values[i]);
+    lenFirstName = strlen(values[i]);
+
 
   }
   retCode = SQLExecute((*hStmtStruct)->hStmts);

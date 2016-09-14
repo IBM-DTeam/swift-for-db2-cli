@@ -28,10 +28,11 @@ void TestPrepared::testPreparedSuccess(void) {
 
   // Connect to the database.
   database* db = NULL;
-  const char *query = "INSERT INTO MYTABLES VALUES(?,?);";
+  const char *query = "INSERT INTO MYTABLE VALUES(?,?,?);";
   char** valList = (char**) malloc(sizeof(char*)* 40);
-  valList[0] = (char *)"hi";
-  valList[1] = (char *)"hell";
+  valList[0] = (char *)"1";
+  valList[1] = (char *)"howare";
+  valList[2] = (char *)"test";
 
   state s = connect(&db, (char*) VALID_CONN_STR);
 
