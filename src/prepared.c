@@ -15,7 +15,6 @@
  **/
 
 #include <stdio.h>
-#include <stdbool.h>
 #include "prepared.h"
 
 
@@ -41,7 +40,6 @@ state prepare(database *db, queryStruct **hStmtStruct, const char * query, char*
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
   SQLSMALLINT valueSize = 0;
-  SQLLEN lenFirstName = 0;
 
   if (db == NULL)
     return NO_DATABASE_FOUND;
@@ -115,9 +113,12 @@ state prepare(database *db, queryStruct **hStmtStruct, const char * query, char*
       }
     }
 
+    char* temp = (char*) malloc(sizeof(char) * (strlen(values[i]) + 1));
+    SQLINTEGER pcbValue = SQL_NTS;
+
     retCode = SQLBindParameter(
       (*hStmtStruct)->hStmts,
-      i +1,
+      i+1,
       SQL_PARAM_INPUT,
       SQL_C_CHAR,
       dataTypePtr,
@@ -125,7 +126,7 @@ state prepare(database *db, queryStruct **hStmtStruct, const char * query, char*
       decimalDigitsPtr,
       values[i],
       strlen(values[i]),
-      &lenFirstName);
+      &pcbValue);
 
     if (retCode != SQL_SUCCESS) {
       generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
@@ -136,9 +137,7 @@ state prepare(database *db, queryStruct **hStmtStruct, const char * query, char*
       }
     }
 
-    strcpy(values[i], values[i]);
-    lenFirstName = strlen(values[i]);
-
+    strcpy(temp, values[i]);
 
   }
   retCode = SQLExecute((*hStmtStruct)->hStmts);

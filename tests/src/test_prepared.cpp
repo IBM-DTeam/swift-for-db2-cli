@@ -29,7 +29,7 @@ void TestPrepared::testPreparedSuccess(void) {
   // Connect to the database.
   database* db = NULL;
   const char *query = "INSERT INTO MYTABLE VALUES(?,?,?);";
-  char** valList = (char**) malloc(sizeof(char*)* 40);
+  char** valList = (char**) malloc(sizeof(char*) * 3);
   valList[0] = (char *)"1";
   valList[1] = (char *)"howare";
   valList[2] = (char *)"test";
@@ -44,7 +44,7 @@ void TestPrepared::testPreparedSuccess(void) {
   state a = prepare(db, &testQuery, query, valList);
   freeQueryStruct(&testQuery);
   // Disconnect.
-  CPPUNIT_ASSERT_MESSAGE("Can't preapre.", a == SUCCESS || a == SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
   s = disconnect(&db);
   free(valList);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
