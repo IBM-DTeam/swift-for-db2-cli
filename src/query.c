@@ -21,7 +21,7 @@
 /*
  * Function:  query
  * ------------------
- * Querys the database (db) with the provided query and fills out the 
+ * Querys the database (db) with the provided query and fills out the
  * hStmtStruct properly.
  *
  * More info to come.
@@ -371,7 +371,7 @@ void freeQueryStruct(queryStruct **hStmtStruct) {
     if ((*hStmtStruct)->retrieve->sNumColResults > 0) {
 
       for (int i = 0; i < (*hStmtStruct)->retrieve->sNumColResults; i++) {
-        
+
         // Free the column name's
         if ((*hStmtStruct)->retrieve->columnName[i] != NULL)
           free((*hStmtStruct)->retrieve->columnName[i]);
@@ -409,7 +409,7 @@ void freeQueryStruct(queryStruct **hStmtStruct) {
       free((*hStmtStruct)->retrieve->columnName);
 
     // Free the column data type
-    if ((*hStmtStruct)->retrieve->columnDataType != NULL)       
+    if ((*hStmtStruct)->retrieve->columnDataType != NULL)
       free((*hStmtStruct)->retrieve->columnDataType);
 
     // Free the column data size

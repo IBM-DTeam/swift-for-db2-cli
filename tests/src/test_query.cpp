@@ -38,7 +38,7 @@ void TestQuery::testResultQuerySuccess(void) {
   // Query the database.
   queryStruct* testQuery = NULL;
   s = query(db, &testQuery, (char*) VALID_SELECT_QUERY_STR);
-  
+
   // Free the query struct, since we won't pass the test case.
   if (s != SUCCESS && s != SUCCESS_WITH_INFO)
     freeQueryStruct(&testQuery);
@@ -48,7 +48,7 @@ void TestQuery::testResultQuerySuccess(void) {
 
   // Free the query struct, since we're done with it.
   freeQueryStruct(&testQuery);
-  
+
   // Disconnect.
   s = disconnect(&db);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
@@ -103,6 +103,7 @@ void TestQuery::testInfoQueryFail(void) {
 
   // Query the database.
   queryStruct* testQuery = NULL;
+
   s = query(db, &testQuery, (char*) INVALID_INSERT_QUERY_STR);
 
   // Free the query struct, since we're done with it.

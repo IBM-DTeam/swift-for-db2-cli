@@ -51,3 +51,113 @@ void TestPrepared::testPreparedSuccess(void) {
 
 
 }
+
+
+/*
+ * Function:  TestQuery::testResultQuerySuccessDecimal
+ * ------------------
+ * Connects to a database, queries the database with a select statement
+ * and disconnects from the database.
+ *
+ */
+void TestPrepared::testPreparedSuccessDecimal(void) {
+
+  // Connect to the database.
+  database* db = NULL;
+  const char *query = "INSERT INTO MYTABLE3 VALUES(?,?,?);";
+  char** valList = (char**) malloc(sizeof(char*) * 3);
+  valList[0] = (char *)"1";
+  valList[1] = (char *)"howa";
+  valList[2] = (char *)"2.533";
+
+  state s = connect(&db, (char*) VALID_CONN_STR);
+
+  if (s == SETUP_DATABASE_FAILURE)
+    freeDatabase(&db);
+
+  queryStruct* testQuery = NULL;
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+  state a = prepare(db, &testQuery, query, valList);
+  freeQueryStruct(&testQuery);
+  // Disconnect.
+  CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
+  s = disconnect(&db);
+  free(valList);
+  CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
+
+
+}
+
+
+/*
+ * Function:  TestQuery::testResultQuerySuccessDecimal
+ * ------------------
+ * Connects to a database, queries the database with a select statement
+ * and disconnects from the database.
+ *
+ */
+void TestPrepared::testPreparedFailure(void) {
+
+  // Connect to the database.
+  database* db = NULL;
+  const char *query = "INSERT INTO MYTABLE3 VALUES(?,?,?);";
+  char** valList = (char**) malloc(sizeof(char*) * 3);
+  valList[0] = (char *)"1";
+  valList[1] = (char *)"howsdasdasdsaasda";
+  valList[2] = (char *)"2.533";
+
+  state s = connect(&db, (char*) VALID_CONN_STR);
+
+  if (s == SETUP_DATABASE_FAILURE)
+    freeDatabase(&db);
+
+  queryStruct* testQuery = NULL;
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+  state a = prepare(db, &testQuery, query, valList);
+  freeQueryStruct(&testQuery);
+  // Disconnect.
+  CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a != SUCCESS && a != SUCCESS_WITH_INFO);
+  s = disconnect(&db);
+  free(valList);
+  CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
+
+
+}
+
+
+
+/*
+ * Function:  TestQuery::testResultQuerySuccessDecimal
+ * ------------------
+ * Connects to a database, queries the database with a select statement
+ * and disconnects from the database.
+ *
+ */
+void TestPrepared::testPreparedSelect(void) {
+
+  // Connect to the database.
+  database* db = NULL;
+  const char *query = "SELECT * FROM MYTABLE WHERE COL1 = ?";
+  char** valList = (char**) malloc(sizeof(char*) * 1);
+  valList[0] = (char *)"1";
+
+  state s = connect(&db, (char*) VALID_CONN_STR);
+
+  if (s == SETUP_DATABASE_FAILURE)
+    freeDatabase(&db);
+
+  queryStruct* testQuery = NULL;
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+  state a = prepare(db, &testQuery, query, valList);
+
+  CPPUNIT_ASSERT_MESSAGE("Didn't have at least one column.", testQuery->retrieve->sNumColResults > 0);
+
+  freeQueryStruct(&testQuery);
+  // Disconnect.
+  CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
+  s = disconnect(&db);
+  free(valList);
+  CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
+
+
+}

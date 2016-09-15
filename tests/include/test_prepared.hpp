@@ -32,10 +32,16 @@
 class TestPrepared : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TestPrepared);
   CPPUNIT_TEST(testPreparedSuccess);
+  CPPUNIT_TEST(testPreparedSuccessDecimal);
+  CPPUNIT_TEST(testPreparedFailure);
+  CPPUNIT_TEST(testPreparedSelect);
 
   CPPUNIT_TEST_SUITE_END();
 protected:
   void testPreparedSuccess(void);
+  void testPreparedSuccessDecimal(void);
+  void testPreparedFailure(void);
+  void testPreparedSelect(void);
 };
 
 #endif
