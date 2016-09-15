@@ -113,7 +113,6 @@ state prepare(database *db, queryStruct **hStmtStruct, const char * query, char*
       }
     }
 
-    char* temp = (char*) malloc(sizeof(char) * (strlen(values[i]) + 1));
     SQLINTEGER pcbValue = SQL_NTS;
 
     retCode = SQLBindParameter(
@@ -137,10 +136,10 @@ state prepare(database *db, queryStruct **hStmtStruct, const char * query, char*
       }
     }
 
-    strcpy(temp, values[i]);
-
   }
+
   retCode = SQLExecute((*hStmtStruct)->hStmts);
+
   if (retCode != SQL_SUCCESS) {
     generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     printf("%s\n",db->err->database->desc );
