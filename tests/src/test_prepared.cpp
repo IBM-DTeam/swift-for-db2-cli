@@ -110,8 +110,8 @@ void TestPrepared::testPreparedFailure(void) {
   const char *query = "INSERT INTO MYTABLE3 VALUES(?,?,?);";
   char** valList = (char**) malloc(sizeof(char*) * 3);
   valList[0] = (char *)"1";
-  valList[1] = (char *)"howsdasdasdsaasda";
-  valList[2] = (char *)"2.533";
+  valList[1] = (char *)"howsdadsdsdsdsddsdsdsdsdsdsdasdsaasda";
+  valList[2] = (char *)"20";
 
   state s = connect(&db, (char*) VALID_CONN_STR);
 
@@ -122,11 +122,11 @@ void TestPrepared::testPreparedFailure(void) {
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
   state a = prepare(db, &testQuery, query, valList);
   state b = executePrepared(db, &testQuery);
-
-  freeQueryStruct(&testQuery);
   // Disconnect.
   CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
-  CPPUNIT_ASSERT_MESSAGE("Can't execute.", b == SUCCESS || b == SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Can't execute.", b != SUCCESS && b != SUCCESS_WITH_INFO);
+
+  freeQueryStruct(&testQuery);
 
   s = disconnect(&db);
   free(valList);
