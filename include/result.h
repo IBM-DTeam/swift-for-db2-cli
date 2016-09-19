@@ -14,8 +14,8 @@
  * limitations under the License.
  **/
 
-#ifndef prepared_h
-#define prepared_h
+#ifndef result_h
+#define result_h
 
 #include <stdlib.h>
 #include <string.h>
@@ -26,9 +26,7 @@
 #include "type.h"
 #include "database.h"
 #include "query.h"
-#include "result.h"
-
-state prepare(database *db, queryStruct **hStmtStruct, const char *query, char** values);
-state executePrepared(database *db, queryStruct **hStmtStruct);
+// Methods
+state result(database *db, queryStruct **hStmtStruct);
 
 #endif

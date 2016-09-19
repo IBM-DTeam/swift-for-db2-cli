@@ -44,7 +44,7 @@ else
 endif
 
 # Shared Library
-ibmdb2 : database.o error.o handle.o connect.o disconnect.o query.o transaction.o prepared.o
+ibmdb2 : database.o error.o handle.o connect.o disconnect.o query.o transaction.o prepared.o result.o
 	$(CC) $(COMPILE_FLAGS) $(SHARED_LIBRARY) -o lib$@.$(EXTENSION) $? $(PRODUCTION_LIBRARIES) $(PRODUCTION_LINKS)
 
 
@@ -55,7 +55,7 @@ install : ibmdb2
 	sudo cp -rf include/* /usr/local/include/ibmdb2/
 
 # Compile tests
-test : database.o error.o handle.o connect.o disconnect.o query.o transaction.o prepared.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_query.o test_transaction.o test_prepared.o test_main.o
+test : database.o error.o handle.o connect.o disconnect.o query.o transaction.o prepared.o result.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_query.o test_transaction.o test_prepared.o test_main.o
 	$(CC) $(COMPILE_FLAGS) -o $@ $? $(TEST_LIBRARIES) $(TEST_LINKS)
 
 # Main files
@@ -73,6 +73,9 @@ connect.o : $(INCLUDE)/connect.h $(SRC)/connect.c $(INCLUDE)/database.h $(INCLUD
 
 disconnect.o : $(INCLUDE)/disconnect.h $(SRC)/disconnect.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/disconnect.c
+
+result.o : $(INCLUDE)/result.h $(SRC)/result.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
+	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/result.c
 
 query.o : $(INCLUDE)/query.h $(SRC)/query.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/query.c

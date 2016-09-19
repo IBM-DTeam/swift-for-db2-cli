@@ -42,9 +42,13 @@ void TestPrepared::testPreparedSuccess(void) {
   queryStruct* testQuery = NULL;
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
   state a = prepare(db, &testQuery, query, valList);
+
+  state b = executePrepared(db, &testQuery);
+
   freeQueryStruct(&testQuery);
   // Disconnect.
   CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Can't execute.", b == SUCCESS || b == SUCCESS_WITH_INFO);
   s = disconnect(&db);
   free(valList);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
@@ -78,9 +82,12 @@ void TestPrepared::testPreparedSuccessDecimal(void) {
   queryStruct* testQuery = NULL;
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
   state a = prepare(db, &testQuery, query, valList);
+  state b = executePrepared(db, &testQuery);
+
   freeQueryStruct(&testQuery);
   // Disconnect.
   CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Can't execute.", b == SUCCESS || b == SUCCESS_WITH_INFO);
   s = disconnect(&db);
   free(valList);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
@@ -114,9 +121,13 @@ void TestPrepared::testPreparedFailure(void) {
   queryStruct* testQuery = NULL;
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
   state a = prepare(db, &testQuery, query, valList);
+  state b = executePrepared(db, &testQuery);
+
   freeQueryStruct(&testQuery);
   // Disconnect.
-  CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a != SUCCESS && a != SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Can't execute.", b == SUCCESS || b == SUCCESS_WITH_INFO);
+
   s = disconnect(&db);
   free(valList);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
@@ -149,12 +160,16 @@ void TestPrepared::testPreparedSelect(void) {
   queryStruct* testQuery = NULL;
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
   state a = prepare(db, &testQuery, query, valList);
+  state b = executePrepared(db, &testQuery);
 
-  CPPUNIT_ASSERT_MESSAGE("Didn't have at least one column.", testQuery->retrieve->sNumColResults > 0);
 
-  freeQueryStruct(&testQuery);
   // Disconnect.
   CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Can't execute.", b == SUCCESS || b == SUCCESS_WITH_INFO);
+
+
+  CPPUNIT_ASSERT_MESSAGE("Didn't have at least one column.", testQuery->retrieve->sNumColResults > 0);
+  freeQueryStruct(&testQuery);
   s = disconnect(&db);
   free(valList);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
