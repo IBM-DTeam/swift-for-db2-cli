@@ -123,8 +123,7 @@ void TestPrepared::testPreparedFailure(void) {
   state a = prepare(db, &testQuery, query, valList);
   state b = executePrepared(db, &testQuery);
   // Disconnect.
-  CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
-  CPPUNIT_ASSERT_MESSAGE("Can't execute.", b != SUCCESS && b != SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a != SUCCESS && a != SUCCESS_WITH_INFO);
 
   freeQueryStruct(&testQuery);
 
