@@ -17,6 +17,42 @@
 #include "test_query.hpp"
 
 
+
+
+
+void TestQuery::testInfoQuerySuccess(void) {
+
+  // Connect to the database.
+  database* db = NULL;
+  state s = connect(&db, (char*) VALID_CONN_STR);
+
+  if (s == SETUP_DATABASE_FAILURE)
+    freeDatabase(&db);
+
+  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+
+  // Query the database.
+  queryStruct* testQuery = NULL;
+  s = query(db, &testQuery, (char*) VALID_INSERT_QUERY_STR);
+
+  // Free the query struct, since we won't pass the test case.
+  if (s != SUCCESS && s != SUCCESS_WITH_INFO)
+    freeQueryStruct(&testQuery);
+
+  CPPUNIT_ASSERT_MESSAGE("Query Failed, it should've passed.", s == SUCCESS || s == SUCCESS_WITH_INFO);
+  CPPUNIT_ASSERT_MESSAGE("Failed to insert value.", testQuery->rowCountPtr == 1);
+
+  // Free the query struct, since we're done with it.
+  freeQueryStruct(&testQuery);
+
+  // Disconnect.
+  s = disconnect(&db);
+  CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
+
+
+}
+
+
 /*
  * Function:  TestQuery::testResultQuerySuccess
  * ------------------
@@ -55,39 +91,6 @@ void TestQuery::testResultQuerySuccess(void) {
 
 }
 
-
-
-void TestQuery::testInfoQuerySuccess(void) {
-
-  // Connect to the database.
-  database* db = NULL;
-  state s = connect(&db, (char*) VALID_CONN_STR);
-
-  if (s == SETUP_DATABASE_FAILURE)
-    freeDatabase(&db);
-
-  CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
-
-  // Query the database.
-  queryStruct* testQuery = NULL;
-  s = query(db, &testQuery, (char*) VALID_INSERT_QUERY_STR);
-
-  // Free the query struct, since we won't pass the test case.
-  if (s != SUCCESS && s != SUCCESS_WITH_INFO)
-    freeQueryStruct(&testQuery);
-
-  CPPUNIT_ASSERT_MESSAGE("Query Failed, it should've passed.", s == SUCCESS || s == SUCCESS_WITH_INFO);
-  CPPUNIT_ASSERT_MESSAGE("Failed to insert value.", testQuery->rowCountPtr == 1);
-
-  // Free the query struct, since we're done with it.
-  freeQueryStruct(&testQuery);
-
-  // Disconnect.
-  s = disconnect(&db);
-  CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
-
-
-}
 
 
 void TestQuery::testInfoQueryFail(void) {

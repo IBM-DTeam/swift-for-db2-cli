@@ -153,11 +153,12 @@ void TestPrepared::testPreparedSelect(void) {
   queryStruct* testQuery = NULL;
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
   state a = prepare(db, &testQuery, query, valList);
+  state b = result(db, &testQuery);
 
 
   // Disconnect.
   CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
-
+  CPPUNIT_ASSERT_MESSAGE("Can't get results", b == SUCCESS || b == SUCCESS_WITH_INFO);
 
   CPPUNIT_ASSERT_MESSAGE("Didn't have at least one column.", testQuery->retrieve->sNumColResults > 0);
   freeQueryStruct(&testQuery);

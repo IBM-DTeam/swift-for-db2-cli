@@ -289,7 +289,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
               int writeIndex = 0;
 
               // Get the data for the cell
-              retCode = SQLGetData((*hStmtStruct)->hStmts, i + 1, SQL_C_CHAR, cell + writeIndex, sizeof(cell) - (sizeof(char) * writeIndex), &binaryLenOrInd);
+              retCode = SQLGetData((*hStmtStruct)->hStmts, i + 1, SQL_C_CHAR, &cell[writeIndex], sizeof(cell) - (sizeof(char) * writeIndex), &binaryLenOrInd);
               if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
                 // Set the next write index for the char array
                 writeIndex = strlen(cell) + 1;
