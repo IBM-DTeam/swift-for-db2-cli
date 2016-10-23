@@ -34,10 +34,14 @@ class TestError : public CppUnit::TestFixture {
   CPPUNIT_TEST(testInitializeErrorSuccessMultiple);
   CPPUNIT_TEST(testInitializeErrorMallocFailure);
   CPPUNIT_TEST(testInitializeErrorMallocFailureMulitple);
-  CPPUNIT_TEST(testResetError);
-  CPPUNIT_TEST(testResetErrorMultiple);
-  CPPUNIT_TEST(testFreeError);
-  CPPUNIT_TEST(testFreeErrorMultiple);
+  CPPUNIT_TEST(testResetErrors);
+  CPPUNIT_TEST(testResetErrorsMultiple);
+  CPPUNIT_TEST(testFreeErrors);
+  CPPUNIT_TEST(testFreeErrorsMultiple);
+  CPPUNIT_TEST(testGetNextError);
+  CPPUNIT_TEST(testGetNextErrorMultiple);
+  CPPUNIT_TEST(testGetNextErrorNull);
+  CPPUNIT_TEST(testGetNextErrorNullMultiple);
   CPPUNIT_TEST(testGenerateDatabaseErrorSuccess);
   CPPUNIT_TEST(testGenerateDatabaseErrorSuccessMultiple);
   CPPUNIT_TEST(testGenerateDatabaseErrorMallocFailure);
@@ -46,16 +50,22 @@ class TestError : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGenerateDatabaseErrorFetchDatabaseErrorFailureMultiple);
   CPPUNIT_TEST(testFreeDatabaseError);
   CPPUNIT_TEST(testFreeDatabaseErrorMultiple);
+  CPPUNIT_TEST(testFreeDatabaseErrors);
+  CPPUNIT_TEST(testFreeDatabaseErrorsMultiple);
   CPPUNIT_TEST_SUITE_END();
 protected:
   void testInitializeErrorSuccess(void);
   void testInitializeErrorSuccessMultiple(void);
   void testInitializeErrorMallocFailure(void);
   void testInitializeErrorMallocFailureMulitple(void);
-  void testResetError(void);
-  void testResetErrorMultiple(void);
-  void testFreeError(void);
-  void testFreeErrorMultiple(void);
+  void testResetErrors(void);
+  void testResetErrorsMultiple(void);
+  void testFreeErrors(void);
+  void testFreeErrorsMultiple(void);
+  void testGetNextError(void);
+  void testGetNextErrorMultiple(void);
+  void testGetNextErrorNull(void);
+  void testGetNextErrorNullMultiple(void);
   void testGenerateDatabaseErrorSuccess(void);
   void testGenerateDatabaseErrorSuccessMultiple(void);
   void testGenerateDatabaseErrorMallocFailure(void);
@@ -64,6 +74,8 @@ protected:
   void testGenerateDatabaseErrorFetchDatabaseErrorFailureMultiple(void);
   void testFreeDatabaseError(void);
   void testFreeDatabaseErrorMultiple(void);
+  void testFreeDatabaseErrors(void);
+  void testFreeDatabaseErrorsMultiple(void);
 };
 
 #endif

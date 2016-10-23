@@ -27,13 +27,13 @@
 void TestError::testInitializeErrorSuccess(void) {
 
   // Initialize the error
-	error* e = NULL;
- 	state s = initializeError(&e);
+  error* e = NULL;
+  state s = initializeError(&e);
 
-	// Clean up
-	freeError(&e);
+  // Clean up
+  freeErrors(&e);
 
-	CPPUNIT_ASSERT_MESSAGE("Couldn't initialize the error.", s == SUCCESS);
+  CPPUNIT_ASSERT_MESSAGE("Couldn't initialize the error.", s == SUCCESS);
 
 }
 
@@ -45,9 +45,9 @@ void TestError::testInitializeErrorSuccess(void) {
  */ 
 void TestError::testInitializeErrorSuccessMultiple(void) {
 
-	int i = 0;
-	for (; i < 5; i++)
-  	testInitializeErrorSuccess();
+  int i = 0;
+  for (; i < 5; i++)
+    testInitializeErrorSuccess();
 
 }
 
@@ -59,7 +59,7 @@ void TestError::testInitializeErrorSuccessMultiple(void) {
  */
 void TestError::testInitializeErrorMallocFailure(void) {
 
-	// Nothing here for now.
+  // Nothing here for now.
   CPPUNIT_ASSERT_MESSAGE("Stub", 1);
 
 }
@@ -72,9 +72,9 @@ void TestError::testInitializeErrorMallocFailure(void) {
  */
 void TestError::testInitializeErrorMallocFailureMulitple(void) {
 
-	int i = 0;
-	for (; i < 5; i++)
-		testInitializeErrorMallocFailure();
+  int i = 0;
+  for (; i < 5; i++)
+    testInitializeErrorMallocFailure();
 
 }
 
@@ -85,9 +85,9 @@ void TestError::testInitializeErrorMallocFailureMulitple(void) {
  * afterwards to ensure the functionality works.
  *
  */
-void TestError::testResetError(void) {
+void TestError::testResetErrors(void) {
 
-	// Connect to an invalid database
+  // Connect to an invalid database
   database* db = NULL;
   state s = connect(&db, (char*) INVALID_CONN_STR);
 
@@ -99,7 +99,7 @@ void TestError::testResetError(void) {
   CPPUNIT_ASSERT_MESSAGE("Connect set the wrong error type.", db->err->errorType == DATABASE_ERROR);
 
   // Reset the error.
-  resetError(db->err);
+  resetErrors(db->err);
 
   // Ensure it was reset.
   CPPUNIT_ASSERT_MESSAGE("The type wasn't reset properly.", db->err->errorType == NO_ERROR);
@@ -117,11 +117,11 @@ void TestError::testResetError(void) {
  * afterwards to ensure the functionality works, multiple times.
  *
  */
-void TestError::testResetErrorMultiple(void) {
+void TestError::testResetErrorsMultiple(void) {
 
-	int i = 0;
-	for (; i < 5; i++)
-		testResetError();
+  int i = 0;
+  for (; i < 5; i++)
+    testResetErrors();
 
 }
 
@@ -132,9 +132,9 @@ void TestError::testResetErrorMultiple(void) {
  * afterwards to ensure the functionality works.
  *
  */
-void TestError::testFreeError(void) {
+void TestError::testFreeErrors(void) {
 
-	// Connect to an invalid database
+  // Connect to an invalid database
   database* db = NULL;
   state s = connect(&db, (char*) INVALID_CONN_STR);
 
@@ -146,7 +146,7 @@ void TestError::testFreeError(void) {
   CPPUNIT_ASSERT_MESSAGE("Connect set the wrong error type.", db->err->errorType == DATABASE_ERROR);
 
   // Free the error.
-  freeError(&(db->err));
+  freeErrors(&(db->err));
 
   // Ensure it was freed.
   CPPUNIT_ASSERT_MESSAGE("The error wasn't freed properly.", db->err == NULL);
@@ -163,13 +163,118 @@ void TestError::testFreeError(void) {
  * afterwards to ensure the functionality works, multiple times.
  *
  */
-void TestError::testFreeErrorMultiple(void) {
+void TestError::testFreeErrorsMultiple(void) {
 
-	int i = 0;
-	for (; i < 5; i++)
-		testFreeError();
+  int i = 0;
+  for (; i < 5; i++)
+    testFreeErrors();
 
 }
+
+/*
+ * Function:  TestError::testGetNextError
+ * ------------------
+ * Connects to an invalid database to generate an error. We call getNextError
+ * to ensure functionality works.
+ *
+ */
+void TestError::testGetNextError(void) {
+
+  // Connect to an invalid database
+  database* db = NULL;
+  state s = connect(&db, (char*) INVALID_CONN_STR);
+
+  // Ensure we didn't connect
+  CPPUNIT_ASSERT_MESSAGE("We connected to the database.", s == SETUP_DATABASE_FAILURE);
+
+  // "connect" should've generated an error.
+  CPPUNIT_ASSERT_MESSAGE("We don't have a error struct initialized properly.", db->err && db->err->errorType && db->err->database);
+  CPPUNIT_ASSERT_MESSAGE("Connect set the wrong error type.", db->err->errorType == DATABASE_ERROR);
+
+  // getNextError shouldn't return NULL.
+  databaseError* e = getNextError(db->err);
+  CPPUNIT_ASSERT_MESSAGE("There was no database error.", e != NULL);
+
+  freeDatabaseError(&e);
+  freeErrors(&(db->err));
+
+  // Ensure it was freed.
+  CPPUNIT_ASSERT_MESSAGE("The error wasn't freed properly.", db->err == NULL);
+
+  // Clean up
+  freeDatabase(&db);
+
+}
+
+/*
+ * Function:  TestError::testGetNextErrorMultiple
+ * ------------------
+ * Connects to an invalid database to generate an error. We call getNextError
+ * to ensure functionality works, multiple times.
+ *
+ */
+void TestError::testGetNextErrorMultiple(void) {
+
+  int i = 0;
+  for (; i < 5; i++)
+    testGetNextError();
+
+}
+
+/*
+ * Function:  TestError::testGetNextErrorNull
+ * ------------------
+ * Connects to an invalid database to generate an error. We call getNextError
+ * to ensure functionality works.
+ *
+ */
+void TestError::testGetNextErrorNull(void) {
+
+  // Connect to an invalid database
+  database* db = NULL;
+  state s = connect(&db, (char*) INVALID_CONN_STR);
+
+  // Ensure we didn't connect
+  CPPUNIT_ASSERT_MESSAGE("We connected to the database.", s == SETUP_DATABASE_FAILURE);
+
+  // "connect" should've generated an error.
+  CPPUNIT_ASSERT_MESSAGE("We don't have a error struct initialized properly.", db->err && db->err->errorType && db->err->database);
+  CPPUNIT_ASSERT_MESSAGE("Connect set the wrong error type.", db->err->errorType == DATABASE_ERROR);
+
+  // getNextError shouldn't return NULL.
+  databaseError* e = getNextError(db->err);
+  CPPUNIT_ASSERT_MESSAGE("There was no database error.", e != NULL);
+  freeDatabaseError(&e);
+
+  // There shouldn't be more errors.
+  e = getNextError(db->err);
+  CPPUNIT_ASSERT_MESSAGE("There was a database error.", e == NULL);
+
+  freeErrors(&(db->err));
+
+  // Ensure it was freed.
+  CPPUNIT_ASSERT_MESSAGE("The error wasn't freed properly.", db->err == NULL);
+
+  // Clean up
+  freeDatabase(&db);
+
+}
+
+/*
+ * Function:  TestError::testGetNextErrorNullMultiple
+ * ------------------
+ * Connects to an invalid database to generate an error. We call getNextError
+ * to ensure functionality works, multiple times.
+ *
+ */
+void TestError::testGetNextErrorNullMultiple(void) {
+
+  int i = 0;
+  for (; i < 5; i++)
+    testGetNextErrorNull();
+
+}
+
 
 /*
  * Function:  TestError::testGenerateDatabaseErrorSuccess
@@ -180,7 +285,7 @@ void TestError::testFreeErrorMultiple(void) {
  */
 void TestError::testGenerateDatabaseErrorSuccess(void) {
 
-	// Connect to an invalid database
+  // Connect to an invalid database
   database* db = NULL;
   state s = connect(&db, (char*) INVALID_CONN_STR);
 
@@ -205,9 +310,9 @@ void TestError::testGenerateDatabaseErrorSuccess(void) {
  */
 void TestError::testGenerateDatabaseErrorSuccessMultiple(void) {
 
-	int i = 0;
-	for (; i < 5; i++)
-		testGenerateDatabaseErrorSuccess();
+  int i = 0;
+  for (; i < 5; i++)
+    testGenerateDatabaseErrorSuccess();
 
 }
 
@@ -219,7 +324,7 @@ void TestError::testGenerateDatabaseErrorSuccessMultiple(void) {
  */
 void TestError::testGenerateDatabaseErrorMallocFailure(void) {
 
-	// Nothing here for now.
+  // Nothing here for now.
   CPPUNIT_ASSERT_MESSAGE("Stub", 1);
 
 }
@@ -233,9 +338,9 @@ void TestError::testGenerateDatabaseErrorMallocFailure(void) {
  */
 void TestError::testGenerateDatabaseErrorMallocFailureMultiple(void) {
 
-	int i = 0;
-	for (; i < 5; i++)
-		testGenerateDatabaseErrorMallocFailure();
+  int i = 0;
+  for (; i < 5; i++)
+    testGenerateDatabaseErrorMallocFailure();
 
 }
 
@@ -247,20 +352,20 @@ void TestError::testGenerateDatabaseErrorMallocFailureMultiple(void) {
  */
 void TestError::testGenerateDatabaseErrorFetchDatabaseErrorFailure(void) {
 
-	// Create an empty error
-	error* e = NULL;
-	state s = initializeError(&e);
+  // Create an empty error
+  error* e = NULL;
+  state s = initializeError(&e);
 
-	// Ensure it setup properly.
-	CPPUNIT_ASSERT_MESSAGE("Couldn't initialize the error.", e != NULL);
+  // Ensure it setup properly.
+  CPPUNIT_ASSERT_MESSAGE("Couldn't initialize the error.", e != NULL);
 
-	// Try to generate an error on an invalid database connection handle.
-	s = generateDatabaseError(e, SQL_NULL_HDBC, SQL_HANDLE_DBC);
+  // Try to generate an error on an invalid database connection handle.
+  s = generateDatabaseError(e, SQL_NULL_HDBC, SQL_HANDLE_DBC);
 
-	CPPUNIT_ASSERT_MESSAGE("The database fetched an error, it shouldn't.", s == FETCH_DATABASE_ERROR_FAILURE);
+  CPPUNIT_ASSERT_MESSAGE("The database fetched an error, it shouldn't.", s == FETCH_DATABASE_ERROR_FAILURE);
 
-	// Clean up
-	freeError(&e);
+  // Clean up
+  freeErrors(&e);
 
 }
 
@@ -272,9 +377,9 @@ void TestError::testGenerateDatabaseErrorFetchDatabaseErrorFailure(void) {
  */
 void TestError::testGenerateDatabaseErrorFetchDatabaseErrorFailureMultiple(void) {
 
-	int i = 0;
-	for (; i < 5; i++)
-		testGenerateDatabaseErrorFetchDatabaseErrorFailure();
+  int i = 0;
+  for (; i < 5; i++)
+    testGenerateDatabaseErrorFetchDatabaseErrorFailure();
 
 }
 
@@ -286,8 +391,7 @@ void TestError::testGenerateDatabaseErrorFetchDatabaseErrorFailureMultiple(void)
  *
  */
 void TestError::testFreeDatabaseError(void) {
-
-	// Connect to an invalid database
+  // Connect to an invalid database
   database* db = NULL;
   state s = connect(&db, (char*) INVALID_CONN_STR);
 
@@ -298,15 +402,22 @@ void TestError::testFreeDatabaseError(void) {
   CPPUNIT_ASSERT_MESSAGE("We don't have a error struct initialized properly.", db->err && db->err->errorType && db->err->database);
   CPPUNIT_ASSERT_MESSAGE("Connect set the wrong error type.", db->err->errorType == DATABASE_ERROR);
 
-  // Free the database error.
-  freeDatabaseError(db->err);
+  // getNextError shouldn't return NULL.
+  databaseError* e = getNextError(db->err);
+  CPPUNIT_ASSERT_MESSAGE("There was no database error.", e != NULL);
+  freeDatabaseError(&e);
 
-  // Ensure it was reset.
-  CPPUNIT_ASSERT_MESSAGE("The type wasn't reset properly.", db->err->database == NULL);
+  // There shouldn't be more errors.
+  e = getNextError(db->err);
+  CPPUNIT_ASSERT_MESSAGE("There was a database error.", e == NULL);
+
+  freeErrors(&(db->err));
+
+  // Ensure it was freed.
+  CPPUNIT_ASSERT_MESSAGE("The error wasn't freed properly.", db->err == NULL);
 
   // Clean up
   freeDatabase(&db);
-
 }
 
 /*
@@ -318,8 +429,54 @@ void TestError::testFreeDatabaseError(void) {
  */
 void TestError::testFreeDatabaseErrorMultiple(void) {
 
-	int i = 0;
-	for (; i < 5; i++)
-		testFreeDatabaseError();
+  int i = 0;
+  for (; i < 5; i++)
+    testFreeDatabaseError();
+
+}
+
+/*
+ * Function:  TestError::freeDatabaseErrors
+ * ------------------
+ * Connects to an invalid database to generate an error. We manually free the database
+ * error afterwards to ensure the functionality works.
+ *
+ */
+void TestError::testFreeDatabaseErrors(void) {
+
+  // Connect to an invalid database
+  database* db = NULL;
+  state s = connect(&db, (char*) INVALID_CONN_STR);
+
+  // Ensure we didn't connect
+  CPPUNIT_ASSERT_MESSAGE("We connected to the database.", s == SETUP_DATABASE_FAILURE);
+
+  // "connect" should've generated an error.
+  CPPUNIT_ASSERT_MESSAGE("We don't have a error struct initialized properly.", db->err && db->err->errorType && db->err->database);
+  CPPUNIT_ASSERT_MESSAGE("Connect set the wrong error type.", db->err->errorType == DATABASE_ERROR);
+
+  // Free the database error.
+  freeDatabaseErrors(db->err);
+
+  // Ensure it was reset.
+  CPPUNIT_ASSERT_MESSAGE("The type wasn't reset properly.", db->err->database == NULL);
+
+  // Clean up
+  freeDatabase(&db);
+
+}
+
+/*
+ * Function:  TestError::freeDatabaseErrorsMultiple
+ * ------------------
+ * Connects to an invalid database to generate an error. We manually free the database
+ * error afterwards to ensure the functionality works, multiple times.
+ *
+ */
+void TestError::testFreeDatabaseErrorsMultiple(void) {
+
+  int i = 0;
+  for (; i < 5; i++)
+    testFreeDatabaseErrors();
 
 }

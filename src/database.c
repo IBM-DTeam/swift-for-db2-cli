@@ -74,7 +74,7 @@ void freeDatabase(database** db) {
   if (*db == NULL)
     return;
 
-  freeError(&((*db)->err));
+  freeErrors(&((*db)->err));
   freeHandle(&((*db)->hnd));
   free(*db);
 

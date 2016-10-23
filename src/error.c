@@ -49,11 +49,11 @@ state initializeError(error** e) {
  * e: The error struct to reset.
  *
  */
-void resetError(error* e) {
+void resetErrors(error* e) {
 
   // Resets the error respective to its current state.
   if (e->errorType == DATABASE_ERROR)
-    freeDatabaseError(e);
+    freeDatabaseErrors(e);
 
   // Reset to default values
   e->errorType = NO_ERROR;
@@ -69,16 +69,46 @@ void resetError(error* e) {
  * e: The error struct to free.
  *
  */
-void freeError(error** e) {
+void freeErrors(error** e) {
 
   if (*e == NULL)
     return;
 
-  resetError(*e);
+  resetErrors(*e);
   free(*e);
 
   *e = NULL;
 
+}
+
+/*
+ * Function:  getNextError
+ * ------------------
+ * Gets the next error in the linked list for the
+ * specified database error struct.
+ *
+ * Refer to struct databaseError to see accessible variables.
+ *
+ * e: The error struct to get the next error from.
+ *
+ */
+databaseError* getNextError(error* e) {
+
+  if (e == NULL)
+    return NULL;
+
+  if (e->database == NULL)
+    return NULL;
+
+  databaseError* nextError = e->database;
+
+  e->database = e->database->next;
+
+  if (e->database == NULL)
+    resetErrors(e);
+
+  return nextError;
+  
 }
 
 /*
@@ -97,7 +127,7 @@ void freeError(error** e) {
 state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType){
 
   // Reset the error
-  resetError(e);
+  resetErrors(e);
 
   // The error type is from the ODBC.
   e->errorType = DATABASE_ERROR;
@@ -161,7 +191,7 @@ state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType){
         // Malloc the next databaseError struct.
         position->next = (databaseError*) malloc(sizeof(databaseError));
         if (position->next == NULL) {
-          resetError(e);
+          resetErrors(e);
           return MALLOC_FAILURE;
         }
 
@@ -170,7 +200,7 @@ state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType){
         if (position->next->state == NULL) {
           free(position->next);
           position->next = NULL;
-          resetError(e);
+          resetErrors(e);
           return MALLOC_FAILURE;
         }
         strcpy(position->next->state, (char*) state);
@@ -184,7 +214,7 @@ state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType){
           free(position->next->state);
           free(position->next);
           position->next = NULL;
-          resetError(e);
+          resetErrors(e);
           return MALLOC_FAILURE;
         }
         strcpy(position->next->desc, (char*) desc);
@@ -200,7 +230,7 @@ state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType){
       // Clear the struct on a database error.
       if (e->database == NULL)
         e->errorType = NO_ERROR;
-      resetError(e);
+      resetErrors(e);
       return FETCH_DATABASE_ERROR_FAILURE;
     }
 
@@ -210,13 +240,17 @@ state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType){
 }
 
 /*
- * Function:  freeDatabaseError
+ * Function:  freeDatabaseErrors
  * ------------------
- * Frees the databaseError struct.
+ * Frees all the databaseError structs for the given
+ * database error struct.
  *
- * e: The error struct to free databaseError in.
+ * e: The error struct to free databaseError's in.
  */
-void freeDatabaseError(error* e) {
+void freeDatabaseErrors(error* e) {
+
+  if (e->database == NULL)
+    return;
 
   databaseError* head = e->database;
   databaseError* temp;
@@ -230,5 +264,29 @@ void freeDatabaseError(error* e) {
   }
 
   e->database = NULL;
+
+}
+
+/*
+ * Function:  freeDatabaseError
+ * ------------------
+ * Frees the given databaseError struct.
+ *
+ * Warning: This is meant to be used on a databaseError returned from
+ *          getNextError. Misuse of this may corrupt your error list
+ *          and result in lost data.
+ *
+ * e: The databaseError struct to free.
+ */
+void freeDatabaseError(databaseError** e) {
+
+  if (*e == NULL)
+    return;
+
+  free((*e)->state);
+  free((*e)->desc);
+  free(*e);
+
+  *e = NULL;
 
 }

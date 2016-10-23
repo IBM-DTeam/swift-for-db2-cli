@@ -45,9 +45,11 @@ typedef struct error {
 
 // Methods
 state initializeError(error** e);
-void resetError(error* e);
-void freeError(error** e);
+void resetErrors(error* e);
+void freeErrors(error** e);
+databaseError* getNextError(error* e);
 state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType);
-void freeDatabaseError(error* e);
+void freeDatabaseErrors(error* e);
+void freeDatabaseError(databaseError** e);
 
 #endif
