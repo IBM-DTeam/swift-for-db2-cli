@@ -27,6 +27,8 @@
 #include "database.h"
 #include "query.h"
 // Methods
-state result(database *db, queryStruct **hStmtStruct);
+state result(database *db, queryStruct **hStmtStruct
+data *getColumn(queryStruct *hStmtStruct, char *column);
+void getNextRow(queryStruct *hStmtStruct);
 
 #endif

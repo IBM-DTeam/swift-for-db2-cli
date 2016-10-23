@@ -292,3 +292,49 @@ state result(database *db, queryStruct **hStmtStruct){
     return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
 }
 }
+
+
+/*
+ * Function:  getColumn
+ * ------------------
+ * Returns a pointer to the first row in the columnName.
+ * Returns NULL if the column doesn't exist.
+ * Returns STATEMENT_HANDLE_NONEXISTANT if the queryStruct is NULL.
+ *
+ */
+data *getColumn(queryStruct *hStmtStruct, char *columnName) {
+
+  if (hStmtStruct == NULL)
+    return STATEMENT_HANDLE_NONEXISTANT;
+
+  for (int i = 0; i < hStmtStruct->retrieve->sNumColResults; i++) 
+    if (strcmp(hStmtStruct->retrieve->columnName[i], columnName) == 0)
+      return hStmtStruct->retrieve->columnName[i];
+  return NULL;
+
+}
+
+/*
+ * Function:  getNextRow
+ * ------------------
+ * Fetches the next row in the result set to allow easy access.
+ * Discards and cleans up old rows.
+ * Returns STATEMENT_HANDLE_NONEXISTANT if the queryStruct is NULL.
+ *
+ */
+void getNextRow(queryStruct *hStmtStruct) {
+
+  if (hStmtStruct == NULL)
+    return STATEMENT_HANDLE_NONEXISTANT;
+
+  for (int i = 0; i < hStmtStruct->retrieve->sNumColResults; i++) {
+    data* tempData = hStmtStruct->retrieve->columnData[i];
+
+    if (tempData != NULL)
+      hStmtStruct->retrieve->columnData[i] = hStmtStruct->retrieve->columnData[i]->next;
+
+    free(tempData->item);
+    free(tempData);
+  }
+  
+}
