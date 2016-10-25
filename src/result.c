@@ -305,11 +305,11 @@ state result(database *db, queryStruct **hStmtStruct){
 data *getColumn(queryStruct *hStmtStruct, char *columnName) {
 
   if (hStmtStruct == NULL)
-    return STATEMENT_HANDLE_NONEXISTANT;
+    return NULL;
 
   for (int i = 0; i < hStmtStruct->retrieve->sNumColResults; i++) 
     if (strcmp(hStmtStruct->retrieve->columnName[i], columnName) == 0)
-      return hStmtStruct->retrieve->columnName[i];
+      return hStmtStruct->retrieve->columnData[i];
   return NULL;
 
 }
@@ -322,7 +322,7 @@ data *getColumn(queryStruct *hStmtStruct, char *columnName) {
  * Returns STATEMENT_HANDLE_NONEXISTANT if the queryStruct is NULL.
  *
  */
-void getNextRow(queryStruct *hStmtStruct) {
+state getNextRow(queryStruct *hStmtStruct) {
 
   if (hStmtStruct == NULL)
     return STATEMENT_HANDLE_NONEXISTANT;
@@ -330,11 +330,16 @@ void getNextRow(queryStruct *hStmtStruct) {
   for (int i = 0; i < hStmtStruct->retrieve->sNumColResults; i++) {
     data* tempData = hStmtStruct->retrieve->columnData[i];
 
-    if (tempData != NULL)
+    if (tempData != NULL) {
       hStmtStruct->retrieve->columnData[i] = hStmtStruct->retrieve->columnData[i]->next;
+      free(tempData->item);
+      free(tempData);
+    } else {
+      return NO_MORE_ROWS;
+    }
 
-    free(tempData->item);
-    free(tempData);
   }
+
+  return NO_MORE_ROWS;
   
 }
