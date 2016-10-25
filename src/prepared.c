@@ -171,11 +171,7 @@ state db_prepare(database *db, queryStruct **hStmtStruct, const char* query, cha
 
 
 state db_executePrepared(database *db, queryStruct **hStmtStruct){
-  SQLRETURN retCode = SUCCESS;
   bool haveInfo = false;
-
-
-
   state results = db_result(db, hStmtStruct);
 
   if (results != SUCCESS) {
