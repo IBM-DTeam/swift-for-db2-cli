@@ -45,7 +45,6 @@
  *
  */
 state prepare(database *db, queryStruct **hStmtStruct, const char* query, char** values) {
-  int numColumns = 0;
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
   SQLSMALLINT valueSize = 0;
@@ -88,6 +87,7 @@ state prepare(database *db, queryStruct **hStmtStruct, const char* query, char**
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
+      freeQueryStruct(hStmtStruct);
       return SQL_PREPARE_FAILURE;
     }
   }
@@ -99,6 +99,7 @@ state prepare(database *db, queryStruct **hStmtStruct, const char* query, char**
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
+      freeQueryStruct(hStmtStruct);
       return NUM_PARAMETERS_FAILURE;
     }
   }
@@ -123,6 +124,7 @@ state prepare(database *db, queryStruct **hStmtStruct, const char* query, char**
       if (retCode == SQL_SUCCESS_WITH_INFO) {
         haveInfo = true;
       } else {
+        freeQueryStruct(hStmtStruct);
         return DESCRIBE_PARAMETER_FAILURE;
       }
     }
@@ -144,27 +146,14 @@ state prepare(database *db, queryStruct **hStmtStruct, const char* query, char**
       if (retCode == SQL_SUCCESS_WITH_INFO) {
         haveInfo = true;
       } else {
+        freeQueryStruct(hStmtStruct);
         return PARAMETER_BIND_FAILURE;
       }
     }
 
   }
 
-
-      // Run the command
-      retCode = SQLExecute((*hStmtStruct)->hStmts);
-
-      if (retCode != SQL_SUCCESS) {
-        generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
-        if (retCode == SQL_SUCCESS_WITH_INFO) {
-          haveInfo = true;
-        } else {
-          return QUERY_EXECUTION_FAILURE;
-        }
-      }
-
   return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
-
 
 }
 
@@ -173,18 +162,31 @@ state executePrepared(database *db, queryStruct **hStmtStruct){
   SQLRETURN retCode = SUCCESS;
   bool haveInfo = false;
 
+  // Run the command
+  retCode = SQLExecute((*hStmtStruct)->hStmts);
 
-    state results = result(db, hStmtStruct);
+  if (retCode != SQL_SUCCESS) {
     generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
-    if (results != SUCCESS) {
-      generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
-      if (results == SUCCESS_WITH_INFO) {
-        haveInfo = true;
-      } else {
-        return QUERY_EXECUTION_FAILURE;
-      }
+    if (retCode == SQL_SUCCESS_WITH_INFO) {
+      haveInfo = true;
+    } else {
+      freeQueryStruct(hStmtStruct);
+      return QUERY_EXECUTION_FAILURE;
     }
+  }
 
-    return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
+  state results = result(db, hStmtStruct);
+
+  if (results != SUCCESS) {
+    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    if (results == SUCCESS_WITH_INFO) {
+      haveInfo = true;
+    } else {
+      freeQueryStruct(hStmtStruct);
+      return QUERY_EXECUTION_FAILURE;
+    }
+  }
+
+  return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
 
 }

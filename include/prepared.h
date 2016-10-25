@@ -29,5 +29,6 @@
 #include "result.h"
 
 state prepare(database *db, queryStruct **hStmtStruct, const char *query, char** values);
+state executePrepared(database *db, queryStruct **hStmtStruct);
 
 #endif
