@@ -236,6 +236,7 @@ state db_result(database *db, queryStruct **hStmtStruct){
 
           SQLLEN binaryLenOrInd = 0;
           char cell[(*hStmtStruct)->retrieve->columnDataSize[i] + 1];
+          cell[i]=NULL;
           while (true) {
 
             // Where to continue writing in the char array.
