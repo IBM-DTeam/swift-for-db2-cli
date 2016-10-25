@@ -14,21 +14,21 @@
  * limitations under the License.
  **/
 
-#ifndef transaction_h
-#define transaction_h
+#ifndef db_transaction_h
+#define db_transaction_h
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <sqlcli1.h>
+#include "/usr/local/ibmdb/include/sqlcli1.h"
 
 #include "error.h"
 #include "type.h"
 #include "database.h"
 
 
-state beginTrans(database** db);
-state commitTrans(database** db);
-state rollbackTrans(database** db);
+state db_beginTrans(database** db);
+state db_commitTrans(database** db);
+state db_rollbackTrans(database** db);
 
 #endif

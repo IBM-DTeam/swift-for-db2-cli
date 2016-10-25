@@ -27,10 +27,10 @@ void TestConnect::testConnectSuccessAndSuccessWithInfo(void) {
 
   // Connect to the database.
   database* db = NULL;
-  state s = connect(&db, (char*) VALID_CONN_STR);
+  state s = db_connect(&db, (char*) VALID_CONN_STR);
 
   // Clean up
-  disconnect(&db);
+  db_disconnect(&db);
 
   // Ensure we had a successful connection.
   CPPUNIT_ASSERT_MESSAGE("Couldn't connect successfully to the database", s == SUCCESS || s == SUCCESS_WITH_INFO);
@@ -88,10 +88,10 @@ void TestConnect::testConnectSetupDatabaseFailure(void) {
 
   // Try to connect to the database.
   database* db = NULL;
-  state s = connect(&db, (char*) INVALID_CONN_STR);
+  state s = db_connect(&db, (char*) INVALID_CONN_STR);
 
   // Clean up
-  freeDatabase(&db);
+  db_freeDatabase(&db);
 
   // Ensure we had a database setup failure.
   CPPUNIT_ASSERT_MESSAGE("The database didn't fail to setup.", s == SETUP_DATABASE_FAILURE);
@@ -122,19 +122,19 @@ void TestConnect::testConnectDatabaseExists(void) {
 
   // Try to connect to the database
   database* db = NULL;
-  state s = connect(&db, (char*) INVALID_CONN_STR);
+  state s = db_connect(&db, (char*) INVALID_CONN_STR);
 
   // Ensure we didn't connect to it
   if (s != SETUP_DATABASE_FAILURE)
-    freeDatabase(&db);
+    db_freeDatabase(&db);
 
   CPPUNIT_ASSERT_MESSAGE("Database didn't fail to setup.", s == SETUP_DATABASE_FAILURE);
 
   // Now we try to connect again to hit DATABASE_EXISTS
-  s = connect(&db, (char*) INVALID_CONN_STR);
+  s = db_connect(&db, (char*) INVALID_CONN_STR);
 
   // Clean up
-  freeDatabase(&db);
+  db_freeDatabase(&db);
 
   CPPUNIT_ASSERT_MESSAGE("The database didn't exist.", s == DATABASE_EXISTS);
 

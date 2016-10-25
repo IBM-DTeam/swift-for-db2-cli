@@ -46,7 +46,7 @@
  *   MALLOC_FAILURE: Failed to allocate memory somewhere.
  *
  */
-state query(database *db, queryStruct **hStmtStruct, char *query) {
+state db_query(database *db, queryStruct **hStmtStruct, char *query) {
   bool haveInfo = false;
   SQLRETURN retCode = SQL_SUCCESS;
 
@@ -71,11 +71,11 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
   // Allocate a statement handle
   retCode = SQLAllocHandle(SQL_HANDLE_STMT, db->hnd->hDbc, &((*hStmtStruct)->hStmts));
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return STMT_HANDLE_SETUP_FAILURE;
     }
   }
@@ -85,26 +85,26 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
 
   if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
     if (retCode == SQL_SUCCESS_WITH_INFO) {
-      generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+      db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
       haveInfo = true;
     }
 
-    state results = result(db, hStmtStruct);
-  
+    state results = db_result(db, hStmtStruct);
+
     if (results != SUCCESS) {
-      generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+      db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
       if (results == SUCCESS_WITH_INFO) {
         haveInfo = true;
       } else {
-        freeQueryStruct(hStmtStruct);
+        db_freeQueryStruct(hStmtStruct);
         return QUERY_EXECUTION_FAILURE;
-      } 
+      }
     }
 
   } else {
     // Query failed to execute.
-    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
-    freeQueryStruct(hStmtStruct);
+    db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    db_freeQueryStruct(hStmtStruct);
     return QUERY_EXECUTION_FAILURE;
   }
 
@@ -118,7 +118,7 @@ state query(database *db, queryStruct **hStmtStruct, char *query) {
  * Frees queryStruct with retrieve filled
  *
  */
-void freeQueryStruct(queryStruct **hStmtStruct) {
+void db_freeQueryStruct(queryStruct **hStmtStruct) {
 
   // Check if the whole struct exists
   if (*hStmtStruct == NULL)

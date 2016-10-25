@@ -30,7 +30,7 @@
  *   SUCCESS: Database disconnected.
  *
  */
-state disconnect(database** db) {
+state db_disconnect(database** db) {
 
   // The database pointer is NULL.
   if ((*db) == NULL)
@@ -41,11 +41,11 @@ state disconnect(database** db) {
   //Disconnect From the database
   retCode = SQLDisconnect((*db)->hnd->hDbc);
   if (!(retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO)) {
-    generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
+    db_generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
     return DATABASE_DISCONNECT_FAILURE;
   }
 
   //Free allocated memory before returning
-  freeDatabase(db);
+  db_freeDatabase(db);
   return SUCCESS;
 }

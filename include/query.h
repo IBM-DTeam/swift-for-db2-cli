@@ -14,13 +14,13 @@
  * limitations under the License.
  **/
 
-#ifndef query_h
-#define query_h
+#ifndef db_query_h
+#define db_query_h
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <sqlcli1.h>
+#include "/usr/local/ibmdb/include/sqlcli1.h"
 
 #include "error.h"
 #include "type.h"
@@ -48,7 +48,7 @@ typedef struct queryStruct{
 } queryStruct;
 
 // Methods
-void freeQueryStruct(queryStruct** hStmtStruct);
-state query(database* db, queryStruct** hStmtStruct, char* query);
+void db_freeQueryStruct(queryStruct** hStmtStruct);
+state db_query(database* db, queryStruct** hStmtStruct, char* query);
 
 #endif

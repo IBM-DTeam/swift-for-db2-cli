@@ -14,10 +14,10 @@
  * limitations under the License.
  **/
 
-#ifndef handle_h
-#define handle_h
+#ifndef db_handle_h
+#define db_handle_h
 
-#include <sqlcli1.h>
+#include "/usr/local/ibmdb/include/sqlcli1.h"
 
 #include "type.h"
 
@@ -28,7 +28,7 @@ typedef struct handle {
 } handle;
 
 // Methods
-state createHandle(handle** h);
-void freeHandle(handle** h);
+state db_createHandle(handle** h);
+void db_freeHandle(handle** h);
 
 #endif

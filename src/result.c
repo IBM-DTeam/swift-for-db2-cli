@@ -35,7 +35,7 @@
  *   SUCCESS: The database struct was setup without issues.
  *
  */
-state result(database *db, queryStruct **hStmtStruct){
+state db_result(database *db, queryStruct **hStmtStruct){
   int numColumns = 0;
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
@@ -43,11 +43,11 @@ state result(database *db, queryStruct **hStmtStruct){
   // Get the number of columns
   retCode = SQLNumResultCols((*hStmtStruct)->hStmts, (SQLSMALLINT*) &numColumns);
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return GET_NUM_COLUMNS_FAILURE;
     }
   }
@@ -58,7 +58,7 @@ state result(database *db, queryStruct **hStmtStruct){
     retCode = SQLRowCount((*hStmtStruct)->hStmts, &((*hStmtStruct)->rowCountPtr));
     if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
       if (retCode == SQL_SUCCESS_WITH_INFO) {
-        generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+        db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
         haveInfo = true;
       }
 
@@ -75,7 +75,7 @@ state result(database *db, queryStruct **hStmtStruct){
         return SUCCESS;
       }
     } else {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return GET_NUM_ROWS_FAILURE;
     }
 
@@ -87,7 +87,7 @@ state result(database *db, queryStruct **hStmtStruct){
     // Allocate appropriate structures
     (*hStmtStruct)->retrieve = (retrieveQuery*) malloc(sizeof(retrieveQuery));
     if ((*hStmtStruct)->retrieve == NULL) {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return MALLOC_FAILURE;
     }
 
@@ -103,7 +103,7 @@ state result(database *db, queryStruct **hStmtStruct){
     // Allocation
     (*hStmtStruct)->retrieve->columnName = (char**) malloc(numColumns * sizeof(char*));
     if ((*hStmtStruct)->retrieve->columnName == NULL) {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return MALLOC_FAILURE;
     }
 
@@ -114,7 +114,7 @@ state result(database *db, queryStruct **hStmtStruct){
     // Allocation
     (*hStmtStruct)->retrieve->columnData = (data**) malloc(numColumns * sizeof(data*));
     if ((*hStmtStruct)->retrieve->columnData == NULL) {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return MALLOC_FAILURE;
     }
 
@@ -126,7 +126,7 @@ state result(database *db, queryStruct **hStmtStruct){
     for (int i = 0; i < numColumns; i++) {
       (*hStmtStruct)->retrieve->columnData[i] = (data*) malloc(sizeof(data));
       if ((*hStmtStruct)->retrieve->columnData[i] == NULL) {
-        freeQueryStruct(hStmtStruct);
+        db_freeQueryStruct(hStmtStruct);
         return MALLOC_FAILURE;
       }
 
@@ -138,14 +138,14 @@ state result(database *db, queryStruct **hStmtStruct){
     // Allocation
     (*hStmtStruct)->retrieve->columnDataType = (short int*) malloc(numColumns * sizeof(short int));
     if ((*hStmtStruct)->retrieve->columnDataType == NULL) {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return MALLOC_FAILURE;
     }
 
     // Allocation
     (*hStmtStruct)->retrieve->columnDataSize = (SQLULEN*) malloc(numColumns * sizeof(SQLULEN));
     if ((*hStmtStruct)->retrieve->columnDataSize == NULL) {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return MALLOC_FAILURE;
     }
 
@@ -175,14 +175,14 @@ state result(database *db, queryStruct **hStmtStruct){
 
       if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
         if (retCode == SQL_SUCCESS_WITH_INFO) {
-          generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+          db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
           haveInfo = true;
         }
 
         // Allocate the length of the column name
         (*hStmtStruct)->retrieve->columnName[i] = (char*) malloc(sizeof(char) * (columnNameLen + 1));
         if ((*hStmtStruct)->retrieve->columnName[i] == NULL) {
-          freeQueryStruct(hStmtStruct);
+          db_freeQueryStruct(hStmtStruct);
           return MALLOC_FAILURE;
         }
 
@@ -190,7 +190,7 @@ state result(database *db, queryStruct **hStmtStruct){
         strcpy((*hStmtStruct)->retrieve->columnName[i], (char *)colName);
 
       } else {
-        freeQueryStruct(hStmtStruct);
+        db_freeQueryStruct(hStmtStruct);
         return DESCRIBE_COL_FAILURE;
       }
     }
@@ -207,7 +207,7 @@ state result(database *db, queryStruct **hStmtStruct){
       retCode = SQLFetch((*hStmtStruct)->hStmts);
       if (retCode == SQL_SUCCESS || retCode == SQL_SUCCESS_WITH_INFO) {
         if (retCode == SQL_SUCCESS_WITH_INFO) {
-          generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+          db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
           haveInfo = true;
         }
 
@@ -220,7 +220,7 @@ state result(database *db, queryStruct **hStmtStruct){
             tempHead[i]->next = (data*) malloc(sizeof(data));
             if (tempHead[i]->next == NULL) {
               // Malloc failed, cleanup.
-              freeQueryStruct(hStmtStruct);
+              db_freeQueryStruct(hStmtStruct);
               return MALLOC_FAILURE;
             }
 
@@ -248,8 +248,8 @@ state result(database *db, queryStruct **hStmtStruct){
             } else {
               // We encountered an error getting the cell data
               if (retCode != SQL_NO_DATA) {
-                generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
-                freeQueryStruct(hStmtStruct);
+                db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+                db_freeQueryStruct(hStmtStruct);
                 return CANNOT_GET_DATA;
               } else {
                 // No more data for this cell.
@@ -261,7 +261,7 @@ state result(database *db, queryStruct **hStmtStruct){
                   tempHead[i]->item = (char*) malloc(sizeof(char) * (strlen(cell) + 1));
                   if (tempHead[i]->item == NULL) {
                     // Malloc failed, cleanup.
-                    freeQueryStruct(hStmtStruct);
+                    db_freeQueryStruct(hStmtStruct);
                     return MALLOC_FAILURE;
                   }
 
@@ -280,8 +280,8 @@ state result(database *db, queryStruct **hStmtStruct){
         // We encountered an error getting the row
         if (retCode != SQL_NO_DATA) {
           // Error, clean up and return.
-          generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
-          freeQueryStruct(hStmtStruct);
+          db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+          db_freeQueryStruct(hStmtStruct);
           return CANNOT_FETCH_ROW;
         } else {
           // No more rows.
@@ -302,12 +302,12 @@ state result(database *db, queryStruct **hStmtStruct){
  * Returns STATEMENT_HANDLE_NONEXISTANT if the queryStruct is NULL.
  *
  */
-data *getColumn(queryStruct *hStmtStruct, char *columnName) {
+data *db_getColumn(queryStruct *hStmtStruct, char *columnName) {
 
   if (hStmtStruct == NULL)
     return NULL;
 
-  for (int i = 0; i < hStmtStruct->retrieve->sNumColResults; i++) 
+  for (int i = 0; i < hStmtStruct->retrieve->sNumColResults; i++)
     if (strcmp(hStmtStruct->retrieve->columnName[i], columnName) == 0)
       return hStmtStruct->retrieve->columnData[i];
   return NULL;
@@ -322,7 +322,7 @@ data *getColumn(queryStruct *hStmtStruct, char *columnName) {
  * Returns STATEMENT_HANDLE_NONEXISTANT if the queryStruct is NULL.
  *
  */
-state getNextRow(queryStruct *hStmtStruct) {
+state db_getNextRow(queryStruct *hStmtStruct) {
 
   if (hStmtStruct == NULL)
     return STATEMENT_HANDLE_NONEXISTANT;
@@ -341,5 +341,5 @@ state getNextRow(queryStruct *hStmtStruct) {
   }
 
   return NO_MORE_ROWS;
-  
+
 }

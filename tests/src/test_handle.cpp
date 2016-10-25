@@ -27,10 +27,10 @@ void TestHandle::testCreateHandleSuccess(void) {
 
   // Create the handle
   handle* h = NULL;
-  state s = createHandle(&h);
+  state s = db_createHandle(&h);
 
   // Clean up
-  freeHandle(&h);
+  db_freeHandle(&h);
 
   CPPUNIT_ASSERT_MESSAGE("Couldn't create the handle.", s == SUCCESS);
 
@@ -87,10 +87,10 @@ void TestHandle::testFreeHandle(void) {
 
   // Create the handle
   handle* h = NULL;
-  state s = createHandle(&h);
+  state s = db_createHandle(&h);
 
   // Clean up
-  freeHandle(&h);
+  db_freeHandle(&h);
 
   CPPUNIT_ASSERT_MESSAGE("Couldn't create the handle.", s == SUCCESS);
   CPPUNIT_ASSERT_MESSAGE("Couldn't handle wasn't freed properly.", h == NULL);

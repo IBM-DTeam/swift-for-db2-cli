@@ -27,10 +27,10 @@ void TestDatabase::testCreateDatabaseSuccess(void) {
 
   // Create the database struct
   database* db = NULL;
-  state s = createDatabase(&db);
+  state s = db_createDatabase(&db);
 
   // Clean up
-  freeDatabase(&db);
+  db_freeDatabase(&db);
 
   // Ensure we had a successful connection.
   CPPUNIT_ASSERT_MESSAGE("Couldn't create the database.", s == SUCCESS);
@@ -91,10 +91,10 @@ void TestDatabase::testFreeDatabase(void) {
 
   // Create the database struct
   database* db = NULL;
-  state s = createDatabase(&db);
+  state s = db_createDatabase(&db);
 
   // Clean up
-  freeDatabase(&db);
+  db_freeDatabase(&db);
 
   CPPUNIT_ASSERT_MESSAGE("Couldn't create the database.", s == SUCCESS);
   CPPUNIT_ASSERT_MESSAGE("Database wasn't freed properly.", db == NULL);

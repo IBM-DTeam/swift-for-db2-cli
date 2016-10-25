@@ -14,20 +14,20 @@
  * limitations under the License.
  **/
 
-#ifndef connect_h
-#define connect_h
+#ifndef db_connect_h
+#define db_connect_h
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <sqlcli1.h>
+#include "/usr/local/ibmdb/include/sqlcli1.h"
 
 #include "database.h"
 #include "type.h"
 #include "error.h"
 
 // Methods
-state connect(database** db, const char* connectionString);
+state db_connect(database** db, const char* connectionString);
 
 #endif

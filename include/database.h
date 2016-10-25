@@ -14,8 +14,8 @@
  * limitations under the License.
  **/
 
-#ifndef database_h
-#define database_h
+#ifndef db_database_h
+#define db_database_h
 
 #include <stdlib.h>
 
@@ -30,7 +30,7 @@ typedef struct database {
 } database;
 
 // Methods
-state createDatabase(database** db);
-void freeDatabase(database** db);
+state db_createDatabase(database** db);
+void db_freeDatabase(database** db);
 
 #endif

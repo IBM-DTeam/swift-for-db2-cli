@@ -32,7 +32,7 @@
  *   SET_CONNECTION_ATTR_FAIL: Failed to switch to manual commit mode
  */
 
-state beginTrans(database** db) {
+state db_beginTrans(database** db) {
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
 
@@ -43,7 +43,7 @@ state beginTrans(database** db) {
   // Set the connection attribute to manual commit
   retCode = SQLSetConnectAttr((*db)->hnd->hDbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)false, 0);
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
+    db_generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
@@ -69,7 +69,7 @@ state beginTrans(database** db) {
  *   COMMIT_TRANSACTION_FAILURE: Failed to commit the transaction
  */
 
-state commitTrans(database** db) {
+state db_commitTrans(database** db) {
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
 
@@ -80,7 +80,7 @@ state commitTrans(database** db) {
   // End the transaction by commit
   retCode = SQLEndTran(SQL_HANDLE_DBC, (*db)->hnd->hDbc, SQL_COMMIT);
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
+    db_generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
@@ -90,7 +90,7 @@ state commitTrans(database** db) {
   // Set the connection attribute to auto commit
   retCode = SQLSetConnectAttr((*db)->hnd->hDbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)true, 0);
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
+    db_generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
@@ -117,7 +117,7 @@ state commitTrans(database** db) {
  *   ROLLBACK_TRANSACTION_FAILURE: Failed to rollback the transaction
  */
 
-state rollbackTrans(database** db) {
+state db_rollbackTrans(database** db) {
 
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
@@ -128,7 +128,7 @@ state rollbackTrans(database** db) {
   // End the transaction by rollback
   retCode = SQLEndTran(SQL_HANDLE_DBC, (*db)->hnd->hDbc, SQL_ROLLBACK);
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
+    db_generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
@@ -139,7 +139,7 @@ state rollbackTrans(database** db) {
   // Set the connection attribute to auto commit
   retCode = SQLSetConnectAttr((*db)->hnd->hDbc, SQL_ATTR_AUTOCOMMIT, (SQLPOINTER)true, 0);
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
+    db_generateDatabaseError((*db)->err, (*db)->hnd->hDbc, SQL_HANDLE_DBC);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {

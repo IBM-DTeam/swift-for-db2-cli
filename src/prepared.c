@@ -44,7 +44,7 @@
  *   QUERY_EXECUTION_FAILURE: Could not execute the query
  *
  */
-state prepare(database *db, queryStruct **hStmtStruct, const char* query, char** values) {
+state db_prepare(database *db, queryStruct **hStmtStruct, const char* query, char** values) {
   SQLRETURN retCode = SQL_SUCCESS;
   bool haveInfo = false;
   SQLSMALLINT valueSize = 0;
@@ -70,11 +70,11 @@ state prepare(database *db, queryStruct **hStmtStruct, const char* query, char**
   // Allocate the handle statement with the environment variables
   retCode = SQLAllocHandle(SQL_HANDLE_STMT, db->hnd->hDbc, &((*hStmtStruct)->hStmts));
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return STMT_HANDLE_SETUP_FAILURE;
     }
   }
@@ -82,12 +82,11 @@ state prepare(database *db, queryStruct **hStmtStruct, const char* query, char**
   // Pre pare the handle statement with the query
   retCode = SQLPrepare((*hStmtStruct)->hStmts, (SQLCHAR *) query, strlen(query));
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
-    printf("%s\n", db->err->database->desc);
+    db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return SQL_PREPARE_FAILURE;
     }
   }
@@ -95,11 +94,11 @@ state prepare(database *db, queryStruct **hStmtStruct, const char* query, char**
   // Get eh number of paramters in the given query
   retCode = SQLNumParams((*hStmtStruct)->hStmts, &valueSize);
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return NUM_PARAMETERS_FAILURE;
     }
   }
@@ -120,11 +119,11 @@ state prepare(database *db, queryStruct **hStmtStruct, const char* query, char**
       &decimalDigitsPtr,
       &nullablePtr);
     if (retCode != SQL_SUCCESS) {
-      generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+      db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
       if (retCode == SQL_SUCCESS_WITH_INFO) {
         haveInfo = true;
       } else {
-        freeQueryStruct(hStmtStruct);
+        db_freeQueryStruct(hStmtStruct);
         return DESCRIBE_PARAMETER_FAILURE;
       }
     }
@@ -142,11 +141,11 @@ state prepare(database *db, queryStruct **hStmtStruct, const char* query, char**
       strlen(values[i]),
       &pcbValue);
     if (retCode != SQL_SUCCESS) {
-      generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+      db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
       if (retCode == SQL_SUCCESS_WITH_INFO) {
         haveInfo = true;
       } else {
-        freeQueryStruct(hStmtStruct);
+        db_freeQueryStruct(hStmtStruct);
         return PARAMETER_BIND_FAILURE;
       }
     }
@@ -158,7 +157,7 @@ state prepare(database *db, queryStruct **hStmtStruct, const char* query, char**
 }
 
 
-state executePrepared(database *db, queryStruct **hStmtStruct){
+state db_executePrepared(database *db, queryStruct **hStmtStruct){
   SQLRETURN retCode = SUCCESS;
   bool haveInfo = false;
 
@@ -166,23 +165,23 @@ state executePrepared(database *db, queryStruct **hStmtStruct){
   retCode = SQLExecute((*hStmtStruct)->hStmts);
 
   if (retCode != SQL_SUCCESS) {
-    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     if (retCode == SQL_SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return QUERY_EXECUTION_FAILURE;
     }
   }
 
-  state results = result(db, hStmtStruct);
+  state results = db_result(db, hStmtStruct);
 
   if (results != SUCCESS) {
-    generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
+    db_generateDatabaseError(db->err, (*hStmtStruct)->hStmts, SQL_HANDLE_STMT);
     if (results == SUCCESS_WITH_INFO) {
       haveInfo = true;
     } else {
-      freeQueryStruct(hStmtStruct);
+      db_freeQueryStruct(hStmtStruct);
       return QUERY_EXECUTION_FAILURE;
     }
   }

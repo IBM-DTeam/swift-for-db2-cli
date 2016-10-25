@@ -26,7 +26,7 @@
  *   SUCCESS: The handle struct was created.
  *   MALLOC_FAILURE: Cannot create the handle struct due to a failed malloc.
  */
-state createHandle(handle** h) {
+state db_createHandle(handle** h) {
 
   //Malloc handle
   *h = (handle*) malloc(sizeof(handle));
@@ -47,7 +47,7 @@ state createHandle(handle** h) {
  * Frees a handle struct.
  *
  */
-void freeHandle(handle** h) {
+void db_freeHandle(handle** h) {
 
   if (*h == NULL)
     return;
@@ -65,5 +65,5 @@ void freeHandle(handle** h) {
 
   // Set the pointer to NULL, so users don't try to use it again.
   *h = NULL;
-  
+
 }

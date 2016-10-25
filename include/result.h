@@ -14,21 +14,21 @@
  * limitations under the License.
  **/
 
-#ifndef result_h
-#define result_h
+#ifndef db_result_h
+#define db_result_h
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <sqlcli1.h>
+#include "/usr/local/ibmdb/include/sqlcli1.h"
 
 #include "error.h"
 #include "type.h"
 #include "database.h"
 #include "query.h"
 // Methods
-state result(database *db, queryStruct **hStmtStruct);
-data *getColumn(queryStruct *hStmtStruct, char *column);
-state getNextRow(queryStruct *hStmtStruct);
+state db_result(database *db, queryStruct **hStmtStruct);
+data *db_getColumn(queryStruct *hStmtStruct, char *column);
+state db_getNextRow(queryStruct *hStmtStruct);
 
 #endif

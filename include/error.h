@@ -14,8 +14,8 @@
  * limitations under the License.
  **/
 
-#ifndef error_h
-#define error_h
+#ifndef db_error_h
+#define db_error_h
 
 #include "sqlcli1.h"
 #include "type.h"
@@ -44,12 +44,12 @@ typedef struct error {
 
 
 // Methods
-state initializeError(error** e);
-void resetErrors(error* e);
-void freeErrors(error** e);
-databaseError* getNextError(error* e);
-state generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType);
-void freeDatabaseErrors(error* e);
-void freeDatabaseError(databaseError** e);
+state db_initializeError(error** e);
+void db_resetErrors(error* e);
+void db_freeErrors(error** e);
+databaseError* db_getNextError(error* e);
+state db_generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType);
+void db_freeDatabaseErrors(error* e);
+void db_freeDatabaseError(databaseError** e);
 
 #endif

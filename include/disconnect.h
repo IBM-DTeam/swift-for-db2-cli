@@ -14,8 +14,8 @@
  * limitations under the License.
  **/
 
-#ifndef disconnect_h
-#define disconnect_h
+#ifndef db_disconnect_h
+#define db_disconnect_h
 
 #include "database.h"
 #include "type.h"
@@ -23,6 +23,6 @@
 
 
 // Methods
-state disconnect(database** db);
+state db_disconnect(database** db);
 
 #endif

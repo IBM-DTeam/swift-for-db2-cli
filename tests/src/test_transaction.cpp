@@ -26,20 +26,20 @@
 void TestTransaction::testCommitSuccess(void) {
 
   database* db = NULL;
-  state s = connect(&db, (char*) VALID_CONN_STR);
+  state s = db_connect(&db, (char*) VALID_CONN_STR);
   if (s == SETUP_DATABASE_FAILURE)
-    freeDatabase(&db);
+    db_freeDatabase(&db);
 
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
 
-  state b = beginTrans(&db);
+  state b = db_beginTrans(&db);
   CPPUNIT_ASSERT_MESSAGE("Can't being the transaction.", b == SUCCESS || b == SUCCESS_WITH_INFO);
 
-  state p = commitTrans(&db);
+  state p = db_commitTrans(&db);
 
   CPPUNIT_ASSERT_MESSAGE("Couldn't commit the transaction.", p == SUCCESS || p == SUCCESS_WITH_INFO);
   // Disconnect.
-  s = disconnect(&db);
+  s = db_disconnect(&db);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
 
 
@@ -54,20 +54,20 @@ void TestTransaction::testCommitSuccess(void) {
 void TestTransaction::testRollbackSuccess(void) {
 
   database* db = NULL;
-  state s = connect(&db, (char*) VALID_CONN_STR);
+  state s = db_connect(&db, (char*) VALID_CONN_STR);
   if (s == SETUP_DATABASE_FAILURE)
-    freeDatabase(&db);
+    db_freeDatabase(&db);
 
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
 
-  state b = beginTrans(&db);
+  state b = db_beginTrans(&db);
   CPPUNIT_ASSERT_MESSAGE("Can't being the transaction.", b == SUCCESS || b == SUCCESS_WITH_INFO);
 
-  state p = rollbackTrans(&db);
+  state p = db_rollbackTrans(&db);
 
   CPPUNIT_ASSERT_MESSAGE("Couldn't rollback the transaction.", p == SUCCESS || p == SUCCESS_WITH_INFO);
   // Disconnect.
-  s = disconnect(&db);
+  s = db_disconnect(&db);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
 
 
@@ -83,10 +83,10 @@ void TestTransaction::testRollbackSuccess(void) {
 void TestTransaction::testBeginTransFailure(void) {
 
   database* db = NULL;
-  createDatabase(&db);
+  db_createDatabase(&db);
 
-  state b = beginTrans(&db);
-  freeDatabase(&db);
+  state b = db_beginTrans(&db);
+  db_freeDatabase(&db);
   CPPUNIT_ASSERT_MESSAGE("Connected successfully.", b ==SET_CONNECTION_ATTR_FAIL);
 
 }
@@ -102,21 +102,21 @@ void TestTransaction::testBeginTransFailure(void) {
 void TestTransaction::testCommitFailure(void) {
 
   database* db = NULL;
-  state s = connect(&db, (char*) VALID_CONN_STR);
+  state s = db_connect(&db, (char*) VALID_CONN_STR);
   if (s == SETUP_DATABASE_FAILURE)
-    freeDatabase(&db);
+    db_freeDatabase(&db);
 
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
 
-  state b = beginTrans(&db);
+  state b = db_beginTrans(&db);
   CPPUNIT_ASSERT_MESSAGE("Can't being the transaction.", b == SUCCESS || b == SUCCESS_WITH_INFO);
 
   (db)->hnd->hDbc = 0;
-  state p = commitTrans(&db);
+  state p = db_commitTrans(&db);
 
   CPPUNIT_ASSERT_MESSAGE("Commited the transaction", p = COMMIT_TRANSACTION_FAILURE);
   // Disconnect.
-  freeDatabase(&db);
+  db_freeDatabase(&db);
 
 
 }
@@ -132,21 +132,21 @@ void TestTransaction::testCommitFailure(void) {
 void TestTransaction::testRollbackFailure(void) {
 
   database* db = NULL;
-  state s = connect(&db, (char*) VALID_CONN_STR);
+  state s = db_connect(&db, (char*) VALID_CONN_STR);
   if (s == SETUP_DATABASE_FAILURE)
-    freeDatabase(&db);
+    db_freeDatabase(&db);
 
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
 
-  state b = beginTrans(&db);
+  state b = db_beginTrans(&db);
   CPPUNIT_ASSERT_MESSAGE("Can't being the transaction.", b == SUCCESS || b == SUCCESS_WITH_INFO);
 
   (db)->hnd->hDbc = 0;
-  state p = rollbackTrans(&db);
+  state p = db_rollbackTrans(&db);
 
   CPPUNIT_ASSERT_MESSAGE("rollbacked the transaction", p = ROLLBACK_TRANSACTION_FAILURE);
   // Disconnect.
-  freeDatabase(&db);
+  db_freeDatabase(&db);
 
 
 }

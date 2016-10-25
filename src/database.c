@@ -27,7 +27,7 @@
  *   SUCCESS: The database struct was setup without issues.
  *   MALLOC_FAILURE: The database struct cannot be setup properly.
  */
-state createDatabase(database** db) {
+state db_createDatabase(database** db) {
 
   state retCode = SUCCESS;
 
@@ -38,7 +38,7 @@ state createDatabase(database** db) {
 
   // Setup the error struct.
   error* e;
-  retCode = initializeError(&e);
+  retCode = db_initializeError(&e);
   if (retCode == MALLOC_FAILURE) {
     free(*db);
     *db = NULL;
@@ -48,7 +48,7 @@ state createDatabase(database** db) {
 
   // Setup the handle struct.
   handle* h;
-  retCode = createHandle(&h);
+  retCode = db_createHandle(&h);
   if (retCode != SUCCESS) {
     free((*db)->err);
     free(*db);
@@ -69,13 +69,13 @@ state createDatabase(database** db) {
  * db: the database struct to cleanup.
  *
  */
-void freeDatabase(database** db) {
+void db_freeDatabase(database** db) {
 
   if (*db == NULL)
     return;
 
-  freeErrors(&((*db)->err));
-  freeHandle(&((*db)->hnd));
+  db_freeErrors(&((*db)->err));
+  db_freeHandle(&((*db)->hnd));
   free(*db);
 
   *db = NULL;

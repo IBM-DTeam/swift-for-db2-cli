@@ -14,8 +14,8 @@
  * limitations under the License.
  **/
 
-#ifndef type_h
-#define type_h
+#ifndef db_type_h
+#define db_type_h
 
 #define SUCCESS 1
 #define SUCCESS_WITH_INFO 2

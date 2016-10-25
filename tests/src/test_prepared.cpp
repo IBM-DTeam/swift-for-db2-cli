@@ -34,21 +34,21 @@ void TestPrepared::testPreparedSuccess(void) {
   valList[1] = (char *)"howare";
   valList[2] = (char *)"test";
 
-  state s = connect(&db, (char*) VALID_CONN_STR);
+  state s = db_connect(&db, (char*) VALID_CONN_STR);
 
   if (s == SETUP_DATABASE_FAILURE)
-    freeDatabase(&db);
+    db_freeDatabase(&db);
 
   queryStruct* testQuery = NULL;
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
-  state a = prepare(db, &testQuery, query, valList);
-  state b = executePrepared(db, &testQuery);
+  state a = db_prepare(db, &testQuery, query, valList);
+  state b = db_executePrepared(db, &testQuery);
 
-  freeQueryStruct(&testQuery);
+  db_freeQueryStruct(&testQuery);
   // Disconnect.
   CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
   CPPUNIT_ASSERT_MESSAGE("Can't executePrepare.", b == SUCCESS || b == SUCCESS_WITH_INFO);
-  s = disconnect(&db);
+  s = db_disconnect(&db);
   free(valList);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
 
@@ -73,21 +73,21 @@ void TestPrepared::testPreparedSuccessDecimal(void) {
   valList[1] = (char *)"howa";
   valList[2] = (char *)"2.533";
 
-  state s = connect(&db, (char*) VALID_CONN_STR);
+  state s = db_connect(&db, (char*) VALID_CONN_STR);
 
   if (s == SETUP_DATABASE_FAILURE)
-    freeDatabase(&db);
+    db_freeDatabase(&db);
 
   queryStruct* testQuery = NULL;
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
-  state a = prepare(db, &testQuery, query, valList);
-  state b = executePrepared(db, &testQuery);
+  state a = db_prepare(db, &testQuery, query, valList);
+  state b = db_executePrepared(db, &testQuery);
 
-  freeQueryStruct(&testQuery);
+  db_freeQueryStruct(&testQuery);
   // Disconnect.
   CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
   CPPUNIT_ASSERT_MESSAGE("Can't executePrepare.", b == SUCCESS || b == SUCCESS_WITH_INFO);
-  s = disconnect(&db);
+  s = db_disconnect(&db);
   free(valList);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
 
@@ -112,24 +112,24 @@ void TestPrepared::testPreparedFailure(void) {
   valList[1] = (char *)"howsdadsdsdsdsddsdsdsdsdsdsdasdsaasda";
   valList[2] = (char *)"20";
 
-  state s = connect(&db, (char*) VALID_CONN_STR);
+  state s = db_connect(&db, (char*) VALID_CONN_STR);
 
   if (s == SETUP_DATABASE_FAILURE)
-    freeDatabase(&db);
+    db_freeDatabase(&db);
 
   queryStruct* testQuery = NULL;
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
-  state a = prepare(db, &testQuery, query, valList);
-  state b = executePrepared(db, &testQuery);
+  state a = db_prepare(db, &testQuery, query, valList);
+  state b = db_executePrepared(db, &testQuery);
 
   // Disconnect.
   CPPUNIT_ASSERT_MESSAGE("Can't prepare.", a == SUCCESS || a == SUCCESS_WITH_INFO);
   CPPUNIT_ASSERT_MESSAGE("Can executePrepare.", b != SUCCESS && b != SUCCESS_WITH_INFO);
 
 
-  freeQueryStruct(&testQuery);
+  db_freeQueryStruct(&testQuery);
 
-  s = disconnect(&db);
+  s = db_disconnect(&db);
   free(valList);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
 
@@ -153,15 +153,15 @@ void TestPrepared::testPreparedSelect(void) {
   char** valList = (char**) malloc(sizeof(char*) * 1);
   valList[0] = (char *)"1";
 
-  state s = connect(&db, (char*) VALID_CONN_STR);
+  state s = db_connect(&db, (char*) VALID_CONN_STR);
 
   if (s == SETUP_DATABASE_FAILURE)
-    freeDatabase(&db);
+    db_freeDatabase(&db);
 
   queryStruct* testQuery = NULL;
   CPPUNIT_ASSERT_MESSAGE("Can't connect to database.", s == SUCCESS || s == SUCCESS_WITH_INFO);
-  state a = prepare(db, &testQuery, query, valList);
-  state b = executePrepared(db, &testQuery);
+  state a = db_prepare(db, &testQuery, query, valList);
+  state b = db_executePrepared(db, &testQuery);
 
 
   // Disconnect.
@@ -169,8 +169,8 @@ void TestPrepared::testPreparedSelect(void) {
   CPPUNIT_ASSERT_MESSAGE("Can't get results", b == SUCCESS || b == SUCCESS_WITH_INFO);
 
   CPPUNIT_ASSERT_MESSAGE("Didn't have at least one column.", testQuery->retrieve->sNumColResults > 0);
-  freeQueryStruct(&testQuery);
-  s = disconnect(&db);
+  db_freeQueryStruct(&testQuery);
+  s = db_disconnect(&db);
   free(valList);
   CPPUNIT_ASSERT_MESSAGE("Can't disconnect from database.", s == SUCCESS);
 

@@ -14,13 +14,13 @@
  * limitations under the License.
  **/
 
-#ifndef prepared_h
-#define prepared_h
+#ifndef db_prepared_h
+#define db_prepared_h
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <sqlcli1.h>
+#include "/usr/local/ibmdb/include/sqlcli1.h"
 
 #include "error.h"
 #include "type.h"
@@ -28,7 +28,7 @@
 #include "query.h"
 #include "result.h"
 
-state prepare(database *db, queryStruct **hStmtStruct, const char *query, char** values);
-state executePrepared(database *db, queryStruct **hStmtStruct);
+state db_prepare(database *db, queryStruct **hStmtStruct, const char *query, char** values);
+state db_executePrepared(database *db, queryStruct **hStmtStruct);
 
 #endif
