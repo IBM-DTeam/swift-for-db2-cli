@@ -152,15 +152,6 @@ state db_prepare(database *db, queryStruct **hStmtStruct, const char* query, cha
 
   }
 
-  return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
-
-}
-
-
-state db_executePrepared(database *db, queryStruct **hStmtStruct){
-  SQLRETURN retCode = SUCCESS;
-  bool haveInfo = false;
-
   // Run the command
   retCode = SQLExecute((*hStmtStruct)->hStmts);
 
@@ -173,6 +164,17 @@ state db_executePrepared(database *db, queryStruct **hStmtStruct){
       return QUERY_EXECUTION_FAILURE;
     }
   }
+
+  return haveInfo ? SUCCESS_WITH_INFO : SUCCESS;
+
+}
+
+
+state db_executePrepared(database *db, queryStruct **hStmtStruct){
+  SQLRETURN retCode = SUCCESS;
+  bool haveInfo = false;
+
+
 
   state results = db_result(db, hStmtStruct);
 

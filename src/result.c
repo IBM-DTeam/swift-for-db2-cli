@@ -65,6 +65,7 @@ state db_result(database *db, queryStruct **hStmtStruct){
       // It was an other query. i.e create, drop, etc.
       if ((*hStmtStruct)->rowCountPtr == -1) {
 
+
         (*hStmtStruct)->type = OTHER;
         return SUCCESS;
 
