@@ -87,6 +87,17 @@ void TestGetData::testGetColumnAndRow(void) {
    // Query the database.
    queryStruct* testQuery = NULL;
    s = db_query(db, &testQuery, (char*) VALID_SELECT_QUERY_STR);
+   int rowNum = 0;
+   for(int i = 0; i < testQuery->retrieve->rowCount; i++){
+     for(int j =0; j< testQuery->retrieve->sNumColResults ; j++){
+
+     }
+     rowNum++;
+     db_getNextRow(testQuery);
+
+
+
+   }
 
    // Free the query struct, since we won't pass the test case.
    if (s != SUCCESS && s != SUCCESS_WITH_INFO)
@@ -95,7 +106,7 @@ void TestGetData::testGetColumnAndRow(void) {
 
    CPPUNIT_ASSERT_MESSAGE("Query failed to execute, when it should've.", s == SUCCESS || s == SUCCESS_WITH_INFO);
    CPPUNIT_ASSERT_MESSAGE("Didn't have at least one column.", testQuery->retrieve->sNumColResults > 0);
-
+   CPPUNIT_ASSERT_MESSAGE("Incorrect Rows", testQuery->retrieve->rowCount == rowNum);
    // Free the query struct, since we're done with it.
    db_freeQueryStruct(&testQuery);
 

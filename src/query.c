@@ -142,10 +142,12 @@ void db_freeQueryStruct(queryStruct **hStmtStruct) {
 
         // Goes through every row (j) for the column (i)
         for (int j = 0; j < (*hStmtStruct)->retrieve->rowCount; j++) {
-
-          // Clears the items
-          if (head->item != NULL)
+          if (head == NULL){
+            break;
+          }else if(head->item != NULL){
             free(head->item);
+
+          }
 
           // Goes to the next item.
           if (head->next != NULL) {
