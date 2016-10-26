@@ -170,6 +170,21 @@ state db_prepare(database *db, queryStruct **hStmtStruct, const char* query, cha
 }
 
 
+
+/*
+ * Function:  db_executePrepared
+ * ------------------
+ * Gets the resulting data from an executed prepared statement
+ *
+ * db: Where the database struct will be setup.
+ * hStmtStruct: Where information about the query is stored
+ *
+ * returns:
+ *   SUCCESS: If the results have been obtained and succuessfully put into
+ *            the hStmtStruct
+ *   DATA_RETRIVAL_FAILURE: Could not populate the hStmtStruct with the data
+ *
+ */
 state db_executePrepared(database *db, queryStruct **hStmtStruct){
   bool haveInfo = false;
   state results = db_result(db, hStmtStruct);
@@ -180,7 +195,7 @@ state db_executePrepared(database *db, queryStruct **hStmtStruct){
       haveInfo = true;
     } else {
       db_freeQueryStruct(hStmtStruct);
-      return QUERY_EXECUTION_FAILURE;
+      return DATA_RETRIVAL_FAILURE;
     }
   }
 

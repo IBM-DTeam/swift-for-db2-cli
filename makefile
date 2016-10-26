@@ -55,7 +55,7 @@ install : ibmdb2
 	sudo cp -rf include/* /usr/local/include/ibmdb2/
 
 # Compile tests
-test : database.o error.o handle.o connect.o disconnect.o query.o transaction.o prepared.o result.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_query.o test_transaction.o test_prepared.o test_main.o
+test : database.o error.o handle.o connect.o disconnect.o query.o transaction.o prepared.o result.o test_database.o test_connect.o test_disconnect.o test_handle.o test_error.o test_query.o test_transaction.o test_prepared.o test_getData.o test_main.o
 	$(CC) $(COMPILE_FLAGS) -o $@ $? $(TEST_LIBRARIES) $(TEST_LINKS)
 
 # Main files
@@ -113,6 +113,9 @@ test_prepared.o : prepared.o $(TEST_INCLUDE)/test_prepared.hpp $(TEST_SRC)/test_
 
 test_disconnect.o : disconnect.o $(TEST_INCLUDE)/test_disconnect.hpp $(TEST_SRC)/test_disconnect.cpp
 	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(TEST_SRC)/test_disconnect.cpp
+
+test_getData.o : result.o $(TEST_INCLUDE)/test_getData.hpp $(TEST_SRC)/test_getData.cpp
+	$(CC) $(OBJECT_FLAGS) $(TEST_SEARCH_PATH) $(VALID_CONN_STR) $(INVALID_CONN_STR) $(VALID_SELECT_QUERY_STR) $(TEST_SRC)/test_getData.cpp
 
 clean :
 	rm -f *.o
