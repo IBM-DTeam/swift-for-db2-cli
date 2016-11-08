@@ -14,22 +14,29 @@
  * limitations under the License.
  **/
 
-#ifndef db_result_h
-#define db_result_h
+#ifndef test_getData_h
+#define test_getData_h
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include "/usr/local/ibmdb/include/sqlcli1.h"
+#include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
+#include <cppunit/extensions/HelperMacros.h>
 
-#include "error.h"
-#include "type.h"
-#include "database.h"
+
+// The functions to test
 #include "query.h"
-// Methods
-state db_result(database *db, queryStruct **hStmtStruct);
-data *db_getColumn(queryStruct *hStmtStruct, char *column);
-state db_getNextRow(queryStruct *hStmtStruct);
-data *db_getColumnNextRow(data *dataPointer);
+#include "connect.h"
+#include "disconnect.h"
+#include "result.h"
+
+class TestGetData : public CppUnit::TestFixture {
+  CPPUNIT_TEST_SUITE(TestGetData);
+  CPPUNIT_TEST(testGetColumnAndRow);
+  CPPUNIT_TEST(testGetNextRow);
+  CPPUNIT_TEST_SUITE_END();
+protected:
+  void testGetColumnAndRow(void);
+  void testGetNextRow(void);
+
+};
 
 #endif

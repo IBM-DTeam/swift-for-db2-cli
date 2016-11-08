@@ -316,6 +316,30 @@ data *db_getColumn(queryStruct *hStmtStruct, char *columnName) {
 
 }
 
+
+/*
+ * Function:  db_getColumnNextRow
+ * ------------------
+ * Returns a pointer to the next row of a given column pointer
+ *
+ * Returns
+ *  NULL: if the pointer doesn't exist or if there is no next row
+ *
+ */
+data *db_getColumnNextRow(data *dataPointer){
+
+  if(dataPointer == NULL)
+    return NULL;
+
+  if(dataPointer->next == NULL)
+    return NULL;
+
+  data * newPointer = dataPointer->next;
+
+  return newPointer;
+
+}
+
 /*
  * Function:  getNextRow
  * ------------------

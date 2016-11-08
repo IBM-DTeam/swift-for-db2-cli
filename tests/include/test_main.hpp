@@ -35,6 +35,7 @@
 #include "test_query.hpp"
 #include "test_transaction.hpp"
 #include "test_prepared.hpp"
+#include "test_getData.hpp"
 
 int main();
 
