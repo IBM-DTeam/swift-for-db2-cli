@@ -28,7 +28,7 @@
 
 typedef struct data {
   char*            item;
-  data*            next;
+  struct data*     next;
 } data;
 
 typedef struct retrieveQuery{
