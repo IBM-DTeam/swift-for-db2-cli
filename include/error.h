@@ -17,7 +17,7 @@
 #ifndef db_error_h
 #define db_error_h
 
-#include "sqlcli1.h"
+#include "/usr/local/ibmdb/include/sqlcli1.h"
 #include "type.h"
 #include "handle.h"
 
