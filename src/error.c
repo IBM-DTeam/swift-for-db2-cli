@@ -92,7 +92,8 @@ void db_freeErrors(error** e) {
  * e: The error struct to get the next error from.
  *
  */
-databaseError* db_getNextError(error* e) {
+databaseError* db_getNextError(database * db) {
+  error * e = db->err;
 
   if (e == NULL)
     return NULL;

@@ -20,7 +20,7 @@
 #include "/usr/local/ibmdb/include/sqlcli1.h"
 #include "type.h"
 #include "handle.h"
-
+#include "structs.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -28,26 +28,11 @@
 #define NO_ERROR 0
 #define DATABASE_ERROR 1
 
-// Database error struct
-typedef struct databaseError {
-  char* state;
-  int native;
-  char* desc;
-  struct databaseError* next;
-} databaseError;
-
-// Error struct
-typedef struct error {
-  int errorType;
-  databaseError* database;
-} error;
-
-
 // Methods
 state db_initializeError(error** e);
 void db_resetErrors(error* e);
 void db_freeErrors(error** e);
-databaseError* db_getNextError(error* e);
+databaseError* db_getNextError(database * db);
 state db_generateDatabaseError(error* e, SQLHANDLE h, SQLSMALLINT hType);
 void db_freeDatabaseErrors(error* e);
 void db_freeDatabaseError(databaseError** e);

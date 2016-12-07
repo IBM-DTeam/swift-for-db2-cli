@@ -18,16 +18,10 @@
 #define db_database_h
 
 #include <stdlib.h>
-
+#include "structs.h"
 #include "handle.h"
 #include "error.h"
 #include "type.h"
-
-// Database struct
-typedef struct database {
-  handle* hnd;
-  error* err;
-} database;
 
 // Methods
 state db_createDatabase(database** db);

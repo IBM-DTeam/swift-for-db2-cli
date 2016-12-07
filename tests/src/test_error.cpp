@@ -192,7 +192,7 @@ void TestError::testGetNextError(void) {
   CPPUNIT_ASSERT_MESSAGE("Connect set the wrong error type.", db->err->errorType == DATABASE_ERROR);
 
   // getNextError shouldn't return NULL.
-  databaseError* e = db_getNextError(db->err);
+  databaseError* e = db_getNextError(db);
   CPPUNIT_ASSERT_MESSAGE("There was no database error.", e != NULL);
 
   db_freeDatabaseError(&e);
@@ -242,12 +242,12 @@ void TestError::testGetNextErrorNull(void) {
   CPPUNIT_ASSERT_MESSAGE("Connect set the wrong error type.", db->err->errorType == DATABASE_ERROR);
 
   // getNextError shouldn't return NULL.
-  databaseError* e = db_getNextError(db->err);
+  databaseError* e = db_getNextError(db);
   CPPUNIT_ASSERT_MESSAGE("There was no database error.", e != NULL);
   db_freeDatabaseError(&e);
 
   // There shouldn't be more errors.
-  e = db_getNextError(db->err);
+  e = db_getNextError(db);
   CPPUNIT_ASSERT_MESSAGE("There was a database error.", e == NULL);
 
   db_freeErrors(&(db->err));
@@ -403,12 +403,12 @@ void TestError::testFreeDatabaseError(void) {
   CPPUNIT_ASSERT_MESSAGE("Connect set the wrong error type.", db->err->errorType == DATABASE_ERROR);
 
   // getNextError shouldn't return NULL.
-  databaseError* e = db_getNextError(db->err);
+  databaseError* e = db_getNextError(db);
   CPPUNIT_ASSERT_MESSAGE("There was no database error.", e != NULL);
   db_freeDatabaseError(&e);
 
   // There shouldn't be more errors.
-  e = db_getNextError(db->err);
+  e = db_getNextError(db);
   CPPUNIT_ASSERT_MESSAGE("There was a database error.", e == NULL);
 
   db_freeErrors(&(db->err));

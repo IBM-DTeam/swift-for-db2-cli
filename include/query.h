@@ -21,31 +21,10 @@
 #include <string.h>
 #include <stdbool.h>
 #include "/usr/local/ibmdb/include/sqlcli1.h"
-
+#include "structs.h"
 #include "error.h"
 #include "type.h"
 #include "database.h"
-
-typedef struct data {
-  char*            item;
-  struct data*     next;
-} data;
-
-typedef struct retrieveQuery{
-  SQLSMALLINT      sNumColResults;
-  char**           columnName;
-  short int*       columnDataType;
-  SQLULEN*         columnDataSize;
-  data**           columnData;
-  SQLINTEGER       rowCount;
-} retrieveQuery;
-
-typedef struct queryStruct{
-  SQLLEN           rowCountPtr;
-  SQLHSTMT         hStmts;
-  queryType        type;
-  retrieveQuery*   retrieve;
-} queryStruct;
 
 // Methods
 void db_freeQueryStruct(queryStruct** hStmtStruct);

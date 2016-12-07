@@ -18,15 +18,8 @@
 #define db_handle_h
 
 #include "/usr/local/ibmdb/include/sqlcli1.h"
-
+#include "structs.h"
 #include "type.h"
-
-// handle struct
-typedef struct handle {
-  SQLHDBC hDbc;
-  SQLHENV hEnv;
-} handle;
-
 // Methods
 state db_createHandle(handle** h);
 void db_freeHandle(handle** h);

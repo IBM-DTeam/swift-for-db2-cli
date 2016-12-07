@@ -59,31 +59,31 @@ test : database.o error.o handle.o connect.o disconnect.o query.o transaction.o 
 	$(CC) $(COMPILE_FLAGS) -o $@ $? $(TEST_LIBRARIES) $(TEST_LINKS)
 
 # Main files
-database.o : $(INCLUDE)/database.h $(SRC)/database.c $(INCLUDE)/handle.h $(INCLUDE)/error.h $(INCLUDE)/type.h
+database.o : $(INCLUDE)/structs.h $(INCLUDE)/database.h $(SRC)/database.c $(INCLUDE)/handle.h $(INCLUDE)/error.h $(INCLUDE)/type.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/database.c
 
-error.o : $(INCLUDE)/error.h $(SRC)/error.c $(INCLUDE)/type.h $(INCLUDE)/handle.h
+error.o : $(INCLUDE)/structs.h $(INCLUDE)/error.h $(SRC)/error.c $(INCLUDE)/type.h $(INCLUDE)/handle.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) -DVERSION=$(SHARED_LIBRARY_VERSION) $(SRC)/error.c
 
-handle.o : $(INCLUDE)/handle.h $(SRC)/handle.c $(INCLUDE)/type.h
+handle.o : $(INCLUDE)/structs.h $(INCLUDE)/handle.h $(SRC)/handle.c $(INCLUDE)/type.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/handle.c
 
-connect.o : $(INCLUDE)/connect.h $(SRC)/connect.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
+connect.o :  $(INCLUDE)/structs.h $(INCLUDE)/connect.h $(SRC)/connect.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/connect.c
 
-disconnect.o : $(INCLUDE)/disconnect.h $(SRC)/disconnect.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
+disconnect.o :  $(INCLUDE)/structs.h $(INCLUDE)/disconnect.h $(SRC)/disconnect.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/disconnect.c
 
-result.o : $(INCLUDE)/result.h $(SRC)/result.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
+result.o :  $(INCLUDE)/structs.h $(INCLUDE)/result.h $(SRC)/result.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/result.c
 
-query.o : $(INCLUDE)/query.h $(SRC)/query.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
+query.o :  $(INCLUDE)/structs.h $(INCLUDE)/query.h $(SRC)/query.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/query.c
 
-transaction.o : $(INCLUDE)/transaction.h $(SRC)/transaction.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
+transaction.o :  $(INCLUDE)/structs.h $(INCLUDE)/transaction.h $(SRC)/transaction.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/transaction.c
 
-prepared.o : $(INCLUDE)/prepared.h $(SRC)/prepared.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
+prepared.o :  $(INCLUDE)/structs.h $(INCLUDE)/prepared.h $(SRC)/prepared.c $(INCLUDE)/database.h $(INCLUDE)/type.h $(INCLUDE)/error.h
 	$(CC) $(OBJECT_FLAGS_SO) $(PRODUCTION_SEARCH_PATH) $(SRC)/prepared.c
 
 # Test files
